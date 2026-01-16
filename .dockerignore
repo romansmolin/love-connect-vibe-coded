@@ -1,0 +1,16 @@
+node_modules
+.git
+.next
+Dockerfile
+.dockerignore
+npm-debug.log
+.env
+.env.local
+.env.development
+.env.test
+*.md
+**/.DS_Store
+
+# Ignore build artifacts
+out
+coverage
