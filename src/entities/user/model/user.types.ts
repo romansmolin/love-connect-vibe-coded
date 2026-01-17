@@ -4,9 +4,11 @@ export type LookingFor = 'women' | 'man' | 'couple'
 
 export interface PublicUser {
     id: string
-    name: string
-    email: string
     username: string
+    name?: string
+    email?: string
+    sessionId?: string
+    tokenLogin?: string
 }
 
 export interface SignUpRequest {

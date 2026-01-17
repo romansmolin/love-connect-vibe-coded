@@ -4,7 +4,9 @@ import { signInSchema, signUpSchema } from '../dto/auth.dto'
 import { AuthError } from '../errors/auth.errors'
 import { signIn, signUp } from '../services/auth.service'
 
-export const TOKEN_COOKIE_NAME = 'token'
+export const SESSION_COOKIE_NAME = 'jetset_session_id'
+export const USER_ID_COOKIE_NAME = 'jetset_user_id'
+export const TOKEN_LOGIN_COOKIE_NAME = 'jetset_token_login'
 
 const getRequestBody = async (request: Request) => {
     try {
@@ -14,14 +16,27 @@ const getRequestBody = async (request: Request) => {
     }
 }
 
-const setAuthCookie = (response: NextResponse, token: string, maxAge: number) => {
-    response.cookies.set(TOKEN_COOKIE_NAME, token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        path: '/',
-        maxAge,
-    })
+const cookieOptions = (maxAge: number) => ({
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax' as const,
+    path: '/',
+    maxAge,
+})
+
+const setSessionCookies = (
+    response: NextResponse,
+    data: { sessionId: string; userId?: string; tokenLogin?: string; maxAge: number }
+) => {
+    response.cookies.set(SESSION_COOKIE_NAME, data.sessionId, cookieOptions(data.maxAge))
+
+    if (data.userId) {
+        response.cookies.set(USER_ID_COOKIE_NAME, data.userId, cookieOptions(data.maxAge))
+    }
+
+    if (data.tokenLogin) {
+        response.cookies.set(TOKEN_LOGIN_COOKIE_NAME, data.tokenLogin, cookieOptions(data.maxAge))
+    }
 }
 
 const formatValidationError = (error: { flatten: () => { fieldErrors: Record<string, string[]> } }) => {
@@ -35,19 +50,19 @@ const formatValidationError = (error: { flatten: () => { fieldErrors: Record<str
 export const signUpHandler = async (request: Request) => {
     const body = await getRequestBody(request)
 
-    if (!body) {
-        return NextResponse.json({ ok: false, message: 'Invalid JSON payload.' }, { status: 400 })
-    }
+    if (!body) return NextResponse.json({ ok: false, message: 'Invalid JSON payload.' }, { status: 400 })
 
     const parsed = signUpSchema.safeParse(body)
-    if (!parsed.success) {
-        return NextResponse.json(formatValidationError(parsed.error), { status: 400 })
-    }
+
+    if (!parsed.success) return NextResponse.json(formatValidationError(parsed.error), { status: 400 })
+
+    const forwardedFor = request.headers.get('x-forwarded-for')
+    const ipAddress = forwardedFor?.split(',')[0]?.trim() || request.headers.get('x-real-ip') || undefined
 
     try {
-        const result = await signUp(parsed.data)
+        const result = await signUp(parsed.data, { ipAddress })
         const response = NextResponse.json({ ok: true, user: result.user }, { status: 201 })
-        setAuthCookie(response, result.token, result.maxAge)
+        setSessionCookies(response, result)
         return response
     } catch (error) {
         if (error instanceof AuthError) {
@@ -74,7 +89,7 @@ export const signInHandler = async (request: Request) => {
     try {
         const result = await signIn(parsed.data)
         const response = NextResponse.json({ ok: true, user: result.user }, { status: 200 })
-        setAuthCookie(response, result.token, result.maxAge)
+        setSessionCookies(response, result)
         return response
     } catch (error) {
         if (error instanceof AuthError) {

@@ -1,125 +1,232 @@
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
-import { compare, hash } from 'bcryptjs'
-import { SignJWT, jwtVerify } from 'jose'
+import { JetsetRdvError, fetchJetsetRdv } from '@/shared/api/jetsetrdv/fetch-jetsetrdv'
 
 import { SignInInput, SignUpInput } from '../dto/auth.dto'
 import { AuthError } from '../errors/auth.errors'
-import {
-    createUser,
-    findUserByEmail,
-    findUserByUsername,
-    getUserById,
-    getUserForAuth,
-} from '../repositories/user.repo'
 
 const SESSION_MAX_AGE = 60 * 60 * 24 * 7
 const REMEMBER_MAX_AGE = 60 * 60 * 24 * 30
-const PASSWORD_ROUNDS = 12
 
-const getJwtSecret = () => {
-    const secret = process.env.JWT_SECRET
-    if (!secret) {
-        throw new AuthError('Server configuration error.', 500)
-    }
-    return new TextEncoder().encode(secret)
+type JetsetLoginResponse = {
+    connected?: number
+    session_id?: string
+    token_login?: string
+    user_id?: number
+    lang_ui?: string
 }
 
-const createToken = async (
-    user: { id: string; name: string; email: string; username: string },
-    expiresInSeconds: number
-) => {
-    const now = Math.floor(Date.now() / 1000)
-
-    return new SignJWT({
-        name: user.name,
-        email: user.email,
-        username: user.username,
-    })
-        .setProtectedHeader({ alg: 'HS256' })
-        .setSubject(user.id)
-        .setIssuedAt(now)
-        .setExpirationTime(now + expiresInSeconds)
-        .sign(getJwtSecret())
+type JetsetSubscribeResponse = {
+    accepted?: number
+    error?: string
+    session_id?: string
+    user_id?: number
+    lang_ui?: string
 }
 
-export const getCurrentUser = async (token: string) => {
-    const { payload } = await jwtVerify(token, getJwtSecret(), { algorithms: ['HS256'] })
-    const userId = payload.sub
-    if (!userId) {
-        throw new AuthError('Invalid session.', 401)
+type JetsetProfileResponse = {
+    connected?: number
+    result?: {
+        id?: number
+        pseudo?: string
+        prenom?: string
+        email?: string
     }
-
-    const user = await getUserById(userId)
-    if (!user) {
-        throw new AuthError('User not found.', 404)
-    }
-
-    return user
 }
 
-export const signUp = async (input: SignUpInput) => {
-    const existingEmail = await findUserByEmail(input.email)
-    if (existingEmail) {
-        throw new AuthError('Email already in use.', 409)
+const mapGenderToSex = (gender: SignUpInput['gender']) => {
+    switch (gender) {
+        case 'man':
+            return 1
+        case 'woman':
+            return 2
+        default:
+            return 3
+    }
+}
+
+const mapLookingForToCherche = (lookingFor: SignUpInput['lookingFor']) => {
+    switch (lookingFor) {
+        case 'man':
+            return 1
+        case 'women':
+            return 2
+        case 'couple':
+            return 3
+        default:
+            return 1
+    }
+}
+
+const toBirthday = (value: Date) => value.toISOString().slice(0, 10)
+
+const extractJetsetMessage = (error: JetsetRdvError, fallback: string) => {
+    const data = error.data
+
+    if (
+        typeof error.message === 'string' &&
+        error.message.trim().length > 0 &&
+        error.message !== 'JetSetRDV request failed.'
+    ) {
+        return error.message
     }
 
-    const existingUsername = await findUserByUsername(input.username)
-    if (existingUsername) {
-        throw new AuthError('Username already in use.', 409)
+    if (typeof data === 'string' && data.trim().length > 0) {
+        return data
     }
 
-    const passwordHash = await hash(input.password, PASSWORD_ROUNDS)
-    let user
-    try {
-        user = await createUser({
-            name: input.name,
-            email: input.email,
-            username: input.username,
-            passwordHash,
-            gender: input.gender,
-            lookingFor: input.lookingFor,
-            dateOfBirth: input.dateOfBirth,
-            city: input.city,
-        })
-    } catch (error) {
-        if (error instanceof PrismaClientKnownRequestError && error.code === 'P2002') {
-            throw new AuthError('Email or username already in use.', 409)
+    if (data && typeof data === 'object') {
+        const candidate =
+            (data as { error?: unknown; message?: unknown }).error ?? (data as { message?: unknown }).message
+        if (typeof candidate === 'string' && candidate.trim().length > 0) {
+            return candidate
         }
-
-        throw error
     }
 
-    const token = await createToken(user, SESSION_MAX_AGE)
+    return fallback
+}
 
-    return {
-        user,
-        token,
-        maxAge: SESSION_MAX_AGE,
+const toJetsetError = (error: unknown, fallbackMessage: string) => {
+    if (error instanceof JetsetRdvError) {
+        return new AuthError(extractJetsetMessage(error, fallbackMessage), error.status)
     }
+
+    return new AuthError(fallbackMessage, 502)
 }
 
 export const signIn = async (input: SignInInput) => {
-    const user = await getUserForAuth(input.username)
-    if (!user) {
-        throw new AuthError('Invalid username or password.', 401)
+    try {
+        const data = await fetchJetsetRdv<JetsetLoginResponse>({
+            path: '/index_api/login',
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: {
+                login: input.username,
+                pass: input.password,
+            },
+        })
+
+        if (data.connected !== 1 || !data.session_id) {
+            throw new AuthError('Invalid username or password.', 401)
+        }
+
+        const maxAge = input.rememberMe ? REMEMBER_MAX_AGE : SESSION_MAX_AGE
+
+        return {
+            user: {
+                id: String(data.user_id ?? data.session_id),
+                username: input.username,
+                sessionId: data.session_id,
+                tokenLogin: data.token_login,
+            },
+            sessionId: data.session_id,
+            userId: data.user_id ? String(data.user_id) : undefined,
+            tokenLogin: data.token_login,
+            maxAge,
+        }
+    } catch (error) {
+        if (error instanceof AuthError) {
+            throw error
+        }
+
+        throw toJetsetError(error, 'Unable to sign in right now.')
+    }
+}
+
+export const signUp = async (input: SignUpInput, context?: { ipAddress?: string }) => {
+    try {
+        const birthday = toBirthday(input.dateOfBirth)
+        const year = input.dateOfBirth.getUTCFullYear()
+        const month = input.dateOfBirth.getUTCMonth() + 1
+        const day = input.dateOfBirth.getUTCDate()
+
+        const data = await fetchJetsetRdv<JetsetSubscribeResponse>({
+            path: '/index_api/subscribe',
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: {
+                login: input.username,
+                pass: input.password,
+                mail: input.email,
+                'fast-part': 1,
+                sex: mapGenderToSex(input.gender),
+                cherche1: mapLookingForToCherche(input.lookingFor),
+                birthday_date: birthday,
+                year,
+                month,
+                day,
+                ip_adress: context?.ipAddress ?? '127.0.0.1',
+                city: 0,
+                region: 0,
+                countryObj: 0,
+                lang_ui: 'en',
+            },
+        })
+
+        console.debug('Registration Resposne: ', data)
+
+        if (data.accepted !== 1 || !data.session_id) {
+            const message = data.error || 'Registration was not accepted.'
+            throw new AuthError(message, 400)
+        }
+
+        return {
+            user: {
+                id: String(data.user_id ?? data.session_id),
+                username: input.username,
+                sessionId: data.session_id,
+            },
+            sessionId: data.session_id,
+            userId: data.user_id ? String(data.user_id) : undefined,
+            maxAge: SESSION_MAX_AGE,
+        }
+    } catch (error) {
+        if (error instanceof AuthError) throw error
+
+        console.error('Here is the err: ', error)
+
+        throw toJetsetError(error, 'Unable to create account right now.')
+    }
+}
+
+export const getCurrentUser = async (sessionId: string, userId?: string) => {
+    if (!sessionId) {
+        throw new AuthError('Invalid session.', 401)
     }
 
-    const isValidPassword = await compare(input.password, user.passwordHash)
-    if (!isValidPassword) {
-        throw new AuthError('Invalid username or password.', 401)
-    }
+    try {
+        if (!userId) {
+            return {
+                id: sessionId,
+                username: 'member',
+                sessionId,
+            }
+        }
 
-    const maxAge = input.rememberMe ? REMEMBER_MAX_AGE : SESSION_MAX_AGE
-    const token = await createToken(user, maxAge)
+        const data = await fetchJetsetRdv<JetsetProfileResponse>({
+            path: '/index_api/user',
+            method: 'POST',
+            query: {
+                session_id: sessionId,
+                id: userId,
+            },
+        })
 
-    return {
-        user: {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            username: user.username,
-        },
-        token,
-        maxAge,
+        if (data.connected !== 1) {
+            throw new AuthError('Session expired.', 401)
+        }
+
+        const profile = data.result ?? {}
+        return {
+            id: String(profile.id ?? userId),
+            username: profile.pseudo ?? 'member',
+            name: profile.prenom ?? profile.pseudo ?? 'Member',
+            email: profile.email ?? undefined,
+            sessionId,
+        }
+    } catch (error) {
+        if (error instanceof AuthError) {
+            throw error
+        }
+
+        throw toJetsetError(error, 'Unable to load user.')
     }
 }
