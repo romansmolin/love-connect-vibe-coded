@@ -2,7 +2,8 @@
 
 import React from 'react'
 
-import { LayoutDashboard } from 'lucide-react'
+import { Heart, LayoutDashboard } from 'lucide-react'
+
 import { UserCard } from '@/entities/user'
 import { cn } from '@/shared/lib/utils'
 import {
@@ -30,6 +31,11 @@ const AppSidebar = () => {
                     title: 'Dashboard',
                     icon: LayoutDashboard,
                     url: '/dashboard',
+                },
+                {
+                    title: 'Matches',
+                    icon: Heart,
+                    url: '/matches',
                 },
             ],
         },

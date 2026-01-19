@@ -2,24 +2,26 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 
 import baseQuery from '@/shared/api/base-query'
 
+import type { CancelSubscriptionResponse, UpdateSubscriptionRequest, UpdateSubscriptionResponse } from '../../model/types'
+
 export const subscriptionApi = createApi({
     reducerPath: 'subscriptionApi',
     baseQuery,
     endpoints: (builder) => ({
-        cancelSubscription: builder.mutation<void, void>({
-            query: () => ({
-                url: '/subscription/cancel',
-                method: 'POST',
-            }),
-        }),
-        updateUserPlan: builder.mutation<void, { planName: string; planType?: string }>({
+        updateUserPlan: builder.mutation<UpdateSubscriptionResponse, UpdateSubscriptionRequest>({
             query: (body) => ({
-                url: '/subscription/update',
+                url: 'subscription/update',
                 method: 'POST',
                 body,
+            }),
+        }),
+        cancelSubscription: builder.mutation<CancelSubscriptionResponse, void>({
+            query: () => ({
+                url: 'subscription/cancel',
+                method: 'POST',
             }),
         }),
     }),
 })
 
-export const { useCancelSubscriptionMutation, useUpdateUserPlanMutation } = subscriptionApi
+export const { useUpdateUserPlanMutation, useCancelSubscriptionMutation } = subscriptionApi

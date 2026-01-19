@@ -1,7 +1,6 @@
 import { Metadata } from 'next'
 import { Montserrat, Pacifico } from 'next/font/google'
 
-import { LoginButton } from '@/features/auth/ui/login-button'
 import { Header } from '@/widgets/header'
 
 import Footer2 from '../_layout/basic/footer2'
@@ -77,7 +76,7 @@ export default function RootLayout({
         >
             <body className="antialiased overflow-x-hidden">
                 <RtkProvider>
-                    <Header actions={<LoginButton />} navigationData={navigationData} variant={4} />
+                    <Header navigationData={navigationData} variant={4} />
                     <main className="flex flex-col mx-auto -mt-[88px]">{children}</main>
                     <Footer2 />
                 </RtkProvider>

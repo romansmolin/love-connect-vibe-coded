@@ -1,12 +1,23 @@
-export { userApi, useGetUserInfoQuery, useSignInMutation, useSignUpMutation } from './api/client/user.api'
-export { UserCard } from './ui/user-card'
+export {
+    userApi,
+    useGetUserInfoQuery,
+    useGetUserProfileQuery,
+    useSignInMutation,
+    useSignUpMutation,
+} from './api/client/user.api'
 export type {
-    AuthResponse,
-    ErrorResponse,
     Gender,
     LookingFor,
-    PublicUser,
     SignInRequest,
+    SignInResponse,
     SignUpRequest,
+    SignUpResponse,
+    UserGender,
     UserInfoResponse,
-} from './model/user.types'
+    UserPhoto,
+    UserProfile,
+    UserProfileResponse,
+    UserPreview,
+} from './model/types'
+export { UserCard } from './ui/UserCard'
+export { UserPreviewCard } from './ui/UserPreviewCard'

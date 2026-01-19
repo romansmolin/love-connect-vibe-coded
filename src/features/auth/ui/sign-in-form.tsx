@@ -7,14 +7,13 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
+import { useSignInMutation } from '@/entities/user'
 import { Button } from '@/shared/ui/button'
 import { Checkbox } from '@/shared/ui/checkbox'
 import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
 
-import { useSignInMutation } from '@/entities/user'
-
-const SignInForm = ({ thirdPartyAuth }: { thirdPartyAuth: JSX.Element }) => {
+const SignInForm = ({ thirdPartyAuth }: { thirdPartyAuth?: JSX.Element }) => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [rememberMe, setRememberMe] = useState(false)
@@ -29,8 +28,10 @@ const SignInForm = ({ thirdPartyAuth }: { thirdPartyAuth: JSX.Element }) => {
 
         try {
             await signIn({ username, password, rememberMe }).unwrap()
+
             toast.success('Signed in successfully!')
-            router.push('/dashboard')
+
+            router.push('/dashborad')
         } catch (error) {
             const message = (error as { data?: { message?: string } })?.data?.message ?? 'Something went wrong.'
             toast.error(message)

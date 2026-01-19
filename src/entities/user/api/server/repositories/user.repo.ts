@@ -1,58 +1,58 @@
-import { prisma } from '@/shared/lib/prisma'
+import { FOTOCHAT_API_KEY, fotochatHttpClient } from '../config'
 
-const publicUserSelect = {
-    id: true,
-    name: true,
-    email: true,
-    username: true,
+export type PhotoBlock = {
+    num?: number
+    is_main?: number
+    is_private?: number
+    date?: string
+    name?: string
+    url_big?: string
+    url_middle?: string
+    url_small?: string
 }
 
-export const findUserByEmail = async (email: string) => {
-    return prisma.user.findUnique({
-        where: { email },
-        select: { id: true },
-    })
+export type PhotoBlockV2 = {
+    num?: number
+    is_main?: number
+    normal?: string
+    sq_430?: string
+    sq_middle?: string
+    sq_small?: string
 }
 
-export const findUserByUsername = async (username: string) => {
-    return prisma.user.findUnique({
-        where: { username },
-        select: { id: true },
-    })
+export type ProfileBlock = {
+    id?: number
+    pseudo?: string
+    nom_complet?: string
+    prenom?: string
+    age?: number
+    sexe1?: number
+    cherche1?: number
+    zone_name?: string
+    email?: string
+    visite?: string
+    photo?: number
+    photos?: PhotoBlock[]
+    photos_v2?: PhotoBlockV2[]
+    description?: string
 }
 
-export const createUser = async (data: {
-    name: string
-    email: string
-    username: string
-    passwordHash: string
-    gender: 'woman' | 'man' | 'non_binary' | 'other'
-    lookingFor: 'women' | 'man' | 'couple'
-    dateOfBirth: Date
-    city: string
-}) => {
-    return prisma.user.create({
-        data,
-        select: publicUserSelect,
-    })
+export type UserProfileResponse = {
+    connected?: number
+    result?: ProfileBlock
 }
 
-export const getUserForAuth = async (username: string) => {
-    return prisma.user.findUnique({
-        where: { username },
-        select: {
-            id: true,
-            name: true,
-            email: true,
-            username: true,
-            passwordHash: true,
-        },
-    })
-}
+const USER_PROFILE_ENDPOINT = '/index_api/user'
 
-export const getUserById = async (id: string) => {
-    return prisma.user.findUnique({
-        where: { id },
-        select: publicUserSelect,
-    })
+export const userRepo = {
+    getProfile(params: { sessionId: string; userId: number; withPhotos?: boolean }) {
+        return fotochatHttpClient.post<UserProfileResponse>(USER_PROFILE_ENDPOINT, undefined, {
+            params: {
+                session_id: params.sessionId,
+                api_key: FOTOCHAT_API_KEY,
+                id: params.userId,
+                get_picture_430: params.withPhotos ? 1 : undefined,
+            },
+        })
+    },
 }

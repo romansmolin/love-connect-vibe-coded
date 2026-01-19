@@ -1,20 +1,16 @@
-import { JetsetRdvError, fetchJetsetRdv } from '@/shared/api/jetsetrdv/fetch-jetsetrdv'
+import { HttpError } from '@/shared/http-client'
 
-import { SignInInput, SignUpInput } from '../dto/auth.dto'
-import { AuthError } from '../errors/auth.errors'
+import type {
+    Gender,
+    LookingFor,
+    SignInRequest,
+    SignInResponse,
+    SignUpRequest,
+    SignUpResponse,
+} from '../../../model/types'
+import { FOTOCHAT_API_KEY, fotochatHttpClient } from '../config'
 
-const SESSION_MAX_AGE = 60 * 60 * 24 * 7
-const REMEMBER_MAX_AGE = 60 * 60 * 24 * 30
-
-type JetsetLoginResponse = {
-    connected?: number
-    session_id?: string
-    token_login?: string
-    user_id?: number
-    lang_ui?: string
-}
-
-type JetsetSubscribeResponse = {
+type FotochatSignUpResponse = {
     accepted?: number
     error?: string
     session_id?: string
@@ -22,211 +18,121 @@ type JetsetSubscribeResponse = {
     lang_ui?: string
 }
 
-type JetsetProfileResponse = {
+type FotochatSignInResponse = {
     connected?: number
-    result?: {
-        id?: number
-        pseudo?: string
-        prenom?: string
-        email?: string
-    }
+    session_id?: string
+    user_id?: number
+    token_login?: string
+    lang_ui?: string
 }
 
-const mapGenderToSex = (gender: SignUpInput['gender']) => {
+interface SignUpPayload extends SignUpRequest {
+    ipAddress?: string
+    userAgent?: string
+}
+
+interface SignInPayload extends SignInRequest {
+    ipAddress?: string
+    userAgent?: string
+}
+
+const SIGN_UP_ENDPOINT = '/index_api/subscribe'
+const SIGN_IN_ENDPOINT = '/index_api/login'
+
+const mapGenderToApi = (gender: Gender): number => {
     switch (gender) {
         case 'man':
             return 1
         case 'woman':
             return 2
+        case 'non_binary':
+        case 'other':
         default:
             return 3
     }
 }
 
-const mapLookingForToCherche = (lookingFor: SignUpInput['lookingFor']) => {
+const mapLookingForToApi = (lookingFor: LookingFor): number => {
     switch (lookingFor) {
         case 'man':
             return 1
         case 'women':
             return 2
         case 'couple':
-            return 3
         default:
-            return 1
+            return 3
     }
 }
 
-const toBirthday = (value: Date) => value.toISOString().slice(0, 10)
-
-const extractJetsetMessage = (error: JetsetRdvError, fallback: string) => {
-    const data = error.data
-
-    if (
-        typeof error.message === 'string' &&
-        error.message.trim().length > 0 &&
-        error.message !== 'JetSetRDV request failed.'
-    ) {
-        return error.message
-    }
-
-    if (typeof data === 'string' && data.trim().length > 0) {
-        return data
-    }
-
-    if (data && typeof data === 'object') {
-        const candidate =
-            (data as { error?: unknown; message?: unknown }).error ?? (data as { message?: unknown }).message
-        if (typeof candidate === 'string' && candidate.trim().length > 0) {
-            return candidate
-        }
-    }
-
-    return fallback
+const toOptionalNumber = (value: string) => {
+    const parsed = Number(value)
+    return Number.isFinite(parsed) ? parsed : undefined
 }
 
-const toJetsetError = (error: unknown, fallbackMessage: string) => {
-    if (error instanceof JetsetRdvError) {
-        return new AuthError(extractJetsetMessage(error, fallbackMessage), error.status)
-    }
+const cleanParams = (params: Record<string, unknown>) =>
+    Object.fromEntries(
+        Object.entries(params).filter(([, value]) => value !== undefined && value !== null && value !== '')
+    )
 
-    return new AuthError(fallbackMessage, 502)
-}
-
-export const signIn = async (input: SignInInput) => {
-    try {
-        const data = await fetchJetsetRdv<JetsetLoginResponse>({
-            path: '/index_api/login',
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: {
-                login: input.username,
-                pass: input.password,
-            },
+export const authService = {
+    async signUp(payload: SignUpPayload): Promise<SignUpResponse> {
+        const params = cleanParams({
+            login: payload.username,
+            pass: payload.password,
+            mail: payload.email,
+            'fast-part': '1',
+            sex: mapGenderToApi(payload.gender),
+            cherche1: mapLookingForToApi(payload.lookingFor),
+            birthday_date: payload.dateOfBirth,
+            ip_adress: payload.ipAddress ?? '0.0.0.0',
+            city: toOptionalNumber(payload.city),
+            region: undefined,
+            countryObj: undefined,
+            browser: payload.userAgent,
+            lang_ui: 'en',
+            api_key: FOTOCHAT_API_KEY,
         })
 
-        if (data.connected !== 1 || !data.session_id) {
-            throw new AuthError('Invalid username or password.', 401)
-        }
-
-        const maxAge = input.rememberMe ? REMEMBER_MAX_AGE : SESSION_MAX_AGE
-
-        return {
-            user: {
-                id: String(data.user_id ?? data.session_id),
-                username: input.username,
-                sessionId: data.session_id,
-                tokenLogin: data.token_login,
-            },
-            sessionId: data.session_id,
-            userId: data.user_id ? String(data.user_id) : undefined,
-            tokenLogin: data.token_login,
-            maxAge,
-        }
-    } catch (error) {
-        if (error instanceof AuthError) {
-            throw error
-        }
-
-        throw toJetsetError(error, 'Unable to sign in right now.')
-    }
-}
-
-export const signUp = async (input: SignUpInput, context?: { ipAddress?: string }) => {
-    try {
-        const birthday = toBirthday(input.dateOfBirth)
-        const year = input.dateOfBirth.getUTCFullYear()
-        const month = input.dateOfBirth.getUTCMonth() + 1
-        const day = input.dateOfBirth.getUTCDate()
-
-        const data = await fetchJetsetRdv<JetsetSubscribeResponse>({
-            path: '/index_api/subscribe',
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: {
-                login: input.username,
-                pass: input.password,
-                mail: input.email,
-                'fast-part': 1,
-                sex: mapGenderToSex(input.gender),
-                cherche1: mapLookingForToCherche(input.lookingFor),
-                birthday_date: birthday,
-                year,
-                month,
-                day,
-                ip_adress: context?.ipAddress ?? '127.0.0.1',
-                city: 0,
-                region: 0,
-                countryObj: 0,
-                lang_ui: 'en',
-            },
+        const response = await fotochatHttpClient.post<FotochatSignUpResponse>(SIGN_UP_ENDPOINT, undefined, {
+            params,
         })
 
-        console.debug('Registration Resposne: ', data)
-
-        if (data.accepted !== 1 || !data.session_id) {
-            const message = data.error || 'Registration was not accepted.'
-            throw new AuthError(message, 400)
+        if (response.accepted !== 1 || !response.session_id || !response.user_id) {
+            throw new HttpError(response.error ?? 'Registration failed', 400)
         }
 
         return {
-            user: {
-                id: String(data.user_id ?? data.session_id),
-                username: input.username,
-                sessionId: data.session_id,
-            },
-            sessionId: data.session_id,
-            userId: data.user_id ? String(data.user_id) : undefined,
-            maxAge: SESSION_MAX_AGE,
+            accepted: true,
+            sessionId: response.session_id,
+            userId: response.user_id,
+            lang: response.lang_ui,
+            error: response.error,
         }
-    } catch (error) {
-        if (error instanceof AuthError) throw error
+    },
 
-        console.error('Here is the err: ', error)
-
-        throw toJetsetError(error, 'Unable to create account right now.')
-    }
-}
-
-export const getCurrentUser = async (sessionId: string, userId?: string) => {
-    if (!sessionId) {
-        throw new AuthError('Invalid session.', 401)
-    }
-
-    try {
-        if (!userId) {
-            return {
-                id: sessionId,
-                username: 'member',
-                sessionId,
-            }
-        }
-
-        const data = await fetchJetsetRdv<JetsetProfileResponse>({
-            path: '/index_api/user',
-            method: 'POST',
-            query: {
-                session_id: sessionId,
-                id: userId,
-            },
+    async signIn(payload: SignInPayload): Promise<SignInResponse> {
+        const params = cleanParams({
+            login: payload.username,
+            pass: payload.password,
+            rememberme: payload.rememberMe ? '1' : undefined,
+            browser: payload.userAgent,
+            api_key: FOTOCHAT_API_KEY,
         })
 
-        if (data.connected !== 1) {
-            throw new AuthError('Session expired.', 401)
+        const response = await fotochatHttpClient.post<FotochatSignInResponse>(SIGN_IN_ENDPOINT, undefined, {
+            params,
+        })
+
+        if (response.connected !== 1 || !response.session_id || !response.user_id) {
+            throw new HttpError('Invalid credentials', 401)
         }
 
-        const profile = data.result ?? {}
         return {
-            id: String(profile.id ?? userId),
-            username: profile.pseudo ?? 'member',
-            name: profile.prenom ?? profile.pseudo ?? 'Member',
-            email: profile.email ?? undefined,
-            sessionId,
+            connected: true,
+            sessionId: response.session_id,
+            userId: response.user_id,
+            tokenLogin: response.token_login,
+            lang: response.lang_ui,
         }
-    } catch (error) {
-        if (error instanceof AuthError) {
-            throw error
-        }
-
-        throw toJetsetError(error, 'Unable to load user.')
-    }
+    },
 }

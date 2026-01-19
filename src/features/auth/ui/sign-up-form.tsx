@@ -43,7 +43,7 @@ const SignUpForm = ({ thirdPartyAuth }: { thirdPartyAuth?: JSX.Element }) => {
                 city,
             }).unwrap()
             toast.success('Signed up successfully!')
-            router.push('/dashboard')
+            router.push('/dashborad')
         } catch (error) {
             const message = (error as { data?: { message?: string } })?.data?.message ?? 'Something went wrong.'
             toast.error(message)
@@ -53,6 +53,7 @@ const SignUpForm = ({ thirdPartyAuth }: { thirdPartyAuth?: JSX.Element }) => {
 
     return (
         <form
+            className="h-full"
             onSubmit={(event) => {
                 event.preventDefault()
                 handleSignUp()

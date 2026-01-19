@@ -5,7 +5,7 @@ import { Card } from '@/shared/ui/card'
 
 const SignUpFormSection = ({ thirdPartyAuth }: { thirdPartyAuth?: JSX.Element }) => {
     return (
-        <section className="py-12 md:py-16">
+        <section className="py-12 md:py-16 overflow-scroll">
             <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 sm:px-6">
                 <div className="text-center">
                     <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
@@ -16,7 +16,7 @@ const SignUpFormSection = ({ thirdPartyAuth }: { thirdPartyAuth?: JSX.Element })
                     </p>
                 </div>
 
-                <Card className="bg-background/95 shadow-lg">
+                <Card className="bg-background/95 shadow-lg max-h-[50%] overflow-scroll">
                     <SignUpForm thirdPartyAuth={thirdPartyAuth} />
                 </Card>
             </div>

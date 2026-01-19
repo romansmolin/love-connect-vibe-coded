@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-import { GoogleAuthButton, SignInForm, SignUpForm } from '@/features/auth'
+import { SignInForm, SignUpForm } from '@/features/auth'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs'
 
 const AuthForm = () => {
@@ -15,11 +15,11 @@ const AuthForm = () => {
                 </TabsList>
 
                 <TabsContent value="sign-in">
-                    <SignInForm thirdPartyAuth={<GoogleAuthButton />} />
+                    <SignInForm />
                 </TabsContent>
 
                 <TabsContent value="sign-up">
-                    <SignUpForm thirdPartyAuth={<GoogleAuthButton />} />
+                    <SignUpForm />
                 </TabsContent>
             </Tabs>
 

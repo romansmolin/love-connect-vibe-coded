@@ -2,14 +2,10 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { Activity, ArrowRight, Eye, Flame, RefreshCw, Users } from 'lucide-react'
+import { Activity, Eye, Heart, HeartPulse, RefreshCw, Users } from 'lucide-react'
 import Link from 'next/link'
 
-import type {
-    CommunityActivityResponse,
-    RecentVisitorsResponse,
-    TopMembersResponse,
-} from '@/entities/dashboard'
+import type { CommunityActivityResponse, RecentVisitorsResponse, TopMembersResponse } from '@/entities/dashboard'
 import { cn } from '@/shared/lib/utils'
 import { Avatar, AvatarFallback } from '@/shared/ui/avatar'
 import { Badge } from '@/shared/ui/badge'
@@ -92,7 +88,9 @@ const formatAction = (action?: string) => {
         case 'add_tof':
             return 'added new photos'
         case 'birthday':
-            return "is celebrating today 🎉"
+            return 'is celebrating today 🎉'
+        case 'friends':
+            return 'became friends'
         default:
             return 'did something new'
     }
@@ -127,7 +125,7 @@ const ErrorState = ({ message, onRetry }: { message: string; onRetry: () => void
 const ActivitySkeleton = () => (
     <div className="space-y-3">
         {Array.from({ length: 4 }).map((_, index) => (
-            <div className="flex items-center gap-3" key={index}>
+            <div key={index} className="flex items-center gap-3">
                 <Skeleton className="h-10 w-10 rounded-full" />
                 <div className="flex-1 space-y-2">
                     <Skeleton className="h-3 w-1/2" />
@@ -152,32 +150,40 @@ const MemberSkeleton = () => (
 )
 
 const StartMatchingCard = () => (
-    <Card className="bg-gradient-to-r from-primary/90 to-primary text-white">
+    <Card className="bg-primary/5  text-white relative overflow-hidden">
         <CardHeader className="flex flex-row items-center justify-between">
             <div>
-                <CardTitle className="text-2xl font-bold">Ready to meet someone new?</CardTitle>
-                <CardDescription className="text-white/80">
+                <CardTitle className="text-4xl font-bold font-pacifico tracking-wider">
+                    Ready to meet someone new?
+                </CardTitle>
+                <CardDescription className="text-primary text-lg mt-2">
                     Start matching to connect with the best profiles for you.
                 </CardDescription>
             </div>
-            <Flame className="h-10 w-10" />
         </CardHeader>
+
         <CardContent>
-            <Button asChild className="bg-white text-primary hover:bg-white/90">
+            <Button asChild className="bg-white text-primary hover:bg-white/90" size={'lg'}>
                 <Link href="/matching">
+                    <HeartPulse className="size-5" />
                     Start matching
-                    <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
             </Button>
         </CardContent>
+
+        <Heart className="absolute text-primary/10 md:text-primary/50 size-32 -right-10 top-10" />
+        <Heart className="absolute text-primary/10 md:text-primary/50 size-26 right-25 top-0" />
+        <Heart className="absolute text-primary/10 md:text-primary/50 size-26 right-55 top-10" />
+        <Heart className="absolute text-primary/10 md:text-primary/50 size-26 -bottom-10 right-35" />
     </Card>
 )
 
 const ActivityCard = () => {
-    const { data, loading, error, refetch } = useDashboardFetch<CommunityActivityResponse>('/api/dashboard/activity')
+    const { data, loading, error, refetch } =
+        useDashboardFetch<CommunityActivityResponse>('/api/dashboard/activity')
 
     return (
-        <Card>
+        <Card className="bg-primary/5">
             <CardHeader>
                 <div className="flex items-center justify-between">
                     <div>
@@ -193,6 +199,7 @@ const ActivityCard = () => {
                     </Button>
                 </div>
             </CardHeader>
+
             <CardContent className="space-y-4">
                 {loading ? (
                     <ActivitySkeleton />
@@ -203,7 +210,10 @@ const ActivityCard = () => {
                 ) : (
                     <div className="space-y-3">
                         {data.items.map((item) => (
-                            <div className="flex items-center gap-3 rounded-lg border border-border/60 p-3" key={item.id}>
+                            <div
+                                key={item.id}
+                                className="flex items-center gap-3 rounded-lg border border-border/60 p-3"
+                            >
                                 <Avatar>
                                     <AvatarFallback>{initials(item.username)}</AvatarFallback>
                                 </Avatar>
@@ -212,7 +222,9 @@ const ActivityCard = () => {
                                         <span>{item.username}</span>
                                         {item.gender ? <Badge variant="outline">{item.gender}</Badge> : null}
                                         {item.location ? (
-                                            <span className="text-xs text-muted-foreground">· {item.location}</span>
+                                            <span className="text-xs text-muted-foreground">
+                                                · {item.location}
+                                            </span>
                                         ) : null}
                                     </div>
                                     <p className="text-sm text-muted-foreground">{formatAction(item.action)}</p>
@@ -235,7 +247,7 @@ const TopMembersCard = () => {
     const list = data?.items ?? []
 
     return (
-        <Card>
+        <Card className="bg-primary/5">
             <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-xl">
                     <Users className="h-5 w-5 text-primary" />
@@ -245,11 +257,11 @@ const TopMembersCard = () => {
             </CardHeader>
             <CardContent className="space-y-4">
                 <Tabs className="w-full" value={tab} onValueChange={(value) => setTab(value as 'men' | 'women')}>
-                    <TabsList className="grid w-full grid-cols-2">
+                    <TabsList className="w-full">
                         <TabsTrigger value="men">Men</TabsTrigger>
                         <TabsTrigger value="women">Women</TabsTrigger>
                     </TabsList>
-                    <TabsContent value={tab} className="space-y-3 pt-4">
+                    <TabsContent className="space-y-3 pt-4" value={tab}>
                         {loading ? (
                             Array.from({ length: 4 }).map((_, index) => <MemberSkeleton key={index} />)
                         ) : error ? (
@@ -259,8 +271,8 @@ const TopMembersCard = () => {
                         ) : (
                             list.map((member) => (
                                 <div
-                                    className="flex items-center justify-between rounded-lg border border-border/70 p-3"
                                     key={member.id}
+                                    className="flex items-center justify-between rounded-lg border border-border/70 p-3"
                                 >
                                     <div className="flex items-center gap-3">
                                         <Avatar>
@@ -270,7 +282,7 @@ const TopMembersCard = () => {
                                             <div className="flex items-center gap-2 text-sm font-semibold">
                                                 <span>{member.username}</span>
                                                 {member.gender ? (
-                                                    <Badge variant="outline" className="uppercase">
+                                                    <Badge className="uppercase" variant="outline">
                                                         {member.gender}
                                                     </Badge>
                                                 ) : null}
@@ -281,8 +293,8 @@ const TopMembersCard = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <Badge variant="secondary">
-                                        {member.rating ? `${member.rating.toFixed(1)} / 10` : 'New'}
+                                    <Badge className="border-primary text-primary" variant="outline">
+                                        {member.rating}
                                     </Badge>
                                 </div>
                             ))
@@ -295,11 +307,13 @@ const TopMembersCard = () => {
 }
 
 const RecentVisitorsCard = () => {
-    const { data, loading, error, refetch } = useDashboardFetch<RecentVisitorsResponse>('/api/dashboard/recent-visitors')
+    const { data, loading, error, refetch } = useDashboardFetch<RecentVisitorsResponse>(
+        '/api/dashboard/recent-visitors'
+    )
     const visitors = data?.items ?? []
 
     return (
-        <Card>
+        <Card className="bg-primary/5">
             <CardHeader>
                 <div className="flex items-center justify-between">
                     <div>
@@ -325,11 +339,11 @@ const RecentVisitorsCard = () => {
                 ) : (
                     visitors.map((visitor) => (
                         <div
+                            key={visitor.id}
                             className={cn(
                                 'flex items-center justify-between rounded-lg border border-border/60 p-3',
                                 'bg-muted/30'
                             )}
-                            key={visitor.id}
                         >
                             <div className="flex items-center gap-3">
                                 <Avatar>
@@ -339,7 +353,7 @@ const RecentVisitorsCard = () => {
                                     <div className="flex items-center gap-2 text-sm font-semibold">
                                         <span>{visitor.username}</span>
                                         {visitor.gender ? (
-                                            <Badge variant="outline" className="uppercase">
+                                            <Badge className="uppercase" variant="outline">
                                                 {visitor.gender}
                                             </Badge>
                                         ) : null}
@@ -350,7 +364,9 @@ const RecentVisitorsCard = () => {
                                     </div>
                                 </div>
                             </div>
-                            <Badge variant="secondary">{visitor.visitedAt ? formatDate(visitor.visitedAt) : 'Recently'}</Badge>
+                            <Badge variant="secondary">
+                                {visitor.visitedAt ? formatDate(visitor.visitedAt) : 'Recently'}
+                            </Badge>
                         </div>
                     ))
                 )}
@@ -366,10 +382,10 @@ export const DashboardPage = () => {
             <div className="grid gap-6 xl:grid-cols-[2fr_1fr]">
                 <div className="space-y-6">
                     <ActivityCard />
+                    <RecentVisitorsCard />
                 </div>
                 <div className="space-y-6">
                     <TopMembersCard />
-                    <RecentVisitorsCard />
                 </div>
             </div>
         </div>

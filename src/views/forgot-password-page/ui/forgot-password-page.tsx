@@ -1,7 +1,5 @@
 'use client'
 
-import React from 'react'
-
 import { ForgotPasswordForm } from '@/features/auth'
 
 export const ForgotPasswordPage = () => {

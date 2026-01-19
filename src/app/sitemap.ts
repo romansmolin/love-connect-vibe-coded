@@ -1,6 +1,5 @@
-import type { MetadataRoute } from 'next'
-
 import { allPosts } from 'content-collections'
+import type { MetadataRoute } from 'next'
 
 const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://zapshipr.com').replace(/\/$/, '')
 
@@ -23,4 +22,3 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
     return [landingPage, ...blogPages]
 }
-

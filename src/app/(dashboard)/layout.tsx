@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 
-import { Be_Vietnam_Pro } from 'next/font/google'
+import { Be_Vietnam_Pro, Pacifico } from 'next/font/google'
 import { cookies } from 'next/headers'
 import { Toaster } from 'sonner'
 
@@ -15,11 +15,16 @@ import { SubscribingFlowProvider } from '../_providers/subscribing-flow-provider
 import { ThemeProvider } from '../_providers/theme-provider'
 import '../globals.css'
 
-// eslint-disable-next-line unused-imports/no-unused-vars
 const beVietnamPro = Be_Vietnam_Pro({
     variable: '--font-vietnam-pro',
     subsets: ['latin'],
     weight: ['400', '500'],
+})
+
+const pacifico = Pacifico({
+    variable: '--pacifico',
+    subsets: ['latin'],
+    weight: ['400'],
 })
 
 export default async function RootLayout({
@@ -32,11 +37,16 @@ export default async function RootLayout({
 
     return (
         <html suppressHydrationWarning lang="en">
-            <body className={`antialiased bg-card `}>
+            <body className={`${beVietnamPro.variable} ${pacifico.variable} antialiased bg-card`}>
                 <GoogleAnalytics measurementId="G-37FFNP35CS" />
                 <RtkProvider>
                     <SubscribingFlowProvider>
-                        <ThemeProvider disableTransitionOnChange enableSystem attribute="class" defaultTheme="light">
+                        <ThemeProvider
+                            disableTransitionOnChange
+                            enableSystem
+                            attribute="class"
+                            defaultTheme="light"
+                        >
                             <SidebarProvider defaultOpen={isSidebarOpened} open={isSidebarOpened}>
                                 <AppSidebar />
                                 <SidebarInset className="flex-1 flex flex-col max-w-[100vw]">
