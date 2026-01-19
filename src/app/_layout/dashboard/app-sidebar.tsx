@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import { Heart, LayoutDashboard } from 'lucide-react'
+import { Heart, LayoutDashboard, MessageCircle, UserRound } from 'lucide-react'
 
 import { UserCard } from '@/entities/user'
 import { cn } from '@/shared/lib/utils'
@@ -36,6 +36,16 @@ const AppSidebar = () => {
                     title: 'Matches',
                     icon: Heart,
                     url: '/matches',
+                },
+                {
+                    title: 'Messages',
+                    icon: MessageCircle,
+                    url: '/chat',
+                },
+                {
+                    title: 'My Profile',
+                    icon: UserRound,
+                    url: '/profile',
                 },
             ],
         },

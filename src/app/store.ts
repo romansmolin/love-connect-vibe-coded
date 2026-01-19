@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 
+import { chatApi } from '@/entities/chat'
 import { emailApi } from '@/entities/email'
 import { matchApi } from '@/entities/match'
 import { subscriptionApi } from '@/entities/subscription'
@@ -7,6 +8,7 @@ import { userApi } from '@/entities/user'
 
 export const store = configureStore({
     reducer: {
+        [chatApi.reducerPath]: chatApi.reducer,
         [emailApi.reducerPath]: emailApi.reducer,
         [matchApi.reducerPath]: matchApi.reducer,
         [subscriptionApi.reducerPath]: subscriptionApi.reducer,
@@ -14,6 +16,7 @@ export const store = configureStore({
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
+            chatApi.middleware,
             emailApi.middleware,
             matchApi.middleware,
             subscriptionApi.middleware,
