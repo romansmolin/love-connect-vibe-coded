@@ -36,7 +36,9 @@ export type SearchResponse = {
 export type MatchListApiResponse =
     | {
           connected?: number
-          result?: MembreBlock[]
+          result?: MembreBlock[] | { nb_total?: number; tab_profils?: MembreBlock[] }
+          tab_profils?: MembreBlock[]
+          nb_total?: number
       }
     | MembreBlock[]
 

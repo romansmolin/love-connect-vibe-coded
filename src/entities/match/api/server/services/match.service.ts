@@ -55,7 +55,35 @@ const extractMembers = (payload: Awaited<ReturnType<typeof matchRepo.listMatches
         return payload
     }
 
-    return payload.result ?? []
+    if (Array.isArray(payload.tab_profils)) {
+        return payload.tab_profils
+    }
+
+    if (Array.isArray(payload.result)) {
+        return payload.result
+    }
+
+    if (payload.result && typeof payload.result === 'object' && Array.isArray(payload.result.tab_profils)) {
+        return payload.result.tab_profils
+    }
+
+    return []
+}
+
+const extractTotal = (payload: Awaited<ReturnType<typeof matchRepo.listMatches>>): number | undefined => {
+    if (Array.isArray(payload)) {
+        return undefined
+    }
+
+    if (typeof payload.nb_total === 'number') {
+        return payload.nb_total
+    }
+
+    if (payload.result && typeof payload.result === 'object' && typeof payload.result.nb_total === 'number') {
+        return payload.result.nb_total
+    }
+
+    return undefined
 }
 
 export const matchService = {
@@ -83,9 +111,11 @@ export const matchService = {
         const members = extractMembers(response)
         const items = members.map(mapMember)
 
+        const total = extractTotal(response) ?? items.length
+
         return {
             items,
-            total: items.length,
+            total,
         }
     },
     async like(sessionId: string, userId: number): Promise<MatchActionResponse> {
