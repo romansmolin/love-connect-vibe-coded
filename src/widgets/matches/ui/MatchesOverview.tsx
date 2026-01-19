@@ -1,6 +1,6 @@
 'use client'
 
-import { RefreshCw } from 'lucide-react'
+import { MessageCircle, RefreshCw, Sparkles, Users } from 'lucide-react'
 
 import { UserPreviewCard } from '@/entities/user'
 import { useMatchesList } from '@/features/matches'
@@ -20,11 +20,35 @@ const resolveErrorMessage = (error: unknown) => {
     return 'Unable to load matches.'
 }
 
-const StatCard = ({ label, value, isLoading }: { label: string; value: number; isLoading: boolean }) => (
-    <Card>
-        <CardContent className="space-y-1 p-4">
-            <p className="text-xs font-medium uppercase text-muted-foreground">{label}</p>
-            {isLoading ? <Skeleton className="h-8 w-16" /> : <p className="text-2xl font-semibold">{value}</p>}
+const StatCard = ({
+    label,
+    value,
+    isLoading,
+    icon: Icon,
+    hint,
+    className,
+}: {
+    label: string
+    value: string
+    isLoading: boolean
+    icon: typeof Users
+    hint?: string
+    className?: string
+}) => (
+    <Card className={className}>
+        <CardContent className="flex items-center justify-between gap-4 p-5">
+            <div className="space-y-1">
+                <p className="text-xs font-semibold uppercase text-muted-foreground tracking-[0.2em]">{label}</p>
+                {isLoading ? (
+                    <Skeleton className="h-9 w-20" />
+                ) : (
+                    <p className="text-3xl font-semibold text-foreground">{value}</p>
+                )}
+                {hint ? <p className="text-xs text-muted-foreground">{hint}</p> : null}
+            </div>
+            <div className="flex h-11 w-11 items-center justify-center rounded-full border border-primary/20 bg-primary/10 text-primary">
+                <Icon className="h-5 w-5" />
+            </div>
         </CardContent>
     </Card>
 )
@@ -51,13 +75,34 @@ export const MatchesOverview = () => {
     return (
         <div className="space-y-6">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                <StatCard isLoading={isLoading} label="Total matches" value={total} />
+                <StatCard
+                    className="sm:col-span-2"
+                    hint="All mutual likes."
+                    icon={Users}
+                    isLoading={isLoading}
+                    label="Total matches"
+                    value={String(total)}
+                />
+                <StatCard
+                    hint="Not available from API."
+                    icon={Sparkles}
+                    isLoading={isLoading}
+                    label="New matches"
+                    value="—"
+                />
+                <StatCard
+                    hint="Not available from API."
+                    icon={MessageCircle}
+                    isLoading={isLoading}
+                    label="Active chats"
+                    value="—"
+                />
             </div>
 
-            <Card>
+            <Card className="border-primary/10">
                 <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <CardTitle>Matches</CardTitle>
+                        <CardTitle className="text-xl">Matches</CardTitle>
                         <CardDescription>People who liked you back.</CardDescription>
                     </div>
                     <Button size="sm" variant="outline" onClick={refetch}>
