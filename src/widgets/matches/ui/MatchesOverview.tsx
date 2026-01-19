@@ -1,6 +1,6 @@
 'use client'
 
-import { MessageCircle, RefreshCw, Sparkles, Users } from 'lucide-react'
+import { RefreshCw, Users } from 'lucide-react'
 
 import { UserPreviewCard } from '@/entities/user'
 import { useMatchesList } from '@/features/matches'
@@ -76,14 +76,14 @@ export const MatchesOverview = () => {
         <div className="space-y-6">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <StatCard
-                    className="sm:col-span-2"
+                    className="sm:col-span-2 lg:col-span-3 bg-primary/5"
                     hint="All mutual likes."
                     icon={Users}
                     isLoading={isLoading}
                     label="Total matches"
                     value={String(total)}
                 />
-                <StatCard
+                {/*<StatCard
                     hint="Not available from API."
                     icon={Sparkles}
                     isLoading={isLoading}
@@ -96,10 +96,10 @@ export const MatchesOverview = () => {
                     isLoading={isLoading}
                     label="Active chats"
                     value="—"
-                />
+                />*/}
             </div>
 
-            <Card className="border-primary/10">
+            <Card className="bg-primary/5">
                 <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <CardTitle className="text-xl">Matches</CardTitle>

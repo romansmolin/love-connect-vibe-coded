@@ -8,7 +8,7 @@ import { MatchesOverview } from '@/widgets/matches'
 export const MatchesPage = () => {
     return (
         <div className="mx-auto w-full max-w-6xl space-y-6">
-            <Card className="border-primary/10">
+            <Card className="border-primary/10 bg-primary/5">
                 <CardContent className="flex flex-col gap-6 p-6 md:flex-row md:items-center md:justify-between">
                     <div className="space-y-3">
                         <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
