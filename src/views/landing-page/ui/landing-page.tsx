@@ -16,10 +16,18 @@ const LandingPage = () => {
             <HeroSection variant={4} />
             <BeforeAfter variant={2} />
             <People />
-            <Features variant={2} />
-            <Features variant={4} />
+            <div className="px-4">
+                <Features variant={2} />
+            </div>
+            <div className="px-4">
+                <Features variant={4} />
+            </div>
+
             <SignUpFormSection />
-            <Features variant={5} />
+
+            <div className="px-4">
+                <Features variant={5} />
+            </div>
             <Testimonial variant={2} />
             <Faq2 />
         </>

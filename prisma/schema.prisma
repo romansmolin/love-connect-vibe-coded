@@ -21,6 +21,44 @@ enum Gender {
   other
 }
 
+enum PaymentTokenStatus {
+  CREATED
+  PENDING
+  SUCCESSFUL
+  FAILED
+  DECLINED
+  EXPIRED
+  ERROR
+}
+
+enum GiftStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+enum GiftTransactionStatus {
+  CREATED
+  PAYMENT_PENDING
+  PAYMENT_FAILED
+  AVAILABLE
+  DELIVERED
+  CANCELLED
+}
+
+enum CreditTransactionStatus {
+  CREATED
+  PENDING
+  SUCCESSFUL
+  FAILED
+  CANCELLED
+}
+
+enum CreditTransactionType {
+  PURCHASE
+  SPEND
+  ADJUSTMENT
+}
+
 model User {
   id           String     @id @default(cuid())
   name         String
@@ -36,4 +74,96 @@ model User {
 
   @@index([email])
   @@index([username])
+}
+
+model PaymentToken {
+  id          String              @id @default(cuid())
+  token       String              @unique
+  userId      String
+  itemType    String
+  description String?
+  amountCents Int
+  currency    String              @default("EUR")
+  status      PaymentTokenStatus  @default(CREATED)
+  testMode    Boolean             @default(true)
+  gatewayUid  String?
+  rawPayload  Json?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  giftTransactions GiftTransaction[]
+  creditTransactions CreditTransaction[]
+
+  @@index([userId])
+}
+
+model Gift {
+  id          String     @id @default(cuid())
+  name        String
+  emoji       String
+  priceCents  Int
+  currency    String     @default("EUR")
+  status      GiftStatus @default(ACTIVE)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  transactions GiftTransaction[]
+}
+
+model GiftTransaction {
+  id             String                  @id @default(cuid())
+  giftId         String
+  paymentTokenId String
+  senderId       String
+  recipientId    String?
+  matchId        String?
+  status         GiftTransactionStatus   @default(CREATED)
+  amountCents    Int
+  currency       String                  @default("EUR")
+  gatewayUid     String?
+  rawPayload     Json?
+  createdAt      DateTime                @default(now())
+  deliveredAt    DateTime?
+
+  gift           Gift                    @relation(fields: [giftId], references: [id])
+  paymentToken   PaymentToken            @relation(fields: [paymentTokenId], references: [id])
+
+  @@index([senderId])
+  @@index([recipientId])
+  @@index([matchId])
+  @@index([paymentTokenId])
+}
+
+model CreditWallet {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  balance   Int      @default(0)
+  currency  String   @default("EUR")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  transactions CreditTransaction[]
+
+  @@index([userId])
+}
+
+model CreditTransaction {
+  id             String                  @id @default(cuid())
+  walletId       String
+  userId         String
+  paymentTokenId String?
+  type           CreditTransactionType
+  status         CreditTransactionStatus @default(CREATED)
+  credits        Int
+  amountCents    Int
+  currency       String                  @default("EUR")
+  description    String?
+  createdAt      DateTime                @default(now())
+  updatedAt      DateTime                @updatedAt
+
+  wallet       CreditWallet  @relation(fields: [walletId], references: [id])
+  paymentToken PaymentToken? @relation(fields: [paymentTokenId], references: [id])
+
+  @@index([userId])
+  @@index([paymentTokenId])
 }

@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import { Heart, LayoutDashboard, MessageCircle, UserRound } from 'lucide-react'
+import { Gift, Heart, LayoutDashboard, MessageCircle, Settings, UserRound, Wallet } from 'lucide-react'
 
 import { UserCard } from '@/entities/user'
 import { cn } from '@/shared/lib/utils'
@@ -30,7 +30,7 @@ const AppSidebar = () => {
                 {
                     title: 'Dashboard',
                     icon: LayoutDashboard,
-                    url: '/dashboard',
+                    url: '/dashborad',
                 },
                 {
                     title: 'Matches',
@@ -43,9 +43,24 @@ const AppSidebar = () => {
                     url: '/chat',
                 },
                 {
+                    title: 'Buy Gifts',
+                    icon: Gift,
+                    url: '/gifts',
+                },
+                {
+                    title: 'Wallet',
+                    icon: Wallet,
+                    url: '/wallet',
+                },
+                {
                     title: 'My Profile',
                     icon: UserRound,
                     url: '/profile',
+                },
+                {
+                    title: 'Settings',
+                    icon: Settings,
+                    url: '/settings',
                 },
             ],
         },
@@ -57,7 +72,7 @@ const AppSidebar = () => {
                 <div className="flex items-center gap-3 pt-2">
                     <Logo className="size-10 md:size-10" />
 
-                    {!isCollapsed && <h2 className="text-lg font-semibold">OrbitReach</h2>}
+                    {!isCollapsed && <h2 className="text-lg font-semibold">LoveConnect</h2>}
                 </div>
             </SidebarHeader>
 

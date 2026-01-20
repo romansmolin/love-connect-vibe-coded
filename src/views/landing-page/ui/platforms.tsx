@@ -16,11 +16,8 @@ const peopleImages = [
 
 export const People = () => {
     return (
-        <section
-            className="w-full max-w-screen-xl mx-auto flex flex-col gap-10 px-4 py-10 md:py-14"
-            id="how-it-works"
-        >
-            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+        <section className="w-full mx-auto flex flex-col gap-10 py-10 md:py-14" id="how-it-works">
+            <div className="flex flex-col mx-auto gap-3 md:flex-row md:items-end md:justify-between max-w-screen-xl">
                 <div>
                     <p className="text-sm font-semibold uppercase tracking-[0.14em] text-primary">
                         How LoveConnect Works

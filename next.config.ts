@@ -4,6 +4,9 @@ import type { NextConfig } from 'next'
 const nextConfig: NextConfig = {
     compress: true,
     poweredByHeader: false,
+    turbopack: {
+        root: __dirname,
+    },
     async headers() {
         return [
             {
@@ -35,6 +38,7 @@ const nextConfig: NextConfig = {
             'p16-sign-va.tiktokcdn.com',
             'images.unsplash.com',
             'cdn.shadcnstudio.com',
+            'deifkwefumgah.cloudfront.net',
         ],
     },
 }

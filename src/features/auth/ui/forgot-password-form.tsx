@@ -5,13 +5,14 @@ import { type FormEvent, useState } from 'react'
 import { Mail } from 'lucide-react'
 import { toast } from 'sonner'
 
+import { useRequestPasswordResetMutation } from '@/entities/user'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
 
 const ForgotPasswordForm = () => {
     const [email, setEmail] = useState('')
-    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [requestReset, { isLoading }] = useRequestPasswordResetMutation()
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
@@ -21,14 +22,18 @@ const ForgotPasswordForm = () => {
             return
         }
 
-        setIsSubmitting(true)
-
         try {
+            await requestReset({ emailOrUsername: email.trim() }).unwrap()
             toast.success('If this email exists, a reset link will be sent shortly.')
-            setEmail('')
-        } finally {
-            setIsSubmitting(false)
+        } catch (error: unknown) {
+            const message =
+                (error as { data?: { message?: string } })?.data?.message ??
+                (error as Error)?.message ??
+                'Unable to send reset email.'
+            toast.error(message)
         }
+
+        setEmail('')
     }
 
     return (
@@ -38,7 +43,7 @@ const ForgotPasswordForm = () => {
                 <Input
                     required
                     autoComplete="email"
-                    disabled={isSubmitting}
+                    disabled={isLoading}
                     id="email"
                     name="email"
                     placeholder="you@example.com"
@@ -48,7 +53,7 @@ const ForgotPasswordForm = () => {
                 />
             </div>
 
-            <Button className="w-full" disabled={isSubmitting} type="submit">
+            <Button className="w-full" disabled={isLoading} type="submit">
                 <Mail className="mr-2 h-4 w-4" />
                 Send reset link
             </Button>

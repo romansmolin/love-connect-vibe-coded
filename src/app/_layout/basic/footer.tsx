@@ -12,7 +12,7 @@ export const FooterSection = () => {
                     <div className="col-span-full xl:col-span-2">
                         <Link className="flex font-bold items-center text-primary p-2 gap-2" href="#">
                             <Logo className="size-12" />
-                            <span className="text-xl font-bold">OrbitReach</span>
+                            <span className="text-xl font-bold">LoveConnect</span>
                         </Link>
                     </div>
 
@@ -44,7 +44,7 @@ export const FooterSection = () => {
                                 FAQ
                             </Link>
                         </div>
-                        {/* 
+                        {/*
                         <div>
                             <Link className="opacity-60 hover:opacity-100" href="#">
                                 Feedback
@@ -56,7 +56,7 @@ export const FooterSection = () => {
                 <Separator className="my-6" />
                 <section className="">
                     <h3 className="">
-                        &copy; 2025 Designed and developed by
+                        &copy; 2026 Designed and developed by
                         <Link
                             className="text-primary transition-all border-primary hover:border-b-2 ml-1"
                             href="#"

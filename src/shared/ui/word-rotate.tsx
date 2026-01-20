@@ -11,6 +11,7 @@ interface WordRotateProps {
     duration?: number
     motionProps?: MotionProps
     className?: string
+    containerClassName?: string
 }
 
 export function WordRotate({
@@ -23,6 +24,7 @@ export function WordRotate({
         transition: { duration: 0.25, ease: 'easeOut' },
     },
     className,
+    containerClassName,
 }: WordRotateProps) {
     const [index, setIndex] = useState(0)
 
@@ -36,7 +38,7 @@ export function WordRotate({
     }, [words, duration])
 
     return (
-        <div className="overflow-hidden py-2">
+        <div className={cn('overflow-hidden py-2', containerClassName)}>
             <AnimatePresence mode="wait">
                 <motion.h1 key={words[index]} className={cn(className)} {...motionProps}>
                     {words[index]}

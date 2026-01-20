@@ -40,3 +40,16 @@ export const profileRoute = async (request: NextRequest) => {
         return handleError(error)
     }
 }
+
+export const updateProfileRoute = async (request: NextRequest) => {
+    if (request.method !== 'PATCH') {
+        return NextResponse.json({ message: 'Method Not Allowed' }, { status: 405 })
+    }
+
+    try {
+        const response = await userController.updateProfile(request)
+        return NextResponse.json(response)
+    } catch (error) {
+        return handleError(error)
+    }
+}

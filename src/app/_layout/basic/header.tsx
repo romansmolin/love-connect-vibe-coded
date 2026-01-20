@@ -2,11 +2,12 @@
 
 import React, { ReactNode, useState } from 'react'
 
-import { Menu, PlaneIcon, X } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import Link from 'next/link'
 
 import { Button } from '@/shared/ui/button'
 import { ModeSwitcher } from '@/shared/ui/mode-switcher'
+import { Logo } from '@/widgets/header/ui/logo'
 
 interface HeaderProps {
     isAuth?: boolean
@@ -22,11 +23,8 @@ const Header = ({ isAuth, children, showModeToggle = true }: HeaderProps) => {
             <header className="flex flex-col px-4 py-2 backdrop-blur-3xl mx-auto border-1 border-primary rounded-xl shadow-inner bg-opacity-15 w-[90%] xl:w-[75%] top-5 sticky z-40 justify-between items-center p-2 bg-card">
                 <div className="w-full flex justify-between items-center h-10 md:h-auto">
                     <Link className="text-primary p-1 md:p-2 flex gap-3 items-center" href={'/'}>
-                        {/* <Logo className="size-10 md:size-12" /> */}
-                        <div className="rounded-md p-1/2 bg-primary">
-                            <PlaneIcon className="size-10 md:size-12 fill-white" />
-                        </div>
-                        <span className="text-md md:text-xl font-bold italic">OrbitReach</span>
+                        <Logo className="h-10 w-10 md:h-12 md:w-12" />
+                        <span className="text-md md:text-xl font-bold italic">LoveConnect</span>
                     </Link>
 
                     {/* Navigation for large screens */}

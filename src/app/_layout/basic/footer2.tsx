@@ -1,5 +1,7 @@
 import Link from 'next/link'
 
+import { FooterImg } from '@/shared/ui/footer-img'
+
 import Logo from './logo'
 
 interface MenuItem {
@@ -29,11 +31,11 @@ interface Footer2Props {
 const Footer2 = ({
     logo = {
         src: '',
-        alt: 'OrbitReach logo',
-        title: 'OrbitReach',
+        alt: 'LoveConnect logo',
+        title: 'LoveConnect',
         url: '/',
     },
-    tagline = 'Publish everywhere. Stay in orbit.',
+    tagline = '',
     menuItems = [
         {
             title: 'Product',
@@ -49,9 +51,9 @@ const Footer2 = ({
             title: 'Company',
             links: [
                 { text: 'About', url: '/#' },
-                { text: 'Blog', url: '/blog' },
+                // { text: 'Blog', url: '/blog' },
                 { text: 'Contact', url: '/contact-us' },
-                { text: 'Careers', url: '/#' },
+                // { text: 'Careers', url: '/#' },
             ],
         },
         {
@@ -59,19 +61,11 @@ const Footer2 = ({
             links: [
                 { text: 'Help Center', url: '/contact-us' },
                 { text: 'FAQ', url: '#faq' },
-                { text: 'Status', url: '/#' },
-            ],
-        },
-        {
-            title: 'Social',
-            links: [
-                { text: 'Twitter', url: '/#' },
-                { text: 'Instagram', url: '/#' },
-                { text: 'LinkedIn', url: '/#' },
+                // { text: 'Status', url: '/#' },
             ],
         },
     ],
-    copyright = '© 2025 OrbitReach. All rights reserved.',
+    copyright = '© 2026 LoveConnect. All rights reserved.',
     bottomLinks = [
         { text: 'Terms and Conditions', url: '/terms-of-conditions' },
         { text: 'Privacy Policy', url: '/privacy' },
@@ -103,6 +97,11 @@ const Footer2 = ({
                                 </ul>
                             </div>
                         ))}
+                    </div>
+                    <div className="mt-10">
+                        <div className="mx-auto w-full max-w-5xl overflow-hidden rounded-2xl border border-primary/10 bg-background/40 px-3 py-2">
+                            <FooterImg className="h-10 w-full" />
+                        </div>
                     </div>
                     <div className="mt-12 flex flex-col gap-4 border-t border-border pt-6 text-sm font-medium text-muted-foreground md:flex-row md:items-center md:justify-between">
                         <p>{copyright}</p>

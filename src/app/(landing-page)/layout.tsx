@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import { Montserrat, Pacifico } from 'next/font/google'
+import Link from 'next/link'
 
+import { Button } from '@/shared/ui/button'
 import { Header } from '@/widgets/header'
 
 import Footer2 from '../_layout/basic/footer2'
@@ -30,6 +32,17 @@ const navigationData = [
     { title: 'Pricing', href: '#pricing' },
     { title: 'FAQ', href: '#faq' },
 ]
+
+const headerActions = (
+    <>
+        <Button asChild className="px-5" variant="ghost">
+            <Link href="/auth?tab=sign-in">Sign in</Link>
+        </Button>
+        <Button asChild className="px-5">
+            <Link href="/auth?tab=sign-up">Sign up</Link>
+        </Button>
+    </>
+)
 
 export const metadata: Metadata = {
     title: 'LoveConnect | Find Your Perfect Match',
@@ -76,7 +89,7 @@ export default function RootLayout({
         >
             <body className="antialiased overflow-x-hidden">
                 <RtkProvider>
-                    <Header navigationData={navigationData} variant={4} />
+                    <Header actions={headerActions} navigationData={navigationData} variant={4} />
                     <main className="flex flex-col mx-auto -mt-[88px]">{children}</main>
                     <Footer2 />
                 </RtkProvider>

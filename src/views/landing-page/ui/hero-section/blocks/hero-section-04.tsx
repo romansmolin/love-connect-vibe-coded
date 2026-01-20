@@ -1,6 +1,7 @@
 'use client'
 
 import { ArrowRight, Sparkles, Zap } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 
 import { Badge } from '@/shared/ui/badge'
@@ -9,6 +10,29 @@ import { RetroGrid } from '@/shared/ui/retro-grid'
 import { WordRotate } from '@/shared/ui/word-rotate'
 
 export const HeroSection04 = () => {
+    const avatars = [
+        {
+            src: 'https://deifkwefumgah.cloudfront.net/shadcnblocks/block/guri3/avatar1.png',
+            alt: 'Avatar 1',
+        },
+        {
+            src: 'https://deifkwefumgah.cloudfront.net/shadcnblocks/block/guri3/avatar2.png',
+            alt: 'Avatar 2',
+        },
+        {
+            src: 'https://deifkwefumgah.cloudfront.net/shadcnblocks/block/guri3/avatar3.png',
+            alt: 'Avatar 3',
+        },
+        {
+            src: 'https://deifkwefumgah.cloudfront.net/shadcnblocks/block/guri3/avatar4.png',
+            alt: 'Avatar 4',
+        },
+        {
+            src: 'https://deifkwefumgah.cloudfront.net/shadcnblocks/block/guri3/avatar5.png',
+            alt: 'Avatar 5',
+        },
+    ]
+
     return (
         <section className="relative flex min-h-[calc(100dvh-4rem)] flex-col overflow-hidden">
             <RetroGrid
@@ -33,8 +57,9 @@ export const HeroSection04 = () => {
                         <span className="block text-foreground">Find Love</span>
                         <span className="block">
                             <WordRotate
-                                className="bg-gradient-to-r w-fit text-primary font-pacifico"
+                                className="bg-gradient-to-r w-fit text-primary font-pacifico mx-auto lg:mx-0 m-0"
                                 duration={2500}
+                                containerClassName={'flex justify-center sm:block'}
                                 words={['Smarter', 'Faster', 'Better', 'Easier']}
                             />
                             <span className="text-foreground">Than Ever</span>
@@ -71,10 +96,14 @@ export const HeroSection04 = () => {
 
                     <div className="flex items-center gap-4 pt-4">
                         <div className="flex -space-x-3">
-                            {[1, 2, 3, 4, 5].map((i) => (
-                                <div
-                                    key={i}
-                                    className="h-10 w-10 rounded-full border-2 border-background bg-gradient-to-br from-primary/20 to-pink-500/20"
+                            {avatars.map((avatar) => (
+                                <Image
+                                    key={avatar.src}
+                                    alt={avatar.alt}
+                                    className="h-10 w-10 rounded-full border-2 border-background object-cover"
+                                    height={40}
+                                    src={avatar.src}
+                                    width={40}
                                 />
                             ))}
                         </div>
@@ -86,16 +115,14 @@ export const HeroSection04 = () => {
                 </div>
 
                 <div className="flex flex-1 items-center justify-center size-full">
-                    <svg
-                        className="fill-primary h-[500px]"
-                        viewBox="0 0 200 200"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <path
-                            d="M56,-63.9C69.6,-55.4,75.4,-34.9,76.8,-15.3C78.2,4.3,75.1,22.9,67.2,40.8C59.2,58.7,46.5,75.8,29.5,82.8C12.4,89.8,-9,86.6,-26.5,78C-44.1,69.4,-57.9,55.4,-66.9,39C-76,22.6,-80.3,3.8,-76,-12.2C-71.7,-28.2,-58.8,-41.4,-44.7,-49.8C-30.5,-58.3,-15.3,-62,3,-65.5C21.2,-69.1,42.4,-72.5,56,-63.9Z"
-                            transform="translate(100 100)"
-                        />
-                    </svg>
+                    <Image
+                        alt="Happy couple holding hearts"
+                        className="h-auto w-full max-w-xl object-contain drop-shadow-2xl"
+                        height={900}
+                        priority
+                        src="/assets/hero.png"
+                        width={900}
+                    />
                 </div>
             </div>
         </section>

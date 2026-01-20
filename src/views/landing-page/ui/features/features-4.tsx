@@ -20,6 +20,15 @@ const steps = [
     },
 ]
 
+const giftPreviewItems = [
+    { emoji: '🌹', label: 'Rose' },
+    { emoji: '💌', label: 'Love note' },
+    { emoji: '🍫', label: 'Choco' },
+    { emoji: '🧸', label: 'Teddy' },
+    { emoji: '✨', label: 'Sparkle' },
+    { emoji: '🎁', label: 'Surprise' },
+]
+
 const Features4 = () => {
     return (
         <section className="py-12 md:py-16 max-w-6xl mx-auto">
@@ -73,25 +82,69 @@ const Features4 = () => {
                                 <span className="h-2.5 w-2.5 rounded-full bg-muted-foreground/30" />
                             </div>
                             <span className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                                Profile setup
+                                Match card
                             </span>
                         </div>
                         <div className="mt-6 grid gap-4">
-                            <div className="rounded-xl border border-border bg-muted/40 p-4">
-                                <div className="h-32 w-full rounded-lg bg-muted" />
-                                <div className="mt-4 space-y-2">
-                                    <div className="h-3 w-2/3 rounded-full bg-muted-foreground/20" />
-                                    <div className="h-3 w-1/2 rounded-full bg-muted-foreground/20" />
+                            <div className="rounded-2xl border border-border bg-gradient-to-br from-primary/10 via-background to-pink-500/10 p-5">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+                                            New match
+                                        </p>
+                                        <h4 className="text-lg font-semibold">Arielle, 27</h4>
+                                        <p className="text-sm text-muted-foreground">Lisbon, 3 km away</p>
+                                    </div>
+                                    <div className="flex -space-x-2">
+                                        <div className="h-14 w-14 rounded-full border-2 border-background bg-muted" />
+                                        <div className="h-14 w-14 rounded-full border-2 border-background bg-muted/80" />
+                                    </div>
+                                </div>
+                                <div className="mt-4">
+                                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                                        <span>Compatibility</span>
+                                        <span className="font-semibold text-foreground">92%</span>
+                                    </div>
+                                    <div className="mt-2 h-2 w-full rounded-full bg-muted">
+                                        <div className="h-2 w-[92%] rounded-full bg-primary" />
+                                    </div>
+                                </div>
+                                <div className="mt-4 flex flex-wrap gap-2">
+                                    {['Art lover', 'Coffee dates', 'Travel'].map((tag) => (
+                                        <span
+                                            key={tag}
+                                            className="rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground"
+                                        >
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
+                                <div className="mt-4 grid grid-cols-2 gap-3">
+                                    <div className="rounded-full bg-primary/10 px-4 py-2 text-center text-xs font-semibold text-primary">
+                                        Super Like
+                                    </div>
+                                    <div className="rounded-full bg-foreground px-4 py-2 text-center text-xs font-semibold text-background">
+                                        Start chat
+                                    </div>
                                 </div>
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="rounded-xl border border-border bg-muted/40 p-4">
-                                    <div className="h-14 w-full rounded-lg bg-muted" />
-                                    <div className="mt-3 h-3 w-2/3 rounded-full bg-muted-foreground/20" />
+                                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                                        Icebreaker
+                                    </p>
+                                    <div className="mt-3 h-3 w-3/4 rounded-full bg-muted-foreground/20" />
+                                    <div className="mt-2 h-3 w-1/2 rounded-full bg-muted-foreground/20" />
                                 </div>
                                 <div className="rounded-xl border border-border bg-muted/40 p-4">
-                                    <div className="h-14 w-full rounded-lg bg-muted" />
-                                    <div className="mt-3 h-3 w-2/3 rounded-full bg-muted-foreground/20" />
+                                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                                        Mutuals
+                                    </p>
+                                    <div className="mt-3 flex -space-x-2">
+                                        {[1, 2, 3].map((item) => (
+                                            <div key={item} className="h-7 w-7 rounded-full bg-muted" />
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -102,27 +155,59 @@ const Features4 = () => {
                     <AnimatedContent className="order-2 rounded-2xl border border-border bg-background p-6 shadow-sm md:order-1">
                         <div className="flex items-center justify-between border-b border-border pb-4">
                             <span className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                                Match feed
+                                Chat + gifts
                             </span>
-                            <div className="flex gap-2">
-                                <span className="h-2 w-10 rounded-full bg-muted-foreground/20" />
-                                <span className="h-2 w-6 rounded-full bg-muted-foreground/20" />
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+                                Online now
                             </div>
                         </div>
                         <div className="mt-6 space-y-4">
-                            {[1, 2, 3].map((item) => (
-                                <div
-                                    key={item}
-                                    className="flex items-center gap-4 rounded-xl border border-border p-4"
-                                >
-                                    <div className="h-12 w-12 rounded-full bg-muted" />
-                                    <div className="flex-1 space-y-2">
-                                        <div className="h-3 w-1/3 rounded-full bg-muted-foreground/20" />
-                                        <div className="h-3 w-2/3 rounded-full bg-muted-foreground/20" />
-                                    </div>
-                                    <div className="h-8 w-16 rounded-full bg-muted" />
+                            <div className="rounded-2xl border border-border bg-muted/30 p-4">
+                                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                                    <span>Chat with Mia</span>
+                                    <span>Just now</span>
                                 </div>
-                            ))}
+                                <div className="mt-4 space-y-3">
+                                    <div className="w-3/4 rounded-2xl bg-background px-4 py-3 text-sm shadow-sm">
+                                        That playlist you shared is perfect for a rainy day.
+                                    </div>
+                                    <div className="ml-auto w-3/4 rounded-2xl bg-primary/10 px-4 py-3 text-sm text-primary">
+                                        Want to continue this over coffee on Saturday?
+                                    </div>
+                                </div>
+                                <div className="mt-4 flex items-center gap-3">
+                                    <div className="h-2 w-10 rounded-full bg-muted-foreground/20" />
+                                    <div className="h-2 w-6 rounded-full bg-muted-foreground/20" />
+                                </div>
+                            </div>
+                            <div className="rounded-2xl border border-border bg-background p-4">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                                            Send a gift
+                                        </p>
+                                        <p className="text-sm text-muted-foreground">
+                                            0.10 = <span className="font-semibold text-foreground">5 credits</span>
+                                        </p>
+                                    </div>
+                                    <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+                                        Gift tray
+                                    </span>
+                                </div>
+                                <div className="mt-4 grid grid-cols-3 gap-3">
+                                    {giftPreviewItems.map((gift) => (
+                                        <div
+                                            key={gift.label}
+                                            className="flex flex-col items-center gap-1 rounded-xl border border-border bg-muted/40 px-2 py-3 text-center"
+                                        >
+                                            <span className="text-lg">{gift.emoji}</span>
+                                            <span className="text-[11px] text-muted-foreground">{gift.label}</span>
+                                            <span className="text-[11px] font-semibold text-foreground">5 cr</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     </AnimatedContent>
 
@@ -144,6 +229,58 @@ const Features4 = () => {
                                     <p className="text-sm text-muted-foreground">{step.description}</p>
                                 </div>
                             ))}
+                        </div>
+                        <div className="grid gap-4 sm:grid-cols-3">
+                            {[
+                                { title: 'Send a Gift', value: '5 credits', note: 'Make it memorable' },
+                                { title: 'Quick Reply', value: '2 taps', note: 'Keep the vibe' },
+                                { title: 'Date Invite', value: '1 click', note: 'Plan a meetup' },
+                            ].map((item) => (
+                                <div
+                                    key={item.title}
+                                    className="rounded-xl border border-border bg-background p-4"
+                                >
+                                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                                        {item.title}
+                                    </p>
+                                    <p className="mt-2 text-lg font-semibold">{item.value}</p>
+                                    <p className="text-sm text-muted-foreground">{item.note}</p>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="grid gap-4 sm:grid-cols-2">
+                            <div className="rounded-2xl border border-border bg-muted/40 p-5">
+                                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                                    Momentum Score
+                                </p>
+                                <div className="mt-3 flex items-center justify-between">
+                                    <p className="text-3xl font-semibold text-foreground">92</p>
+                                    <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+                                        +12%
+                                    </span>
+                                </div>
+                                <p className="mt-2 text-sm text-muted-foreground">
+                                    Stay active and keep conversations moving forward.
+                                </p>
+                            </div>
+                            <div className="rounded-2xl border border-border bg-background p-5">
+                                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                                    Smart Reminders
+                                </p>
+                                <div className="mt-3 space-y-2">
+                                    {['Follow up in 2 hours', 'Suggest a venue', 'Send a voice note'].map(
+                                        (item) => (
+                                            <div
+                                                key={item}
+                                                className="flex items-center justify-between rounded-lg bg-muted/40 px-3 py-2 text-sm"
+                                            >
+                                                <span>{item}</span>
+                                                <span className="h-2 w-2 rounded-full bg-primary" />
+                                            </div>
+                                        )
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     </AnimatedContent>
                 </div>

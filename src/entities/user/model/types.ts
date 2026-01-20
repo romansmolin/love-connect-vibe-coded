@@ -65,6 +65,19 @@ export interface UserProfile {
     avatarUrl?: string
     photos?: UserPhoto[]
     photoCount?: number
+    description?: string
+    height?: number
+    weight?: number
+    eyeColor?: number
+    hairColor?: number
+    situation?: number
+    silhouette?: number
+    personality?: number
+    schedule?: number
+    children?: number
+    education?: number
+    profession?: number
+    orientation?: number
 }
 
 export interface UserProfileResponse {
@@ -77,4 +90,54 @@ export interface UserPreview {
     age?: number
     location?: string
     avatarUrl?: string
+}
+
+export interface UpdateProfileRequest {
+    fullName: string
+    height?: number
+    weight?: number
+    eyeColor?: number
+    hairColor?: number
+    situation?: number
+    silhouette?: number
+    personality?: number
+    schedule?: number
+    orientation?: number
+    children?: number
+    education?: number
+    profession?: number
+    email?: string
+    langUi?: string
+    bodyOptions?: number[]
+    description?: string
+}
+
+export interface UpdateProfileResponse {
+    accepted?: number
+    error?: string
+}
+
+export interface LostPassRequest {
+    emailOrUsername: string
+}
+
+export interface LostPassResponse {
+    connected?: number
+    result?: string
+    error?: number
+}
+
+export interface LogoutResponse {
+    success?: boolean
+    connected?: number
+    result?: string
+}
+
+export interface DeleteAccountRequest {
+    password?: string
+}
+
+export interface DeleteAccountResponse {
+    success: boolean
+    message?: string
 }

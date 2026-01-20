@@ -79,8 +79,15 @@ const extractTotal = (payload: Awaited<ReturnType<typeof matchRepo.listMatches>>
         return payload.nb_total
     }
 
-    if (payload.result && typeof payload.result === 'object' && typeof payload.result.nb_total === 'number') {
-        return payload.result.nb_total
+    if (payload.result && typeof payload.result === 'object' && !Array.isArray(payload.result)) {
+        const total =
+            'nb_total' in payload.result && typeof payload.result.nb_total === 'number'
+                ? payload.result.nb_total
+                : undefined
+
+        if (typeof total === 'number') {
+            return total
+        }
     }
 
     return undefined

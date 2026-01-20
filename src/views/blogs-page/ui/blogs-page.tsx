@@ -18,7 +18,7 @@ export const BlogsPage = () => {
     return (
         <section className="mt-46 min-h-screen px-4">
             <div className="max-w-4xl mx-auto text-center space-y-2 mb-10">
-                <h1 className="text-4xl font-bold text-slate-900">OrbitReach Blog</h1>
+                <h1 className="text-4xl font-bold text-slate-900">LoveConnect Blog</h1>
                 <p className="text-slate-600">
                     Fresh posts on scheduling, growth, and content workflows—curated for busy teams and creators.
                 </p>
