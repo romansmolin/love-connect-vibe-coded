@@ -45,31 +45,18 @@ export const metadata: Metadata = {
     title: 'LoveConnect | Find Your Perfect Match',
     description:
         'Discover meaningful connections with our smart matching algorithm. Chat, meet, and build relationships that matter.',
-    alternates: {
-        canonical: siteUrl,
-    },
     openGraph: {
         type: 'website',
-        url: siteUrl,
         siteName: 'LoveConnect',
         title: 'LoveConnect | Find Your Perfect Match',
         description:
             'Discover meaningful connections with our smart matching algorithm. Chat, meet, and build relationships that matter.',
-        images: [
-            {
-                url: ogImage,
-                width: 1200,
-                height: 630,
-                alt: 'LoveConnect dating app preview',
-            },
-        ],
     },
     twitter: {
         card: 'summary_large_image',
         title: 'LoveConnect | Find Your Perfect Match',
         description:
             'Discover meaningful connections with our smart matching algorithm. Chat, meet, and build relationships that matter.',
-        images: [ogImage],
     },
 }
 
