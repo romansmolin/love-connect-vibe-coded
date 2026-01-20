@@ -21,9 +21,6 @@ const pacifico = Pacifico({
     weight: ['400'],
 })
 
-const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://zapshipr.com').replace(/\/$/, '')
-const ogImage = `${siteUrl}/assets/meta.png`
-
 const navigationData = [
     { title: 'Home', href: '/' },
     { title: 'How It Works', href: '#how-it-works' },
