@@ -127,12 +127,12 @@ export const SettingsPage = () => {
                             <div className="space-y-2">
                                 <Label htmlFor="email">Email address</Label>
                                 <Input
+                                    disabled={savingEmail || profileLoading}
                                     id="email"
                                     placeholder="you@example.com"
                                     type="email"
                                     value={email}
                                     onChange={(event) => setEmail(event.target.value)}
-                                    disabled={savingEmail || profileLoading}
                                 />
                             </div>
                             <Button className="w-full" disabled={savingEmail || profileLoading} type="submit">
@@ -151,10 +151,10 @@ export const SettingsPage = () => {
                                     </p>
                                 </div>
                                 <Button
+                                    disabled={sendingReset || profileLoading}
                                     size="sm"
                                     variant="outline"
                                     onClick={handleSendReset}
-                                    disabled={sendingReset || profileLoading}
                                 >
                                     Send reset link
                                 </Button>
@@ -187,21 +187,21 @@ export const SettingsPage = () => {
                         <div className="space-y-2">
                             <Label htmlFor="delete-pass">Confirm password (optional)</Label>
                             <Input
+                                disabled={deleting}
                                 id="delete-pass"
-                                type="password"
                                 placeholder="Required if you know it"
+                                type="password"
                                 value={deletePassword}
                                 onChange={(event) => setDeletePassword(event.target.value)}
-                                disabled={deleting}
                             />
                         </div>
 
                         <Button
                             className="w-full"
-                            variant="destructive"
                             disabled={deleting}
-                            onClick={handleDelete}
                             type="button"
+                            variant="destructive"
+                            onClick={handleDelete}
                         >
                             <UserX className="mr-2 h-4 w-4" />
                             Delete account
@@ -209,7 +209,7 @@ export const SettingsPage = () => {
 
                         <Separator />
 
-                        <Button className="w-full" variant="outline" disabled={loggingOut} onClick={handleLogout}>
+                        <Button className="w-full" disabled={loggingOut} variant="outline" onClick={handleLogout}>
                             <Power className="mr-2 h-4 w-4" />
                             Logout
                         </Button>

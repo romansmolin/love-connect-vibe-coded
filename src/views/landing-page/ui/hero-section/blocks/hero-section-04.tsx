@@ -58,8 +58,8 @@ export const HeroSection04 = () => {
                         <span className="block">
                             <WordRotate
                                 className="bg-gradient-to-r w-fit text-primary font-pacifico mx-auto lg:mx-0 m-0"
-                                duration={2500}
                                 containerClassName={'flex justify-center sm:block'}
+                                duration={2500}
                                 words={['Smarter', 'Faster', 'Better', 'Easier']}
                             />
                             <span className="text-foreground">Than Ever</span>
@@ -116,10 +116,10 @@ export const HeroSection04 = () => {
 
                 <div className="flex flex-1 items-center justify-center size-full">
                     <Image
+                        priority
                         alt="Happy couple holding hearts"
                         className="h-auto w-full max-w-xl object-contain drop-shadow-2xl"
                         height={900}
-                        priority
                         src="/assets/hero.png"
                         width={900}
                     />

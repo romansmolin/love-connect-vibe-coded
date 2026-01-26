@@ -167,7 +167,7 @@ export const GiftsPage = () => {
                         <CardTitle className="text-xl">Gift gallery</CardTitle>
                         <CardDescription>Emoji gifts you can purchase now.</CardDescription>
                     </div>
-                    <Badge variant="outline" className="text-xs uppercase tracking-[0.2em]">
+                    <Badge className="text-xs uppercase tracking-[0.2em]" variant="outline">
                         {gifts.length} items
                     </Badge>
                 </CardHeader>
@@ -207,9 +207,9 @@ export const GiftsPage = () => {
                                         </div>
                                         <Button
                                             className="mt-auto w-full"
+                                            disabled={isPurchasing}
                                             variant="default"
                                             onClick={() => setPurchaseGiftId(gift.id)}
-                                            disabled={isPurchasing}
                                         >
                                             <ShoppingCart className="mr-2 h-4 w-4" />
                                             {isPurchasing && purchaseGiftId === gift.id
@@ -231,10 +231,10 @@ export const GiftsPage = () => {
                         <CardDescription>Purchased gifts ready to send to a match.</CardDescription>
                     </div>
                     <Button
+                        disabled={isInventoryLoading || isInventoryFetching}
                         size="sm"
                         variant="outline"
                         onClick={refetchInventory}
-                        disabled={isInventoryLoading || isInventoryFetching}
                     >
                         Refresh
                     </Button>
@@ -307,8 +307,8 @@ export const GiftsPage = () => {
                     <AlertDialogFooter>
                         <AlertDialogCancel disabled={isPurchasing}>Cancel</AlertDialogCancel>
                         <AlertDialogAction
-                            onClick={handlePurchaseConfirm}
                             disabled={isPurchasing || !selectedGift}
+                            onClick={handlePurchaseConfirm}
                         >
                             Continue to payment
                         </AlertDialogAction>
@@ -363,12 +363,12 @@ export const GiftsPage = () => {
                         )}
                     </div>
                     <DialogFooter>
-                        <Button variant="outline" onClick={closeSendDialog} disabled={isSending}>
+                        <Button disabled={isSending} variant="outline" onClick={closeSendDialog}>
                             Cancel
                         </Button>
                         <Button
-                            onClick={handleSendConfirm}
                             disabled={isSending || !recipientId || matches.length === 0}
+                            onClick={handleSendConfirm}
                         >
                             Send gift
                         </Button>

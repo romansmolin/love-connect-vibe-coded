@@ -135,28 +135,28 @@ export const WalletPage = () => {
                     ) : (
                         <>
                             <SummaryCard
+                                icon={WalletIcon}
+                                subtitle="Ready to spend"
                                 title="Balance"
                                 value={wallet ? formatCredits(wallet.balance) : '0 credits'}
-                                subtitle="Ready to spend"
-                                icon={WalletIcon}
                             />
                             <SummaryCard
+                                icon={CreditCard}
+                                subtitle="All-time purchases"
                                 title="Purchased"
                                 value={wallet ? formatCredits(wallet.totalPurchased) : '0 credits'}
-                                subtitle="All-time purchases"
-                                icon={CreditCard}
                             />
                             <SummaryCard
+                                icon={Crown}
+                                subtitle="Used on gifts"
                                 title="Spent"
                                 value={wallet ? formatCredits(wallet.totalSpent) : '0 credits'}
-                                subtitle="Used on gifts"
-                                icon={Crown}
                             />
                             <SummaryCard
+                                icon={Landmark}
+                                subtitle={`1 credit = ${(CENTS_PER_CREDIT / 100).toFixed(2)} EUR`}
                                 title="Value"
                                 value={`${balanceValue.toFixed(2)} EUR`}
-                                subtitle={`1 credit = ${(CENTS_PER_CREDIT / 100).toFixed(2)} EUR`}
-                                icon={Landmark}
                             />
                         </>
                     )}
@@ -171,7 +171,7 @@ export const WalletPage = () => {
                             0.10 EUR equals 5 credits. Pick a pack and checkout securely.
                         </CardDescription>
                     </div>
-                    <Badge variant="outline" className="text-xs uppercase tracking-[0.2em]">
+                    <Badge className="text-xs uppercase tracking-[0.2em]" variant="outline">
                         {creditPackages.length} packs
                     </Badge>
                 </CardHeader>
@@ -210,8 +210,8 @@ export const WalletPage = () => {
                                         </div>
                                         <Button
                                             className="mt-auto w-full"
-                                            onClick={() => setSelectedPackage(pack)}
                                             disabled={isPurchasing}
+                                            onClick={() => setSelectedPackage(pack)}
                                         >
                                             Buy credits
                                         </Button>
@@ -229,7 +229,7 @@ export const WalletPage = () => {
                         <CardTitle className="text-xl">Transaction history</CardTitle>
                         <CardDescription>Review credit purchases and balance updates.</CardDescription>
                     </div>
-                    <Badge variant="outline" className="text-xs uppercase tracking-[0.2em]">
+                    <Badge className="text-xs uppercase tracking-[0.2em]" variant="outline">
                         {transactions.length} items
                     </Badge>
                 </CardHeader>
@@ -247,7 +247,7 @@ export const WalletPage = () => {
                                 <TabsTrigger value="purchased">Purchased</TabsTrigger>
                                 <TabsTrigger value="spent">Spent</TabsTrigger>
                             </TabsList>
-                            <TabsContent value="all" className="space-y-3">
+                            <TabsContent className="space-y-3" value="all">
                                 {filteredTransactions.all.length === 0 ? (
                                     <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
                                         No transactions yet.
@@ -258,7 +258,7 @@ export const WalletPage = () => {
                                     ))
                                 )}
                             </TabsContent>
-                            <TabsContent value="purchased" className="space-y-3">
+                            <TabsContent className="space-y-3" value="purchased">
                                 {filteredTransactions.purchased.length === 0 ? (
                                     <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
                                         No purchases yet.
@@ -269,7 +269,7 @@ export const WalletPage = () => {
                                     ))
                                 )}
                             </TabsContent>
-                            <TabsContent value="spent" className="space-y-3">
+                            <TabsContent className="space-y-3" value="spent">
                                 {filteredTransactions.spent.length === 0 ? (
                                     <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
                                         No credits spent yet.
@@ -302,7 +302,7 @@ export const WalletPage = () => {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel disabled={isPurchasing}>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={handlePurchaseConfirm} disabled={isPurchasing}>
+                        <AlertDialogAction disabled={isPurchasing} onClick={handlePurchaseConfirm}>
                             Continue to payment
                         </AlertDialogAction>
                     </AlertDialogFooter>

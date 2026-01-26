@@ -79,9 +79,8 @@ export const creditService = {
     },
 
     async createPurchase(params: { userId: string; credits: number }) {
-        if (!params.credits || params.credits <= 0) {
+        if (!params.credits || params.credits <= 0)
             throw new HttpError('Credits amount must be greater than zero.', 400)
-        }
 
         const wallet = await ensureWallet(params.userId)
         const amountCents = centsFromCredits(params.credits)
@@ -94,6 +93,7 @@ export const creditService = {
         })
 
         let payment: Awaited<ReturnType<typeof paymentService.createCheckoutToken>>
+
         try {
             payment = await paymentService.createCheckoutToken({
                 userId: params.userId,

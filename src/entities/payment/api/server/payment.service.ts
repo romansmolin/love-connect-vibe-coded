@@ -96,7 +96,9 @@ export const paymentService = {
         })
 
         const returnUrlBase = BACKEND_URL || FRONTEND_URL
+
         const normalizedBase = returnUrlBase ? returnUrlBase.replace(/\/$/, '') : undefined
+
         const returnUrl = normalizedBase
             ? `${normalizedBase}/api/payments/secure-processor/return?token=${paymentToken.token}`
             : undefined
@@ -127,6 +129,7 @@ export const paymentService = {
         }
 
         let checkoutToken: string | undefined
+
         try {
             const response = await fetch(`${API_BASE_URL}${CHECKOUT_PATH}`, {
                 method: 'POST',

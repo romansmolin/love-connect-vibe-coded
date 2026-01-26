@@ -274,41 +274,41 @@ const EditProfileDialog = ({
                         are sent as their numeric codes.
                     </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form className="space-y-6" onSubmit={handleSubmit}>
                     <div className="grid gap-4 md:grid-cols-2">
                         <FormField label="Full name *">
                             <Input
                                 required
+                                placeholder="Your name"
                                 value={form.fullName}
                                 onChange={handleChange('fullName')}
-                                placeholder="Your name"
                             />
                         </FormField>
                         <FormField label="Email">
                             <Input
+                                placeholder="you@example.com"
                                 type="email"
                                 value={form.email}
                                 onChange={handleChange('email')}
-                                placeholder="you@example.com"
                             />
                         </FormField>
                         <FormField label="Height (cm)">
                             <Input
                                 inputMode="numeric"
+                                placeholder="e.g. 180"
                                 value={form.height}
                                 onChange={handleChange('height')}
-                                placeholder="e.g. 180"
                             />
                         </FormField>
                         <FormField label="Weight (kg)">
                             <Input
                                 inputMode="numeric"
+                                placeholder="e.g. 75"
                                 value={form.weight}
                                 onChange={handleChange('weight')}
-                                placeholder="e.g. 75"
                             />
                         </FormField>
-                        <FormField label="Eye color" hint="Values based on your provided selector list.">
+                        <FormField hint="Values based on your provided selector list." label="Eye color">
                             <Select value={form.eyeColor} onValueChange={handleSelectChange('eyeColor')}>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Select eye color" />
@@ -323,7 +323,7 @@ const EditProfileDialog = ({
                                 </SelectContent>
                             </Select>
                         </FormField>
-                        <FormField label="Hair color" hint="Values based on your provided selector list.">
+                        <FormField hint="Values based on your provided selector list." label="Hair color">
                             <Select value={form.hairColor} onValueChange={handleSelectChange('hairColor')}>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Select hair color" />
@@ -338,7 +338,7 @@ const EditProfileDialog = ({
                                 </SelectContent>
                             </Select>
                         </FormField>
-                        <FormField label="Marital status" hint="Values based on your provided selector list.">
+                        <FormField hint="Values based on your provided selector list." label="Marital status">
                             <Select value={form.situation} onValueChange={handleSelectChange('situation')}>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Select status" />
@@ -352,7 +352,7 @@ const EditProfileDialog = ({
                                 </SelectContent>
                             </Select>
                         </FormField>
-                        <FormField label="Body type" hint="Values based on your provided selector list.">
+                        <FormField hint="Values based on your provided selector list." label="Body type">
                             <Select value={form.silhouette} onValueChange={handleSelectChange('silhouette')}>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Select body type" />
@@ -367,7 +367,7 @@ const EditProfileDialog = ({
                                 </SelectContent>
                             </Select>
                         </FormField>
-                        <FormField label="Personality" hint="Values based on your provided selector list.">
+                        <FormField hint="Values based on your provided selector list." label="Personality">
                             <Select value={form.personality} onValueChange={handleSelectChange('personality')}>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Select personality" />
@@ -383,8 +383,8 @@ const EditProfileDialog = ({
                             </Select>
                         </FormField>
                         <FormField
-                            label="Preferred online time"
                             hint="Values based on your provided selector list."
+                            label="Preferred online time"
                         >
                             <Select value={form.schedule} onValueChange={handleSelectChange('schedule')}>
                                 <SelectTrigger className="w-full">
@@ -399,7 +399,7 @@ const EditProfileDialog = ({
                                 </SelectContent>
                             </Select>
                         </FormField>
-                        <FormField label="Sexual orientation" hint="Values based on your provided selector list.">
+                        <FormField hint="Values based on your provided selector list." label="Sexual orientation">
                             <Select value={form.orientation} onValueChange={handleSelectChange('orientation')}>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Select orientation" />
@@ -411,7 +411,7 @@ const EditProfileDialog = ({
                                 </SelectContent>
                             </Select>
                         </FormField>
-                        <FormField label="Number of children" hint="Values based on your provided selector list.">
+                        <FormField hint="Values based on your provided selector list." label="Number of children">
                             <Select value={form.children} onValueChange={handleSelectChange('children')}>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="No children" />
@@ -425,7 +425,7 @@ const EditProfileDialog = ({
                                 </SelectContent>
                             </Select>
                         </FormField>
-                        <FormField label="Education level" hint="Values based on your provided selector list.">
+                        <FormField hint="Values based on your provided selector list." label="Education level">
                             <Select value={form.education} onValueChange={handleSelectChange('education')}>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Select education level" />
@@ -440,7 +440,7 @@ const EditProfileDialog = ({
                                 </SelectContent>
                             </Select>
                         </FormField>
-                        <FormField label="Profession" hint="Values based on your provided selector list.">
+                        <FormField hint="Values based on your provided selector list." label="Profession">
                             <Select value={form.profession} onValueChange={handleSelectChange('profession')}>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Select profession" />
@@ -460,21 +460,21 @@ const EditProfileDialog = ({
 
                     <FormField label="Profile description">
                         <Textarea
-                            rows={5}
                             maxLength={500}
+                            placeholder="Tell others about yourself..."
+                            rows={5}
                             value={form.description}
                             onChange={handleChange('description')}
-                            placeholder="Tell others about yourself..."
                         />
                     </FormField>
 
                     {errorMessage ? <p className="text-sm text-destructive">{errorMessage}</p> : null}
 
                     <DialogFooter className="gap-3">
-                        <Button variant="outline" type="button" onClick={() => setOpen(false)}>
+                        <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                             Cancel
                         </Button>
-                        <Button type="submit" disabled={isLoading || !form.fullName.trim()}>
+                        <Button disabled={isLoading || !form.fullName.trim()} type="submit">
                             {isLoading ? 'Saving...' : 'Save changes'}
                         </Button>
                     </DialogFooter>
@@ -532,13 +532,13 @@ export const ProfilePage = () => {
                     </div>
                     <EditProfileDialog
                         profile={profile}
-                        onUpdated={refetch}
                         trigger={
                             <Button variant="outline">
                                 Edit Profile
                                 <ArrowUpRight className="ml-2 h-4 w-4" />
                             </Button>
                         }
+                        onUpdated={refetch}
                     />
                 </CardContent>
             </Card>

@@ -7,9 +7,7 @@ export const GET = async (request: NextRequest) => {
     const sessionId = request.cookies.get(SESSION_COOKIE_NAME)?.value
     const userId = request.cookies.get(USER_COOKIE_NAME)?.value
 
-    if (!sessionId || !userId) {
-        return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-    }
+    if (!sessionId || !userId) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
     const data = await creditService.getWallet(userId)
     return NextResponse.json(data)
