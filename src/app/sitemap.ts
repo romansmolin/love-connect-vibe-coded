@@ -1,7 +1,7 @@
 import { allPosts } from 'content-collections'
 import type { MetadataRoute } from 'next'
 
-const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://zapshipr.com').replace(/\/$/, '')
+const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com').replace(/\/$/, '')
 
 export default function sitemap(): MetadataRoute.Sitemap {
     const now = new Date().toISOString()

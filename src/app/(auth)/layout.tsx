@@ -10,8 +10,8 @@ import { ThemeProvider } from '../_providers/theme-provider'
 import '../globals.css'
 
 export const metadata: Metadata = {
-    title: 'Zapshipr Authentication',
-    description: 'Zapshipr Authentication',
+    title: 'Authentication',
+    description: 'Authentication',
 }
 
 // eslint-disable-next-line unused-imports/no-unused-vars
