@@ -320,7 +320,7 @@ export const WalletPage = () => {
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <div className="space-y-3">
-                        <div className="flex items-start gap-2">
+                        <div className="flex items-start gap-3">
                             <Checkbox
                                 checked={consentChecked}
                                 disabled={isPurchasing}
@@ -328,19 +328,28 @@ export const WalletPage = () => {
                                 onCheckedChange={(value) => setConsentChecked(Boolean(value))}
                             />
                             <Label
-                                className="text-sm leading-relaxed text-muted-foreground"
+                                className="text-sm leading-5 text-muted-foreground"
                                 htmlFor="credit-consent"
                             >
                                 I agree to the{' '}
-                                <Link className="underline hover:text-primary" href="/terms-of-service">
+                                <Link
+                                    className="underline underline-offset-2 hover:text-primary"
+                                    href="/terms-of-service"
+                                >
                                     Terms of Service
                                 </Link>
                                 ,{' '}
-                                <Link className="underline hover:text-primary" href="/privacy-policy">
+                                <Link
+                                    className="underline underline-offset-2 hover:text-primary"
+                                    href="/privacy-policy"
+                                >
                                     Privacy Policy
                                 </Link>
                                 , and{' '}
-                                <Link className="underline hover:text-primary" href="/return-policy">
+                                <Link
+                                    className="underline underline-offset-2 hover:text-primary"
+                                    href="/return-policy"
+                                >
                                     Return Policy
                                 </Link>
                                 .
