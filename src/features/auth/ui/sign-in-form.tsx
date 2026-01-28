@@ -52,7 +52,7 @@ const SignInForm = ({ thirdPartyAuth }: { thirdPartyAuth?: JSX.Element }) => {
                 handleSignIn()
             }}
         >
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-6 max-w-6xl w-full">
                 <div className="flex flex-col gap-6">
                     <div className="grid gap-2">
                         <Label htmlFor="username">Username</Label>
@@ -106,20 +106,26 @@ const SignInForm = ({ thirdPartyAuth }: { thirdPartyAuth?: JSX.Element }) => {
                             id="sign-in-consent"
                             onCheckedChange={(value) => setConsentAccepted(Boolean(value))}
                         />
-                        <Label
-                            className="text-sm leading-5 text-muted-foreground"
-                            htmlFor="sign-in-consent"
-                        >
+                        <Label className="text-sm leading-5 text-muted-foreground" htmlFor="sign-in-consent">
                             I agree to the{' '}
-                            <Link className="underline underline-offset-2 hover:text-primary" href="/terms-of-service">
+                            <Link
+                                className="underline underline-offset-2 hover:text-primary"
+                                href="/terms-of-service"
+                            >
                                 Terms of Service
                             </Link>
                             ,{' '}
-                            <Link className="underline underline-offset-2 hover:text-primary" href="/privacy-policy">
+                            <Link
+                                className="underline underline-offset-2 hover:text-primary"
+                                href="/privacy-policy"
+                            >
                                 Privacy Policy
                             </Link>
                             , and{' '}
-                            <Link className="underline underline-offset-2 hover:text-primary" href="/return-policy">
+                            <Link
+                                className="underline underline-offset-2 hover:text-primary"
+                                href="/return-policy"
+                            >
                                 Return Policy
                             </Link>
                             .

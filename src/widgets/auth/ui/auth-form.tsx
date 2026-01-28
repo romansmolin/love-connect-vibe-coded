@@ -8,7 +8,7 @@ const AuthForm = () => {
         <div className={'flex flex-col gap-6 pt-40 lg:pt-20'}>
             <h1 className="text-2xl text-center font-bold text-primary">Welcome To LoveConnect 👋</h1>
 
-            <Tabs className=" flex flex-col gap-6 px-10" defaultValue="sign-in">
+            <Tabs className="flex flex-col gap-6 px-10 " defaultValue="sign-in">
                 <TabsList className="w-full">
                     <TabsTrigger value="sign-in">Sign In</TabsTrigger>
                     <TabsTrigger value="sign-up">Sign Up</TabsTrigger>
