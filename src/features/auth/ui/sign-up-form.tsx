@@ -90,7 +90,7 @@ const SignUpForm = ({ thirdPartyAuth }: { thirdPartyAuth?: JSX.Element }) => {
                             disabled={isLoading}
                             id="username"
                             name="username"
-                            placeholder="loveconnect"
+                            placeholder="LoveBond"
                             type="text"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
@@ -199,15 +199,24 @@ const SignUpForm = ({ thirdPartyAuth }: { thirdPartyAuth?: JSX.Element }) => {
                         />
                         <Label className="text-sm leading-5 text-muted-foreground" htmlFor="sign-up-consent">
                             I agree to the{' '}
-                            <Link className="underline underline-offset-2 hover:text-primary" href="/terms-of-service">
+                            <Link
+                                className="underline underline-offset-2 hover:text-primary"
+                                href="/terms-of-service"
+                            >
                                 Terms of Service
                             </Link>
                             ,{' '}
-                            <Link className="underline underline-offset-2 hover:text-primary" href="/privacy-policy">
+                            <Link
+                                className="underline underline-offset-2 hover:text-primary"
+                                href="/privacy-policy"
+                            >
                                 Privacy Policy
                             </Link>
                             , and{' '}
-                            <Link className="underline underline-offset-2 hover:text-primary" href="/return-policy">
+                            <Link
+                                className="underline underline-offset-2 hover:text-primary"
+                                href="/return-policy"
+                            >
                                 Return Policy
                             </Link>
                             .

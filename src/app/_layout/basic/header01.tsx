@@ -66,7 +66,7 @@ const Header01 = ({ navigationData, actions }: Header01Props) => {
                             <SheetHeader>
                                 <SheetTitle className="flex items-center gap-3">
                                     <Logo className="h-8 w-8" />
-                                    <span className="text-lg font-semibold">LoveConnect</span>
+                                    <span className="text-lg font-semibold">LoveBond</span>
                                 </SheetTitle>
                             </SheetHeader>
                             <nav className="flex flex-col gap-4 text-base font-medium">

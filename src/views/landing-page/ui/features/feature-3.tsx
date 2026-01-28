@@ -11,10 +11,11 @@ const Features3 = () => {
             <div className="flex flex-col gap-3 text-center">
                 <p className="text-primary text-sm font-semibold uppercase tracking-[0.14em]">Feature stack</p>
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
-                    What <span className="text-primary">LoveConnect</span> Makes Effortless
+                    What <span className="text-primary">LoveBond</span> Makes Effortless
                 </h2>
                 <p className="text-muted-foreground max-w-3xl mx-auto">
-                    Everything you need to find meaningful connections: smart matching, secure messaging, and verified profiles.
+                    Everything you need to find meaningful connections: smart matching, secure messaging, and
+                    verified profiles.
                 </p>
             </div>
 
@@ -27,12 +28,15 @@ const Features3 = () => {
                         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent" />
                         <div className="relative flex h-full flex-col justify-between p-8">
                             <div className="space-y-3 max-w-lg">
-                                <p className="text-sm font-semibold text-primary uppercase tracking-wide">Connect</p>
+                                <p className="text-sm font-semibold text-primary uppercase tracking-wide">
+                                    Connect
+                                </p>
                                 <h3 className="text-3xl font-bold text-slate-900 dark:text-white leading-tight">
                                     Find meaningful relationships that last.
                                 </h3>
                                 <p className="text-slate-600 dark:text-slate-300">
-                                    Our smart algorithm connects you with compatible singles who share your values and interests.
+                                    Our smart algorithm connects you with compatible singles who share your values
+                                    and interests.
                                 </p>
                             </div>
                             <Globe className="top-36" />
@@ -50,7 +54,8 @@ const Features3 = () => {
                                     Smart compatibility analysis.
                                 </h3>
                                 <p className="text-slate-600 dark:text-slate-300">
-                                    Advanced AI analyzes profiles to suggest highly compatible matches based on your preferences.
+                                    Advanced AI analyzes profiles to suggest highly compatible matches based on
+                                    your preferences.
                                 </p>
                             </div>
                             <AnimatedBeamMultipleOutputDemo className="mx-auto h-[240px] w-[90%] p-0" />
@@ -83,7 +88,8 @@ const Features3 = () => {
                         </span>
                         <h4 className="text-xl font-semibold">Real-time Matching</h4>
                         <p className="text-slate-600 dark:text-slate-300">
-                            Get instant notifications when you have new matches. Never miss a connection opportunity.
+                            Get instant notifications when you have new matches. Never miss a connection
+                            opportunity.
                         </p>
                     </AnimatedContent>
 

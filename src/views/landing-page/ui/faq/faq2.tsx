@@ -9,8 +9,8 @@ type FAQItem = {
 
 const FAQ_DATA: FAQItem[] = [
     {
-        question: 'Is LoveConnect free to use?',
-        answer: 'Yes — LoveConnect offers a free plan with essential features. You can create a profile, browse matches, and send limited messages. Premium plans unlock unlimited messaging and advanced features.',
+        question: 'Is LoveBond free to use?',
+        answer: 'Yes — LoveBond offers a free plan with essential features. You can create a profile, browse matches, and send limited messages. Premium plans unlock unlimited messaging and advanced features.',
     },
     {
         question: 'How does the matching algorithm work?',
@@ -25,8 +25,8 @@ const FAQ_DATA: FAQItem[] = [
         answer: 'Profile verification is simple. Upload a photo and complete our verification process to get a verified badge. This helps create a safer community.',
     },
     {
-        question: 'Can I use LoveConnect to find friends?',
-        answer: "While LoveConnect is designed for romantic connections, many users have found meaningful friendships too. You can specify what you're looking for in your profile.",
+        question: 'Can I use LoveBond to find friends?',
+        answer: "While LoveBond is designed for romantic connections, many users have found meaningful friendships too. You can specify what you're looking for in your profile.",
     },
 ]
 
@@ -51,7 +51,7 @@ const Faq2 = () => {
                         Frequently Asked Questions
                     </p>
                     <p className="mt-4 max-w-xl text-base text-muted-foreground">
-                        Answers to the things people ask most before joining LoveConnect.
+                        Answers to the things people ask most before joining LoveBond.
                     </p>
                 </div>
 

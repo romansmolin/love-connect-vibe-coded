@@ -53,7 +53,7 @@ const Features2 = () => {
                     <span className="p-1 bg-primary/10 rounded-md">
                         <HeartHandshake />
                     </span>
-                    <p className=""> Why Choose LoveConnect?</p>
+                    <p className=""> Why Choose LoveBond?</p>
                 </Badge>
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
                     Made for{' '}

@@ -12,7 +12,7 @@ export const FooterSection = () => {
                     <div className="col-span-full xl:col-span-2">
                         <Link className="flex font-bold items-center text-primary p-2 gap-2" href="#">
                             <Logo className="size-12" />
-                            <span className="text-xl font-bold">LoveConnect</span>
+                            <span className="text-xl font-bold">LoveBond</span>
                         </Link>
                     </div>
 

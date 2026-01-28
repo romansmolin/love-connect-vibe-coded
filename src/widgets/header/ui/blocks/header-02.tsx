@@ -32,7 +32,7 @@ export const Header02 = ({ navigationData, actions, showModeToggle = true }: Hea
                         <div className="rounded-md p-1 bg-primary">
                             <Logo className="size-8 md:size-10 text-primary-foreground" />
                         </div>
-                        <span className="text-md md:text-xl font-bold">LoveConnect</span>
+                        <span className="text-md md:text-xl font-bold">LoveBond</span>
                     </Link>
 
                     {/* Navigation for large screens */}
@@ -72,10 +72,7 @@ export const Header02 = ({ navigationData, actions, showModeToggle = true }: Hea
                     className="lg:hidden fixed w-screen inset-0 z-50 backdrop-blur-md bg-background/80 flex flex-col items-center justify-center space-y-8"
                     id="landing-mobile-menu"
                 >
-                    <button
-                        className="absolute top-4 right-4 p-2"
-                        onClick={() => setMobileMenuOpen(false)}
-                    >
+                    <button className="absolute top-4 right-4 p-2" onClick={() => setMobileMenuOpen(false)}>
                         <X size={24} />
                     </button>
 
@@ -100,4 +97,3 @@ export const Header02 = ({ navigationData, actions, showModeToggle = true }: Hea
         </>
     )
 }
-

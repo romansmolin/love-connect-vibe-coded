@@ -32,7 +32,7 @@ export const Header04 = ({ navigationData, actions }: Header04Props) => {
                         <div className="relative overflow-hidden rounded-xl">
                             <Logo className="h-8 w-8" />
                         </div>
-                        <h2 className="font-pacifico text-3xl text-primary">LoveConnect</h2>
+                        <h2 className="font-pacifico text-3xl text-primary">LoveBond</h2>
                     </Link>
 
                     {/* Desktop Navigation with Hover Effects */}
@@ -86,7 +86,7 @@ export const Header04 = ({ navigationData, actions }: Header04Props) => {
                     <div className="flex items-center justify-between border-b border-border/50 px-4 py-4">
                         <Link className="flex items-center gap-3" href="/" onClick={() => setIsMobileOpen(false)}>
                             <Logo className="h-8 w-8" />
-                            <span className="text-lg font-bold">LoveConnect</span>
+                            <span className="text-lg font-bold">LoveBond</span>
                         </Link>
                         <Button size="icon" variant="ghost" onClick={() => setIsMobileOpen(false)}>
                             <X className="h-5 w-5" />

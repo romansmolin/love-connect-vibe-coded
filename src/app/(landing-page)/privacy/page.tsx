@@ -5,7 +5,7 @@ const PrivacyPolicy = () => {
         <div className="min-h-screen bg-background mt-28">
             <div className="container mx-auto px-4 py-8 max-w-4xl">
                 <div className="prose prose-lg max-w-none">
-                    <h1 className="text-4xl font-bold mb-8 text-center">LoveConnect Privacy Policy</h1>
+                    <h1 className="text-4xl font-bold mb-8 text-center">LoveBond Privacy Policy</h1>
 
                     <p className="text-muted-foreground mb-8 text-center">
                         <strong>Last Updated:</strong> 11.09.2026
@@ -14,11 +14,11 @@ const PrivacyPolicy = () => {
                     <div className="space-y-8">
                         <section>
                             <p className="mb-6">
-                                Your privacy is important to us at LoveConnect. This Privacy Policy explains what
-                                information we collect from you as a user of the LoveConnect Service, how we use
-                                and share that information, and your rights in relation to that information. By
-                                using LoveConnect, you agree to the collection and use of information in accordance
-                                with this policy. If you do not agree, please refrain from using the Service.
+                                Your privacy is important to us at LoveBond. This Privacy Policy explains what
+                                information we collect from you as a user of the LoveBond Service, how we use and
+                                share that information, and your rights in relation to that information. By using
+                                LoveBond, you agree to the collection and use of information in accordance with
+                                this policy. If you do not agree, please refrain from using the Service.
                             </p>
                         </section>
 
@@ -32,7 +32,7 @@ const PrivacyPolicy = () => {
 
                             <h3 className="text-xl font-medium mb-3">Account Information (User-Provided)</h3>
                             <p className="mb-4">
-                                When you register for LoveConnect, we ask for basic information such as your name,
+                                When you register for LoveBond, we ask for basic information such as your name,
                                 email address, and password. This information is used to create and administer your
                                 account. If you subscribe to a paid plan, we (or our secure payment processor) will
                                 collect payment details (e.g. credit card information and billing address) as
@@ -41,7 +41,7 @@ const PrivacyPolicy = () => {
 
                             <h3 className="text-xl font-medium mb-3">Social Media Account Data</h3>
                             <p className="mb-4">
-                                When you connect your social media accounts to LoveConnect, we receive certain
+                                When you connect your social media accounts to LoveBond, we receive certain
                                 information from those third-party accounts, as permitted by you and the
                                 platform&apos;s API. For each connected social network, this typically includes an
                                 authentication token (so we can act on your behalf without knowing your password),
@@ -51,8 +51,7 @@ const PrivacyPolicy = () => {
 
                             <ul className="list-disc pl-6 space-y-2 mb-4">
                                 <li>
-                                    The text, images, or videos of posts you compose or schedule through
-                                    LoveConnect.
+                                    The text, images, or videos of posts you compose or schedule through LoveBond.
                                 </li>
                                 <li>
                                     Basic profile information necessary to identify your account (e.g. your handle
@@ -73,7 +72,7 @@ const PrivacyPolicy = () => {
                             <h3 className="text-xl font-medium mb-3">Usage Data (Automated)</h3>
                             <p className="mb-4">
                                 Like many online services, we automatically collect certain technical information
-                                when you use LoveConnect. This includes:
+                                when you use LoveBond. This includes:
                             </p>
 
                             <ul className="list-disc pl-6 space-y-2 mb-4">
@@ -101,7 +100,7 @@ const PrivacyPolicy = () => {
                             <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
                                 <p className="text-sm">
                                     <strong>Note:</strong> We do not knowingly collect personal information from
-                                    children under 13 years of age, and LoveConnect is not intended for users under
+                                    children under 13 years of age, and LoveBond is not intended for users under
                                     13. If we become aware that a child under 13 (or under the applicable age
                                     threshold in their jurisdiction) has provided us with personal data, we will
                                     delete it in accordance with applicable law.
@@ -116,10 +115,10 @@ const PrivacyPolicy = () => {
 
                             <h3 className="text-xl font-medium mb-3">Provide and Maintain the Service</h3>
                             <p className="mb-4">
-                                We use your information to operate LoveConnect&apos;s core functionality. For
-                                example, your social media access tokens and content are used to publish your posts
-                                at scheduled times. Your email and account info may be used to log you in and
-                                maintain your account settings.
+                                We use your information to operate LoveBond&apos;s core functionality. For example,
+                                your social media access tokens and content are used to publish your posts at
+                                scheduled times. Your email and account info may be used to log you in and maintain
+                                your account settings.
                             </p>
 
                             <h3 className="text-xl font-medium mb-3">Analytics and Improvements</h3>
@@ -144,7 +143,7 @@ const PrivacyPolicy = () => {
                             <h3 className="text-xl font-medium mb-3">Compliance and Protection</h3>
                             <p className="mb-4">
                                 We may use your information to comply with legal obligations, enforce our Terms of
-                                Service, or protect the rights, property, or safety of LoveConnect, our users, or
+                                Service, or protect the rights, property, or safety of LoveBond, our users, or
                                 others. This includes monitoring for fraudulent or suspicious activities and taking
                                 action against malicious accounts.
                             </p>
@@ -155,7 +154,7 @@ const PrivacyPolicy = () => {
                                     parties. We do not use the content you post for any purpose other than to
                                     display it back to you and improve our services (for example, we&apos;re not
                                     mining your post content for advertising profiles or anything unrelated to
-                                    providing the LoveConnect service).
+                                    providing the LoveBond service).
                                 </p>
                             </div>
                         </section>
@@ -164,15 +163,15 @@ const PrivacyPolicy = () => {
                             <h2 className="text-2xl font-semibold mb-4">3. How We Share Information</h2>
 
                             <p className="mb-4">
-                                LoveConnect respects your privacy and shares your information only in limited
+                                LoveBond respects your privacy and shares your information only in limited
                                 situations:
                             </p>
 
                             <h3 className="text-xl font-medium mb-3">With Your Social Networks</h3>
                             <p className="mb-4">
-                                Obviously, when you use LoveConnect to publish content on a social media platform,
-                                we send that content (along with necessary credentials) to the platform&apos;s API
-                                to execute the post. This means we share data with the social networks at your
+                                Obviously, when you use LoveBond to publish content on a social media platform, we
+                                send that content (along with necessary credentials) to the platform&apos;s API to
+                                execute the post. This means we share data with the social networks at your
                                 direction. For example, if you schedule a post for Platform X, the content is
                                 transmitted to Platform X when the time comes, just as if you had entered it on
                                 their app. These third-party platforms process that content under their own terms
@@ -200,7 +199,7 @@ const PrivacyPolicy = () => {
 
                             <h3 className="text-xl font-medium mb-3">Business Transfers</h3>
                             <p className="mb-4">
-                                If LoveConnect is involved in a merger, acquisition, financing due diligence,
+                                If LoveBond is involved in a merger, acquisition, financing due diligence,
                                 reorganization, bankruptcy, receivership, sale of company assets, or transition of
                                 service to another provider, your information may be transferred as part of that
                                 transaction. In such cases, we will ensure the successor honors the commitments we
@@ -238,7 +237,7 @@ const PrivacyPolicy = () => {
                             <h3 className="text-xl font-medium mb-3">Account Data</h3>
                             <p className="mb-4">
                                 Your account information and connected social account tokens are kept for as long
-                                as you maintain an LoveConnect account. If you delete your account or if it&apos;s
+                                as you maintain an LoveBond account. If you delete your account or if it&apos;s
                                 terminated, we will delete or anonymize this information within a reasonable
                                 period, except for any data we are required to retain for legal compliance or
                                 legitimate business purposes (for example, records of transactions for accounting,
@@ -247,14 +246,14 @@ const PrivacyPolicy = () => {
 
                             <h3 className="text-xl font-medium mb-3">Post Content</h3>
                             <p className="mb-4">
-                                Content that you schedule or publish through LoveConnect may be stored in our
-                                database to facilitate scheduling and editing. Once a post is published, we may
-                                retain the content for your later review (unless you delete it from our interface).
-                                You can delete any scheduled or past post content from LoveConnect at any time, and
-                                it will be removed from our active systems (it may remain in secure backups for a
-                                limited duration until those backups cycle out). Note that deleting a post in
-                                LoveConnect does not delete the copy of that content on the social platform; you
-                                would need to delete the post directly on the social network if desired.
+                                Content that you schedule or publish through LoveBond may be stored in our database
+                                to facilitate scheduling and editing. Once a post is published, we may retain the
+                                content for your later review (unless you delete it from our interface). You can
+                                delete any scheduled or past post content from LoveBond at any time, and it will be
+                                removed from our active systems (it may remain in secure backups for a limited
+                                duration until those backups cycle out). Note that deleting a post in LoveBond does
+                                not delete the copy of that content on the social platform; you would need to
+                                delete the post directly on the social network if desired.
                             </p>
 
                             <h3 className="text-xl font-medium mb-3">Analytics/Log Data</h3>
@@ -270,8 +269,8 @@ const PrivacyPolicy = () => {
                                 If you wish to have your personal data deleted, you can request this by contacting
                                 us (see Contact Us below). We will delete the information that we are not legally
                                 required or otherwise permitted to retain. Additionally, if you disconnect a social
-                                media account from LoveConnect, we will delete any tokens and cached data related
-                                to that account from our servers, and will no longer access that account unless you
+                                media account from LoveBond, we will delete any tokens and cached data related to
+                                that account from our servers, and will no longer access that account unless you
                                 reconnect it.
                             </p>
                         </section>
@@ -289,8 +288,8 @@ const PrivacyPolicy = () => {
                             <p className="mb-4">
                                 All communication between your browser and our servers is encrypted via HTTPS.
                                 Sensitive data (such as authentication tokens and passwords) are encrypted at rest
-                                in our database. We store your LoveConnect account password in hashed form and
-                                never in plain text.
+                                in our database. We store your LoveBond account password in hashed form and never
+                                in plain text.
                             </p>
 
                             <h3 className="text-xl font-medium mb-3">OAuth for Social Logins</h3>
@@ -319,7 +318,7 @@ const PrivacyPolicy = () => {
                                 <p className="text-sm">
                                     <strong>Security Notice:</strong> Despite our efforts, no security measure is
                                     100% perfect, and we cannot guarantee absolute security. You should also take
-                                    steps to secure your account by using a strong, unique password for LoveConnect
+                                    steps to secure your account by using a strong, unique password for LoveBond
                                     and not sharing your account credentials. If you discover any vulnerability or
                                     have reason to believe your account has been compromised, please contact us
                                     immediately.
@@ -331,13 +330,13 @@ const PrivacyPolicy = () => {
                             <h2 className="text-2xl font-semibold mb-4">6. Third-Party APIs and Services</h2>
 
                             <p className="mb-4">
-                                LoveConnect integrates with several third-party platforms as an essential part of
-                                our service. Your use of LoveConnect to access those services means that your
-                                information will be handled by those third parties under their own privacy
-                                policies. For example, when we post to Instagram on your behalf, the request and
-                                data pass through Meta&apos;s systems. We do not control how those third parties
-                                treat your data once it reaches them. We encourage you to review the privacy
-                                policies of all social networks you connect to our Service.
+                                LoveBond integrates with several third-party platforms as an essential part of our
+                                service. Your use of LoveBond to access those services means that your information
+                                will be handled by those third parties under their own privacy policies. For
+                                example, when we post to Instagram on your behalf, the request and data pass
+                                through Meta&apos;s systems. We do not control how those third parties treat your
+                                data once it reaches them. We encourage you to review the privacy policies of all
+                                social networks you connect to our Service.
                             </p>
 
                             <div className="bg-muted p-4 rounded-lg mb-4">
@@ -475,7 +474,7 @@ const PrivacyPolicy = () => {
                                 may delete your account at any time, which will remove most data. If you prefer,
                                 you can also contact us to request deletion of specific information. We will comply
                                 unless we are legally permitted or required to keep the data (in which case we will
-                                explain why). Keep in mind, as noted, that deleting data from LoveConnect does not
+                                explain why). Keep in mind, as noted, that deleting data from LoveBond does not
                                 remove content you posted to external social networks.
                             </p>
 
@@ -514,7 +513,7 @@ const PrivacyPolicy = () => {
                             <h2 className="text-2xl font-semibold mb-4">8. International Data Transfers</h2>
 
                             <p className="mb-4">
-                                LoveConnect operates globally. If you are located outside the country where our
+                                LoveBond operates globally. If you are located outside the country where our
                                 servers or headquarters are, your information (including personal data) may be
                                 transferred to and stored on servers in a country different from yours. We
                                 primarily use cloud hosting in [USA or specify region], though this may change as
@@ -527,7 +526,7 @@ const PrivacyPolicy = () => {
                                 the European Economic Area), we ensure an adequate level of protection. This may
                                 involve using standard contractual clauses approved by the EU, or transferring to
                                 jurisdictions deemed adequate by regulators, or other appropriate safeguards. By
-                                using LoveConnect, you acknowledge this transfer of your data and understand that
+                                using LoveBond, you acknowledge this transfer of your data and understand that
                                 privacy laws in the destination country may be different from those in your
                                 jurisdiction. However, our collection, storage, and use of your data will continue
                                 to be governed by this Privacy Policy and any applicable data transfer agreements.
@@ -544,7 +543,7 @@ const PrivacyPolicy = () => {
                                 at the top of this policy, and if the changes are significant, we may provide a
                                 more prominent notice (such as an email notification or an in-app alert). We
                                 encourage you to review this Policy periodically to stay informed about how we are
-                                protecting your information. Your continued use of LoveConnect after any changes to
+                                protecting your information. Your continued use of LoveBond after any changes to
                                 this Privacy Policy constitutes your acceptance of the revised policy.
                             </p>
                         </section>
@@ -558,8 +557,8 @@ const PrivacyPolicy = () => {
                             </p>
 
                             <div className="bg-muted p-4 rounded-lg">
-                                <p className="font-medium">LoveConnect Privacy Team</p>
-                                <p>Email: privacy@LoveConnect.com</p>
+                                <p className="font-medium">LoveBond Privacy Team</p>
+                                <p>Email: privacy@LoveBond.com</p>
                                 <p>Address: Lubānas iela 129k-1, Riga, Latvia</p>
                                 <p className="mt-2 text-sm text-muted-foreground">
                                     We will be happy to answer your questions and address any issues to the best of

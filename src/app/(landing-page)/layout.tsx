@@ -42,19 +42,19 @@ const headerActions = (
 )
 
 export const metadata: Metadata = {
-    title: 'LoveConnect | Find Your Perfect Match',
+    title: 'LoveBond | Find Your Perfect Match',
     description:
         'Discover meaningful connections with our smart matching algorithm. Chat, meet, and build relationships that matter.',
     openGraph: {
         type: 'website',
-        siteName: 'LoveConnect',
-        title: 'LoveConnect | Find Your Perfect Match',
+        siteName: 'LoveBond',
+        title: 'LoveBond | Find Your Perfect Match',
         description:
             'Discover meaningful connections with our smart matching algorithm. Chat, meet, and build relationships that matter.',
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'LoveConnect | Find Your Perfect Match',
+        title: 'LoveBond | Find Your Perfect Match',
         description:
             'Discover meaningful connections with our smart matching algorithm. Chat, meet, and build relationships that matter.',
     },

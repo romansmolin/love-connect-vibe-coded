@@ -20,7 +20,7 @@ export const People = () => {
             <div className="flex flex-col mx-auto gap-3 md:flex-row md:items-end md:justify-between max-w-screen-xl">
                 <div>
                     <p className="text-sm font-semibold uppercase tracking-[0.14em] text-primary">
-                        How LoveConnect Works
+                        How LoveBond Works
                     </p>
                     <h2 className="text-3xl leading-10 sm:text-4xl md:text-[40px] md:leading-[3.25rem] font-bold tracking-tight">
                         Find your perfect match in three simple steps

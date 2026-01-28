@@ -72,7 +72,7 @@ const AppSidebar = () => {
                 <div className="flex items-center gap-3 pt-2">
                     <Logo className="size-10 md:size-10" />
 
-                    {!isCollapsed && <h2 className="text-lg font-semibold">LoveConnect</h2>}
+                    {!isCollapsed && <h2 className="text-lg font-semibold">LoveBond</h2>}
                 </div>
             </SidebarHeader>
 

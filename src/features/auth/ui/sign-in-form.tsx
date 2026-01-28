@@ -62,7 +62,7 @@ const SignInForm = ({ thirdPartyAuth }: { thirdPartyAuth?: JSX.Element }) => {
                             disabled={isLoading}
                             id="username"
                             name="username"
-                            placeholder="loveconnect"
+                            placeholder="LoveBond"
                             type="text"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}

@@ -5,7 +5,7 @@ const ReturnPolicy = () => {
         <div className="min-h-screen bg-background mt-28">
             <div className="container mx-auto px-4 py-8 max-w-4xl">
                 <div className="prose prose-lg max-w-none">
-                    <h1 className="text-4xl font-bold mb-8 text-center">LoveConnect Return Policy</h1>
+                    <h1 className="text-4xl font-bold mb-8 text-center">LoveBond Return Policy</h1>
 
                     <p className="text-muted-foreground mb-8 text-center">
                         <strong>Last Updated:</strong> 11.09.2026
@@ -14,7 +14,7 @@ const ReturnPolicy = () => {
                     <div className="space-y-8">
                         <section>
                             <p className="mb-6">
-                                This Return Policy explains how refunds and credits are handled for LoveConnect
+                                This Return Policy explains how refunds and credits are handled for LoveBond
                                 purchases. By purchasing credits or subscriptions, you agree to the terms below.
                             </p>
                         </section>
@@ -39,8 +39,8 @@ const ReturnPolicy = () => {
                         <section>
                             <h2 className="text-2xl font-semibold mb-4">3. Subscription Refunds</h2>
                             <p className="mb-4">
-                                Subscription fees are billed in advance. Refunds are not guaranteed and are assessed
-                                on a case-by-case basis for billing errors or service outages.
+                                Subscription fees are billed in advance. Refunds are not guaranteed and are
+                                assessed on a case-by-case basis for billing errors or service outages.
                             </p>
                         </section>
 

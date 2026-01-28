@@ -47,7 +47,7 @@ export const HeroSection01 = () => {
                             </defs>
                         </svg>
                     </span>{' '}
-                    dating with LoveConnect
+                    dating with LoveBond
                 </h1>
 
                 <p className="text-muted-foreground max-w-3xl">

@@ -18,7 +18,7 @@ const testimonials: TestimonialItem[] = [
         role: 'Software Engineer',
         company: 'Tech Corp',
         content:
-            'LoveConnect changed my life! I met my girlfriend Sarah here 6 months ago. The matching algorithm really understood what I was looking for.',
+            'LoveBond changed my life! I met my girlfriend Sarah here 6 months ago. The matching algorithm really understood what I was looking for.',
         avatar: 'https://randomuser.me/api/portraits/men/12.jpg',
         rating: 5,
     },
@@ -27,7 +27,7 @@ const testimonials: TestimonialItem[] = [
         role: 'Teacher',
         company: 'Elementary School',
         content:
-            'I was skeptical about online dating, but LoveConnect made it so easy. I found someone who shares my values and interests. Highly recommend!',
+            'I was skeptical about online dating, but LoveBond made it so easy. I found someone who shares my values and interests. Highly recommend!',
         avatar: 'https://randomuser.me/api/portraits/women/14.jpg',
         rating: 5,
     },
@@ -45,7 +45,7 @@ const testimonials: TestimonialItem[] = [
         role: 'Marketing Manager',
         company: 'Digital Agency',
         content:
-            'I found my perfect match within a month! The compatibility scores are spot-on. We\'re planning our future together now.',
+            "I found my perfect match within a month! The compatibility scores are spot-on. We're planning our future together now.",
         avatar: 'https://randomuser.me/api/portraits/women/32.jpg',
         rating: 5,
     },
@@ -63,7 +63,7 @@ const testimonials: TestimonialItem[] = [
         role: 'Doctor',
         company: 'City Hospital',
         content:
-            'LoveConnect helped me find someone who understands my busy schedule. We\'ve been together for 8 months and couldn\'t be happier!',
+            "LoveBond helped me find someone who understands my busy schedule. We've been together for 8 months and couldn't be happier!",
         avatar: 'https://randomuser.me/api/portraits/women/45.jpg',
         rating: 5,
     },
@@ -86,7 +86,7 @@ export const Testimonials01 = () => {
                     <h2 className="text-2xl font-semibold sm:text-3xl lg:text-4xl">Success Stories</h2>
 
                     <p className="text-muted-foreground text-xl">
-                        Real couples who found love through LoveConnect. Their stories inspire us every day.
+                        Real couples who found love through LoveBond. Their stories inspire us every day.
                     </p>
 
                     <div className="flex items-center gap-4">

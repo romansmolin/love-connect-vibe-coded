@@ -5,9 +5,9 @@ import React, { useState } from 'react'
 import { Menu as MenuIcon, Sparkles, X } from 'lucide-react'
 import Link from 'next/link'
 
+import { AnimatedShinyText } from '@/shared/ui/animated-shiny-text'
 import { BorderBeam } from '@/shared/ui/border-beam'
 import { Button } from '@/shared/ui/button'
-import { AnimatedShinyText } from '@/shared/ui/animated-shiny-text'
 
 import { Logo } from '../logo'
 
@@ -29,19 +29,14 @@ export const Header03 = ({ navigationData, actions }: Header03Props) => {
             <header className="fixed top-4 left-1/2 z-50 w-[95%] max-w-5xl -translate-x-1/2">
                 <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-background/60 backdrop-blur-xl shadow-2xl">
                     {/* Border Beam Effect */}
-                    <BorderBeam
-                        colorFrom="#7c3aed"
-                        colorTo="#ec4899"
-                        duration={8}
-                        size={80}
-                    />
+                    <BorderBeam colorFrom="#7c3aed" colorTo="#ec4899" duration={8} size={80} />
 
                     <div className="flex items-center justify-between px-4 py-3 sm:px-6">
                         {/* Logo & Brand */}
                         <Link className="flex items-center gap-3" href="/">
                             <Logo className="h-8 w-8" />
                             <AnimatedShinyText className="text-lg font-bold" shimmerWidth={150}>
-                                LoveConnect
+                                LoveBond
                             </AnimatedShinyText>
                         </Link>
 
@@ -80,9 +75,13 @@ export const Header03 = ({ navigationData, actions }: Header03Props) => {
                     <div className="flex h-full flex-col">
                         {/* Mobile Header */}
                         <div className="flex items-center justify-between border-b border-border/50 px-4 py-4">
-                            <Link className="flex items-center gap-3" href="/" onClick={() => setIsMobileOpen(false)}>
+                            <Link
+                                className="flex items-center gap-3"
+                                href="/"
+                                onClick={() => setIsMobileOpen(false)}
+                            >
                                 <Logo className="h-8 w-8" />
-                                <span className="text-lg font-bold">LoveConnect</span>
+                                <span className="text-lg font-bold">LoveBond</span>
                             </Link>
                             <Button size="icon" variant="ghost" onClick={() => setIsMobileOpen(false)}>
                                 <X className="h-5 w-5" />
@@ -117,4 +116,3 @@ export const Header03 = ({ navigationData, actions }: Header03Props) => {
         </>
     )
 }
-

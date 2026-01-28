@@ -8,7 +8,7 @@ const Stats = () => {
             <div className="max-w-screen-xl mx-auto w-full px-6 xl:px-0">
                 <h2 className="text-4xl md:text-5xl font-bold tracking-tight">Find love. Build connections.</h2>
                 <p className="mt-6 text-lg max-w-2xl text-foreground/70">
-                    LoveConnect helps you discover meaningful relationships with compatible singles in your area.
+                    LoveBond helps you discover meaningful relationships with compatible singles in your area.
                     Chat, meet, and build connections that last.
                 </p>
 
@@ -29,7 +29,7 @@ const Stats = () => {
                         </span>
                         <p className="mt-6 font-semibold text-xl">Matches per week</p>
                         <p className="mt-2 text-[17px] text-muted-foreground">
-                            Average number of quality matches for active LoveConnect users.
+                            Average number of quality matches for active LoveBond users.
                         </p>
                     </div>
 
@@ -67,7 +67,7 @@ const Stats = () => {
                         </span>
                         <p className="mt-6 font-semibold text-xl">Successful matches</p>
                         <p className="mt-2 text-[17px] text-muted-foreground">
-                            Couples who found love through LoveConnect and are still together.
+                            Couples who found love through LoveBond and are still together.
                         </p>
                     </div>
 

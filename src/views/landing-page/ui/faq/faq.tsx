@@ -9,7 +9,7 @@ interface FAQProps {
 const FAQList: FAQProps[] = [
     {
         question: 'Do you offer a free plan?',
-        answer: 'Yes — LoveConnect includes a forever-free plan with all essential features for creators. No credit card required.',
+        answer: 'Yes — LoveBond includes a forever-free plan with all essential features for creators. No credit card required.',
         value: 'item-1',
     },
     {
@@ -29,7 +29,7 @@ const FAQList: FAQProps[] = [
     },
     {
         question: 'Is there a limit on how many posts I can schedule?',
-        answer: 'Yes — LoveConnect uses generous scheduling and publishing limits to protect your accounts from platform blocks or throttling. These limits are designed to feel unlimited for normal use while staying within safe API boundaries.',
+        answer: 'Yes — LoveBond uses generous scheduling and publishing limits to protect your accounts from platform blocks or throttling. These limits are designed to feel unlimited for normal use while staying within safe API boundaries.',
         value: 'item-5',
     },
     {
@@ -49,7 +49,7 @@ const FAQList: FAQProps[] = [
     },
     {
         question: 'Do you post automatically at the scheduled time?',
-        answer: 'Yes — LoveConnect auto-publishes your posts according to your schedule while respecting each platform’s API rules and availability.',
+        answer: 'Yes — LoveBond auto-publishes your posts according to your schedule while respecting each platform’s API rules and availability.',
         value: 'item-9',
     },
     {
@@ -69,7 +69,7 @@ const FAQList: FAQProps[] = [
     },
     {
         question: 'Is my data secure?',
-        answer: 'Yes. LoveConnect never exposes or stores your tokens in plain form. All authentication stages use secure OAuth flows and encrypted storage. LoveConnect never posts anything without your explicit approval.',
+        answer: 'Yes. LoveBond never exposes or stores your tokens in plain form. All authentication stages use secure OAuth flows and encrypted storage. LoveBond never posts anything without your explicit approval.',
         value: 'item-13',
     },
 ]

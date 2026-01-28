@@ -13,7 +13,7 @@ const features = [
     {
         icon: Blocks,
         title: 'Simple & Intuitive',
-        description: 'No complicated setups or confusing interfaces. LoveConnect is easy to use and navigate.',
+        description: 'No complicated setups or confusing interfaces. LoveBond is easy to use and navigate.',
     },
     {
         icon: Target,
@@ -47,7 +47,7 @@ const Features1 = () => {
         <div className="flex items-center justify-center py-10 md:py-14">
             <div className="flex flex-col gap-12">
                 <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-center">
-                    Why <span className="text-primary">LoveConnect</span> is Different
+                    Why <span className="text-primary">LoveBond</span> is Different
                 </h2>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-screen-lg mx-auto px-6">
                     {features.map((feature) => (

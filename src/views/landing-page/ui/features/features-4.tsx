@@ -44,7 +44,7 @@ const Features4 = () => {
                     meaningful dates
                 </h2>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
-                    LoveConnect turns introductions into real conversations with a focused, guided flow.
+                    LoveBond turns introductions into real conversations with a focused, guided flow.
                 </p>
             </div>
 

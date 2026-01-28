@@ -17,7 +17,7 @@ const beforeConfig = {
 }
 
 const afterConfig = {
-    title: 'LoveConnect Makes Dating Effortless',
+    title: 'LoveBond Makes Dating Effortless',
     items: [
         'AI-powered matching finds truly compatible partners.',
         'Verified profiles ensure authentic connections.',
@@ -50,7 +50,7 @@ export const BeforeAfter02 = () => {
     return (
         <section className="relative flex flex-col gap-12 overflow-hidden bg-primary/40 py-8 md:py-14">
             <h2 className="text-center text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
-                Find Your Perfect Match with <span className="font-pacifico text-primary">LoveConnect</span>
+                Find Your Perfect Match with <span className="font-pacifico text-primary">LoveBond</span>
             </h2>
             <div className="mx-auto max-w-6xl px-8">
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">

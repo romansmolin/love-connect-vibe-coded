@@ -41,7 +41,7 @@ export const HeroSection03 = () => {
                             colors={['#7c3aed', '#ec4899', '#06b6d4', '#10b981']}
                             speed={1.5}
                         >
-                            LoveConnect
+                            LoveBond
                         </AuroraText>
                     </span>
                 </h1>

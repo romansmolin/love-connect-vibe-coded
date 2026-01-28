@@ -56,8 +56,9 @@ const HeroSections02 = () => {
                         color: 'var(--foreground, #1f2937)',
                     }}
                 >
-                    With <span className="italic font-bold text-primary">LoveConnect</span>, discover meaningful
-                    connections, chat with compatible matches, and find the relationship you've been looking for.{' '}
+                    With <span className="italic font-bold text-primary">LoveBond</span>, discover meaningful
+                    connections, chat with compatible matches, and find the relationship you've been looking
+                    for.{' '}
                 </p>
 
                 <div className="flex gap-5 w-full">

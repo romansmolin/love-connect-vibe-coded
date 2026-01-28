@@ -24,7 +24,7 @@ const Header = ({ isAuth, children, showModeToggle = true }: HeaderProps) => {
                 <div className="w-full flex justify-between items-center h-10 md:h-auto">
                     <Link className="text-primary p-1 md:p-2 flex gap-3 items-center" href={'/'}>
                         <Logo className="h-10 w-10 md:h-12 md:w-12" />
-                        <span className="text-md md:text-xl font-bold italic">LoveConnect</span>
+                        <span className="text-md md:text-xl font-bold italic">LoveBond</span>
                     </Link>
 
                     {/* Navigation for large screens */}

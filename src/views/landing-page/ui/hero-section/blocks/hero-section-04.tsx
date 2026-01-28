@@ -68,7 +68,7 @@ export const HeroSection04 = () => {
 
                     <p className="max-w-xl text-lg text-muted-foreground sm:text-xl">
                         Discover meaningful connections with intelligent matching.
-                        <span className="font-medium text-foreground"> LoveConnect </span>
+                        <span className="font-medium text-foreground"> LoveBond </span>
                         analyzes compatibility to help you find your perfect match.
                     </p>
 

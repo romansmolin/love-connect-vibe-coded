@@ -11,12 +11,12 @@ const beforeConfig = {
         'Endless swiping with no meaningful connections.',
         'Fake profiles and catfishing waste your time.',
         'No way to know if someone is truly compatible.',
-        'Limited matches that don\'t align with your values.',
+        "Limited matches that don't align with your values.",
     ],
 }
 
 const afterConfig = {
-    title: 'LoveConnect Makes Dating Effortless',
+    title: 'LoveBond Makes Dating Effortless',
     items: [
         'AI-powered matching finds truly compatible partners.',
         'Verified profiles ensure authentic connections.',
@@ -49,7 +49,7 @@ export const BeforeAfter01 = () => {
     return (
         <section className="relative flex flex-col gap-12 overflow-hidden bg-primary py-8 md:py-14">
             <h2 className="text-center text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
-                Find Your Perfect Match with <span className="italic font-[var(--pacifico)]">LoveConnect</span>
+                Find Your Perfect Match with <span className="italic font-[var(--pacifico)]">LoveBond</span>
             </h2>
             <div className="mx-auto max-w-5xl px-8">
                 <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
@@ -103,4 +103,3 @@ export const BeforeAfter01 = () => {
         </section>
     )
 }
-

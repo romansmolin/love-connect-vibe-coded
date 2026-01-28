@@ -31,8 +31,8 @@ interface Footer2Props {
 const Footer2 = ({
     logo = {
         src: '',
-        alt: 'LoveConnect logo',
-        title: 'LoveConnect',
+        alt: 'LoveBond logo',
+        title: 'LoveBond',
         url: '/',
     },
     tagline = '',
@@ -65,7 +65,7 @@ const Footer2 = ({
             ],
         },
     ],
-    copyright = '© 2026 LoveConnect. All rights reserved.',
+    copyright = '© 2026 LoveBond. All rights reserved.',
     bottomLinks = [
         { text: 'Terms and Conditions', url: '/terms-of-conditions' },
         { text: 'Privacy Policy', url: '/privacy' },
