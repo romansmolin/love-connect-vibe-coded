@@ -97,6 +97,15 @@ const Footer2 = ({
                                 </ul>
                             </div>
                         ))}
+                        <div>
+                            <h3 className="mb-4 text-base font-bold text-foreground">Company Info</h3>
+                            <ul className="space-y-3 text-sm text-muted-foreground">
+                                <li className="font-medium">SYNEXGEN Sp. z.o.o</li>
+                                <li className="font-medium">ALEJA JANA PAWŁA II, nr 27, lok.</li>
+                                <li className="font-medium">WARSZAWA, 00-867, POLSKA</li>
+                                <li className="font-medium">KRS: 0001185091</li>
+                            </ul>
+                        </div>
                     </div>
                     <div className="mt-10">
                         <div className="mx-auto w-full max-w-5xl overflow-hidden rounded-2xl border border-primary/10 bg-background/40 px-3 py-2">
