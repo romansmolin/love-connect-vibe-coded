@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 
 import { CreditCard, Crown, Landmark, Wallet as WalletIcon } from 'lucide-react'
+import Link from 'next/link'
 
 import { CreditTransaction } from '@/entities/credit'
 import { useGetWalletQuery } from '@/entities/credit'
@@ -22,6 +23,8 @@ import {
 import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
+import { Checkbox } from '@/shared/ui/checkbox'
+import { Label } from '@/shared/ui/label'
 import { Skeleton } from '@/shared/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs'
 
@@ -93,7 +96,15 @@ const TransactionRow = ({ transaction }: { transaction: CreditTransaction }) => 
 
 export const WalletPage = () => {
     const { data, isLoading } = useGetWalletQuery()
-    const { buyCredits, isLoading: isPurchasing } = useBuyCredits()
+    const {
+        isConsentOpen,
+        consentChecked,
+        setConsentChecked,
+        requestConsent,
+        closeConsent,
+        confirmConsent,
+        isLoading: isPurchasing,
+    } = useBuyCredits()
 
     const [selectedPackage, setSelectedPackage] = useState<CreditPackage | null>(null)
 
@@ -112,7 +123,7 @@ export const WalletPage = () => {
 
     const handlePurchaseConfirm = async () => {
         if (!selectedPackage) return
-        await buyCredits(selectedPackage.credits)
+        await confirmConsent()
         setSelectedPackage(null)
     }
 
@@ -211,7 +222,10 @@ export const WalletPage = () => {
                                         <Button
                                             className="mt-auto w-full"
                                             disabled={isPurchasing}
-                                            onClick={() => setSelectedPackage(pack)}
+                                            onClick={() => {
+                                                setSelectedPackage(pack)
+                                                requestConsent(pack.credits)
+                                            }}
                                         >
                                             Buy credits
                                         </Button>
@@ -286,8 +300,13 @@ export const WalletPage = () => {
             </Card>
 
             <AlertDialog
-                open={Boolean(selectedPackage)}
-                onOpenChange={(open) => (!open ? setSelectedPackage(null) : null)}
+                open={isConsentOpen && Boolean(selectedPackage)}
+                onOpenChange={(open) => {
+                    if (!open) {
+                        closeConsent()
+                        setSelectedPackage(null)
+                    }
+                }}
             >
                 <AlertDialogContent>
                     <AlertDialogHeader>
@@ -300,9 +319,40 @@ export const WalletPage = () => {
                                 : 'Confirm credit purchase.'}
                         </AlertDialogDescription>
                     </AlertDialogHeader>
+                    <div className="space-y-3">
+                        <div className="flex items-start gap-2">
+                            <Checkbox
+                                checked={consentChecked}
+                                disabled={isPurchasing}
+                                id="credit-consent"
+                                onCheckedChange={(value) => setConsentChecked(Boolean(value))}
+                            />
+                            <Label
+                                className="text-sm leading-relaxed text-muted-foreground"
+                                htmlFor="credit-consent"
+                            >
+                                I agree to the{' '}
+                                <Link className="underline hover:text-primary" href="/terms-of-service">
+                                    Terms of Service
+                                </Link>
+                                ,{' '}
+                                <Link className="underline hover:text-primary" href="/privacy-policy">
+                                    Privacy Policy
+                                </Link>
+                                , and{' '}
+                                <Link className="underline hover:text-primary" href="/return-policy">
+                                    Return Policy
+                                </Link>
+                                .
+                            </Label>
+                        </div>
+                    </div>
                     <AlertDialogFooter>
                         <AlertDialogCancel disabled={isPurchasing}>Cancel</AlertDialogCancel>
-                        <AlertDialogAction disabled={isPurchasing} onClick={handlePurchaseConfirm}>
+                        <AlertDialogAction
+                            disabled={isPurchasing || !consentChecked}
+                            onClick={handlePurchaseConfirm}
+                        >
                             Continue to payment
                         </AlertDialogAction>
                     </AlertDialogFooter>

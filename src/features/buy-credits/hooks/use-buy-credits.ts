@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 
 import { useDispatch } from 'react-redux'
 import { toast } from 'sonner'
@@ -20,6 +20,9 @@ const resolveErrorMessage = (error: unknown) => {
 export const useBuyCredits = () => {
     const [purchaseCredits, { isLoading }] = usePurchaseCreditsMutation()
     const dispatch = useDispatch()
+    const [isConsentOpen, setIsConsentOpen] = useState(false)
+    const [consentChecked, setConsentChecked] = useState(false)
+    const [pendingCredits, setPendingCredits] = useState<number | null>(null)
 
     const buyCredits = useCallback(
         async (credits: number) => {
@@ -59,9 +62,43 @@ export const useBuyCredits = () => {
         [dispatch, purchaseCredits]
     )
 
+    const requestConsent = useCallback((credits: number) => {
+        setPendingCredits(credits)
+        setConsentChecked(false)
+        setIsConsentOpen(true)
+    }, [])
+
+    const closeConsent = useCallback(() => {
+        setIsConsentOpen(false)
+        setConsentChecked(false)
+        setPendingCredits(null)
+    }, [])
+
+    const confirmConsent = useCallback(async () => {
+        if (!pendingCredits) return
+        if (!consentChecked) {
+            toast.error('Please accept the Terms, Privacy Policy, and Return Policy to continue.')
+            return
+        }
+
+        try {
+            await buyCredits(pendingCredits)
+        } finally {
+            setIsConsentOpen(false)
+            setConsentChecked(false)
+            setPendingCredits(null)
+        }
+    }, [buyCredits, consentChecked, pendingCredits])
+
     return {
         buyCredits,
         isLoading,
+        isConsentOpen,
+        consentChecked,
+        setConsentChecked,
+        requestConsent,
+        closeConsent,
+        confirmConsent,
     }
 }
 

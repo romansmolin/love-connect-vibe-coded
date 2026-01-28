@@ -17,12 +17,18 @@ const SignInForm = ({ thirdPartyAuth }: { thirdPartyAuth?: JSX.Element }) => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [rememberMe, setRememberMe] = useState(false)
+    const [consentAccepted, setConsentAccepted] = useState(false)
     const [signIn, { isLoading }] = useSignInMutation()
     const router = useRouter()
 
     const handleSignIn = async () => {
         if (!username || !password) {
             toast.error('Username and password are required.')
+            return
+        }
+
+        if (!consentAccepted) {
+            toast.error('Please accept the Terms, Privacy Policy, and Return Policy to continue.')
             return
         }
 
@@ -91,6 +97,30 @@ const SignInForm = ({ thirdPartyAuth }: { thirdPartyAuth?: JSX.Element }) => {
                             />
                             Remember me
                         </label>
+                    </div>
+
+                    <div className="flex items-start gap-2">
+                        <Checkbox
+                            checked={consentAccepted}
+                            disabled={isLoading}
+                            id="sign-in-consent"
+                            onCheckedChange={(value) => setConsentAccepted(Boolean(value))}
+                        />
+                        <Label className="text-sm text-muted-foreground" htmlFor="sign-in-consent">
+                            I agree to the{' '}
+                            <Link className="underline hover:text-primary" href="/terms-of-service">
+                                Terms of Service
+                            </Link>
+                            ,{' '}
+                            <Link className="underline hover:text-primary" href="/privacy-policy">
+                                Privacy Policy
+                            </Link>
+                            , and{' '}
+                            <Link className="underline hover:text-primary" href="/return-policy">
+                                Return Policy
+                            </Link>
+                            .
+                        </Label>
                     </div>
 
                     <Button className="w-full" disabled={isLoading} type="submit">

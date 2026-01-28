@@ -3,12 +3,14 @@
 import React, { JSX, useState } from 'react'
 
 import { Loader2, LogIn } from 'lucide-react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
 import { useSignUpMutation } from '@/entities/user'
 import type { Gender, LookingFor } from '@/entities/user'
 import { Button } from '@/shared/ui/button'
+import { Checkbox } from '@/shared/ui/checkbox'
 import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select'
@@ -22,12 +24,18 @@ const SignUpForm = ({ thirdPartyAuth }: { thirdPartyAuth?: JSX.Element }) => {
     const [lookingFor, setLookingFor] = useState<LookingFor | ''>('')
     const [dateOfBirth, setDateOfBirth] = useState('')
     const [city, setCity] = useState('')
+    const [consentAccepted, setConsentAccepted] = useState(false)
     const [signUp, { isLoading }] = useSignUpMutation()
     const router = useRouter()
 
     const handleSignUp = async () => {
         if (!name || !email || !password || !username || !gender || !lookingFor || !dateOfBirth || !city) {
             toast.error('All fields are required.')
+            return
+        }
+
+        if (!consentAccepted) {
+            toast.error('Please accept the Terms, Privacy Policy, and Return Policy to continue.')
             return
         }
 
@@ -180,6 +188,30 @@ const SignUpForm = ({ thirdPartyAuth }: { thirdPartyAuth?: JSX.Element }) => {
                             value={city}
                             onChange={(e) => setCity(e.target.value)}
                         />
+                    </div>
+
+                    <div className="flex items-start gap-2">
+                        <Checkbox
+                            checked={consentAccepted}
+                            disabled={isLoading}
+                            id="sign-up-consent"
+                            onCheckedChange={(value) => setConsentAccepted(Boolean(value))}
+                        />
+                        <Label className="text-sm text-muted-foreground" htmlFor="sign-up-consent">
+                            I agree to the{' '}
+                            <Link className="underline hover:text-primary" href="/terms-of-service">
+                                Terms of Service
+                            </Link>
+                            ,{' '}
+                            <Link className="underline hover:text-primary" href="/privacy-policy">
+                                Privacy Policy
+                            </Link>
+                            , and{' '}
+                            <Link className="underline hover:text-primary" href="/return-policy">
+                                Return Policy
+                            </Link>
+                            .
+                        </Label>
                     </div>
 
                     <Button className="w-full" disabled={isLoading} type="submit">
