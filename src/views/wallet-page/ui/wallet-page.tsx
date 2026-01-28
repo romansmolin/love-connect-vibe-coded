@@ -308,7 +308,7 @@ export const WalletPage = () => {
                     }
                 }}
             >
-                <AlertDialogContent>
+                <AlertDialogContent className="max-w-xl w-full">
                     <AlertDialogHeader>
                         <AlertDialogTitle>Confirm credit purchase</AlertDialogTitle>
                         <AlertDialogDescription>
@@ -327,32 +327,36 @@ export const WalletPage = () => {
                                 id="credit-consent"
                                 onCheckedChange={(value) => setConsentChecked(Boolean(value))}
                             />
-                            <Label
-                                className="text-sm leading-5 text-muted-foreground"
-                                htmlFor="credit-consent"
-                            >
+                            <Label className="text-sm leading-5 text-muted-foreground" htmlFor="credit-consent">
                                 I agree to the{' '}
-                                <Link
-                                    className="underline underline-offset-2 hover:text-primary"
-                                    href="/terms-of-service"
-                                >
-                                    Terms of Service
-                                </Link>
-                                ,{' '}
-                                <Link
-                                    className="underline underline-offset-2 hover:text-primary"
-                                    href="/privacy-policy"
-                                >
-                                    Privacy Policy
-                                </Link>
-                                , and{' '}
-                                <Link
-                                    className="underline underline-offset-2 hover:text-primary"
-                                    href="/return-policy"
-                                >
-                                    Return Policy
-                                </Link>
-                                .
+                                <span className="whitespace-nowrap">
+                                    <Link
+                                        className="underline underline-offset-2 hover:text-primary"
+                                        href="/terms-of-service"
+                                    >
+                                        Terms of Service
+                                    </Link>
+                                    ,
+                                </span>{' '}
+                                <span className="whitespace-nowrap">
+                                    <Link
+                                        className="underline underline-offset-2 hover:text-primary"
+                                        href="/privacy-policy"
+                                    >
+                                        Privacy Policy
+                                    </Link>
+                                    ,
+                                </span>{' '}
+                                <span className="whitespace-nowrap">
+                                    and{' '}
+                                    <Link
+                                        className="underline underline-offset-2 hover:text-primary"
+                                        href="/return-policy"
+                                    >
+                                        Return Policy
+                                    </Link>
+                                    .
+                                </span>
                             </Label>
                         </div>
                     </div>
