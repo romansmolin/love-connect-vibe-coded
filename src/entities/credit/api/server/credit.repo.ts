@@ -72,4 +72,11 @@ export const creditRepo = {
             },
         })
     },
+
+    markReceiptSent(id: string) {
+        return prisma.creditTransaction.update({
+            where: { id },
+            data: { receiptSentAt: new Date() },
+        })
+    },
 }

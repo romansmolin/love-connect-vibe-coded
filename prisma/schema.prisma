@@ -158,6 +158,7 @@ model CreditTransaction {
   amountCents    Int
   currency       String                  @default("EUR")
   description    String?
+  receiptSentAt  DateTime?
   createdAt      DateTime                @default(now())
   updatedAt      DateTime                @updatedAt
 
@@ -166,4 +167,29 @@ model CreditTransaction {
 
   @@index([userId])
   @@index([paymentTokenId])
+}
+
+model EmailContact {
+  id             String     @id @default(cuid())
+  externalUserId String     @unique
+  email          String
+  verifiedAt     DateTime?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  verificationTokens EmailVerificationToken[]
+}
+
+model EmailVerificationToken {
+  id             String     @id @default(cuid())
+  emailContactId String
+  tokenHash      String     @unique
+  expiresAt      DateTime
+  usedAt         DateTime?
+  createdAt      DateTime   @default(now())
+
+  emailContact EmailContact @relation(fields: [emailContactId], references: [id])
+
+  @@index([emailContactId])
+  @@index([expiresAt])
 }

@@ -1,6 +1,7 @@
-import { paymentService } from '@/entities/payment/api/server/payment.service'
 import { HttpError } from '@/shared/http-client'
 import { centsFromCredits } from '@/shared/lib/credits'
+import { emailService } from '@/entities/email/api/server/services/email.service'
+import { paymentService } from '@/entities/payment/api/server/payment.service'
 
 import type { CreditTransactionStatus } from '../../model/types'
 
@@ -26,6 +27,32 @@ const ensureWallet = async (userId: string) => {
     const existing = await creditRepo.findWalletByUserId(userId)
     if (existing) return existing
     return creditRepo.upsertWallet(userId)
+}
+
+const sendReceiptIfNeeded = async (params: {
+    transactionId: string
+    externalUserId: string
+    credits: number
+    amountCents: number
+    currency: string
+    receiptSentAt?: Date | null
+}) => {
+    if (params.receiptSentAt) return
+
+    try {
+        const sent = await emailService.sendCreditReceiptEmail({
+            externalUserId: params.externalUserId,
+            credits: params.credits,
+            amountCents: params.amountCents,
+            currency: params.currency,
+            transactionId: params.transactionId,
+        })
+        if (sent) {
+            await creditRepo.markReceiptSent(params.transactionId)
+        }
+    } catch (error) {
+        console.error('[credit-purchase] failed to send receipt email', error)
+    }
 }
 
 export const creditService = {
@@ -134,6 +161,14 @@ export const creditService = {
         if (!transaction || !transaction.paymentToken) return null
 
         if (transaction.status === 'SUCCESSFUL') {
+            await sendReceiptIfNeeded({
+                transactionId: transaction.id,
+                externalUserId: transaction.userId,
+                credits: transaction.credits,
+                amountCents: transaction.amountCents,
+                currency: transaction.currency,
+                receiptSentAt: transaction.receiptSentAt,
+            })
             return transaction
         }
 
@@ -143,6 +178,19 @@ export const creditService = {
             await creditRepo.updateWalletBalance(transaction.walletId, transaction.credits)
         }
 
-        return creditRepo.updateTransactionStatus(transaction.id, mapped)
+        const updated = await creditRepo.updateTransactionStatus(transaction.id, mapped)
+
+        if (mapped === 'SUCCESSFUL') {
+            await sendReceiptIfNeeded({
+                transactionId: transaction.id,
+                externalUserId: transaction.userId,
+                credits: transaction.credits,
+                amountCents: transaction.amountCents,
+                currency: transaction.currency,
+                receiptSentAt: transaction.receiptSentAt,
+            })
+        }
+
+        return updated
     },
 }

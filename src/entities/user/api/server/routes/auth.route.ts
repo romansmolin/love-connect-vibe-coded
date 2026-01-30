@@ -2,6 +2,7 @@ import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
 
 import { HttpError } from '@/shared/http-client'
+import { emailService } from '@/entities/email/api/server/services/email.service'
 
 import type { SignInRequest, SignUpRequest } from '../../../model/types'
 import { LANG_COOKIE_NAME, SESSION_COOKIE_NAME, USER_COOKIE_NAME } from '../config'
@@ -112,6 +113,16 @@ export const signUpRoute = async (request: NextRequest) => {
         const ipAddress = getClientIp(request)
 
         const result = await authService.signUp({ ...body, ipAddress, userAgent })
+
+        try {
+            await emailService.sendVerificationEmail({
+                externalUserId: String(result.userId),
+                email: body.email,
+                name: body.name,
+            })
+        } catch (error) {
+            console.error('[auth-route] failed to send verification email', error)
+        }
 
         const response = NextResponse.json({
             accepted: result.accepted,
