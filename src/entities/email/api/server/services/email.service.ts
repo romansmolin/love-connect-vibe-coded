@@ -60,6 +60,13 @@ const buildVerifyUrl = (token: string) => {
 }
 
 export const emailService = {
+    async sendTestEmail(to: string) {
+        const subject = 'LoveBond SMTP test'
+        const text = 'This is a test email from LoveBond SMTP setup.'
+        const html = '<p>This is a test email from LoveBond SMTP setup.</p>'
+        return sendMail({ to, subject, html, text })
+    },
+
     async createVerificationToken(params: { externalUserId: string; email: string }) {
         const contact = await emailContactRepo.upsertByExternalUserId({
             externalUserId: params.externalUserId,
