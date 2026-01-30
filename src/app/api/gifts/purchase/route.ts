@@ -14,6 +14,7 @@ export const POST = async (request: NextRequest) => {
 
     const body = await request.json().catch(() => null)
     const giftId = body?.giftId as string | undefined
+    const paymentMode = body?.paymentMode as 'credits' | 'payment' | undefined
 
     console.log('[gift-purchase] request', {
         hasSession: Boolean(sessionId),
@@ -29,6 +30,7 @@ export const POST = async (request: NextRequest) => {
         const result = await giftService.createPurchase({
             senderId,
             giftId,
+            paymentMode,
         })
 
         return NextResponse.json({
@@ -36,6 +38,9 @@ export const POST = async (request: NextRequest) => {
             paymentToken: result.paymentToken.token,
             checkoutToken: result.checkout.token,
             status: result.transaction.status,
+            paymentMode: result.paymentMode,
+            creditsSpent: 'creditsSpent' in result ? result.creditsSpent : undefined,
+            walletBalance: 'walletBalance' in result ? result.walletBalance : undefined,
         })
     } catch (error) {
         if (error instanceof HttpError) {

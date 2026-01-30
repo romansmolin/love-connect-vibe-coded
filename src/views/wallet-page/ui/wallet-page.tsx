@@ -68,7 +68,8 @@ const SummaryCard = ({
 
 const TransactionRow = ({ transaction }: { transaction: CreditTransaction }) => {
     const amount = (transaction.amountCents / 100).toFixed(2)
-    const isPurchase = transaction.type === 'PURCHASE'
+    const typeLabel =
+        transaction.type === 'PURCHASE' ? 'Purchase' : transaction.type === 'SPEND' ? 'Spend' : 'Adjustment'
     const badgeVariant = transaction.status === 'SUCCESSFUL' ? 'default' : 'outline'
     const statusLabel = transaction.status.toLowerCase().replace('_', ' ')
 
@@ -77,8 +78,7 @@ const TransactionRow = ({ transaction }: { transaction: CreditTransaction }) => 
             <div className="space-y-1">
                 <p className="font-semibold">{transaction.description ?? 'Credit transaction'}</p>
                 <p className="text-xs text-muted-foreground">
-                    {new Date(transaction.createdAt).toLocaleDateString()} •{' '}
-                    {isPurchase ? 'Purchase' : 'Adjustment'}
+                    {new Date(transaction.createdAt).toLocaleDateString()} • {typeLabel}
                 </p>
             </div>
             <div className="flex items-center gap-3">

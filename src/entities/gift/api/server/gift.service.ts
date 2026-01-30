@@ -1,6 +1,11 @@
+import crypto from 'node:crypto'
+
+import { HttpError } from '@/shared/http-client'
+import { creditsFromCents } from '@/shared/lib/credits'
+import { prisma } from '@/shared/lib/prisma'
+import { creditService } from '@/entities/credit/api/server/credit.service'
 import { matchService } from '@/entities/match/api/server/services/match.service'
 import { paymentService } from '@/entities/payment/api/server/payment.service'
-import { HttpError } from '@/shared/http-client'
 
 import type { GiftTransaction, GiftTransactionStatus } from '../../model/types'
 
@@ -73,11 +78,57 @@ export const giftService = {
         return seedCatalogIfEmpty()
     },
 
-    async createPurchase(params: { senderId: string; giftId: string }) {
+    async createPurchase(params: { senderId: string; giftId: string; paymentMode?: 'credits' | 'payment' }) {
         const gift = await giftRepo.findGiftById(params.giftId)
         if (!gift || gift.status !== 'ACTIVE') {
             console.warn('[gift-purchase] gift not available', { giftId: params.giftId, status: gift?.status })
             throw new HttpError('Gift not available', 404)
+        }
+
+        if (params.paymentMode === 'credits') {
+            const creditsNeeded = creditsFromCents(gift.priceCents)
+
+            const spend = await creditService.spendCredits({
+                userId: params.senderId,
+                credits: creditsNeeded,
+                amountCents: gift.priceCents,
+                description: `Gift purchase: ${gift.name}`,
+            })
+
+            const paymentToken = await prisma.paymentToken.create({
+                data: {
+                    token: `pt_credit_${crypto.randomUUID().replace(/-/g, '')}`,
+                    userId: params.senderId,
+                    itemType: 'ORDER',
+                    amountCents: gift.priceCents,
+                    currency: gift.currency,
+                    description: `Gift purchase with credits: ${gift.name}`,
+                    status: 'SUCCESSFUL',
+                    testMode: process.env.NEXT_PUBLIC_SECURE_PROCESSOR_TEST_MODE === 'true',
+                    rawPayload: { source: 'credits' },
+                },
+            })
+
+            const transaction = await giftRepo.createTransaction({
+                giftId: gift.id,
+                paymentTokenId: paymentToken.id,
+                senderId: params.senderId,
+                recipientId: null,
+                matchId: null,
+                amountCents: gift.priceCents,
+                currency: gift.currency,
+                status: 'AVAILABLE',
+                gatewayUid: paymentToken.gatewayUid,
+            })
+
+            return {
+                transaction,
+                paymentToken,
+                checkout: { token: undefined },
+                creditsSpent: creditsNeeded,
+                walletBalance: spend.wallet.balance,
+                paymentMode: 'credits' as const,
+            }
         }
 
         console.log('[gift-purchase] creating checkout', {
@@ -120,7 +171,12 @@ export const giftService = {
             checkoutToken: Boolean(payment.checkout.token),
         })
 
-        return { transaction, paymentToken: payment.paymentToken, checkout: payment.checkout }
+        return {
+            transaction,
+            paymentToken: payment.paymentToken,
+            checkout: payment.checkout,
+            paymentMode: 'payment' as const,
+        }
     },
 
     async listInventory(senderId: string) {

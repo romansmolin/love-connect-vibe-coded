@@ -1,4 +1,5 @@
 import { HttpError } from '@/shared/http-client'
+import { prisma } from '@/shared/lib/prisma'
 import { centsFromCredits } from '@/shared/lib/credits'
 import { emailService } from '@/entities/email/api/server/services/email.service'
 import { paymentService } from '@/entities/payment/api/server/payment.service'
@@ -192,5 +193,38 @@ export const creditService = {
         }
 
         return updated
+    },
+
+    async spendCredits(params: { userId: string; credits: number; amountCents: number; description: string }) {
+        if (!params.credits || params.credits <= 0) {
+            throw new HttpError('Credits amount must be greater than zero.', 400)
+        }
+
+        const wallet = await ensureWallet(params.userId)
+
+        if (wallet.balance < params.credits) {
+            throw new HttpError('Insufficient credits.', 400)
+        }
+
+        const [updatedWallet, transaction] = await prisma.$transaction([
+            prisma.creditWallet.update({
+                where: { id: wallet.id },
+                data: { balance: { decrement: params.credits } },
+            }),
+            prisma.creditTransaction.create({
+                data: {
+                    walletId: wallet.id,
+                    userId: params.userId,
+                    type: 'SPEND',
+                    status: 'SUCCESSFUL',
+                    credits: params.credits,
+                    amountCents: params.amountCents,
+                    currency: wallet.currency,
+                    description: params.description,
+                },
+            }),
+        ])
+
+        return { wallet: updatedWallet, transaction }
     },
 }

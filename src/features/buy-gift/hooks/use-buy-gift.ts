@@ -23,12 +23,19 @@ export const useBuyGift = () => {
     const dispatch = useDispatch()
 
     const buyGift = useCallback(
-        async (gift: Gift): Promise<PurchaseGiftResponse> => {
+        async (gift: Gift, paymentMode?: 'credits' | 'payment'): Promise<PurchaseGiftResponse> => {
             try {
-                const response = await purchaseGift({ giftId: gift.id }).unwrap()
-                toast.success(`Payment started for ${gift.name}. Complete checkout to unlock it.`)
+                const response = await purchaseGift({ giftId: gift.id, paymentMode }).unwrap()
 
                 console.log('RESPONSE: ', response)
+
+                if (response.paymentMode === 'credits') {
+                    dispatch(giftApi.util.invalidateTags(['GiftInventory']))
+                    toast.success(`Purchased ${gift.name} with credits.`)
+                    return response
+                }
+
+                toast.success(`Payment started for ${gift.name}. Complete checkout to unlock it.`)
 
                 if (response.checkoutToken) {
                     try {

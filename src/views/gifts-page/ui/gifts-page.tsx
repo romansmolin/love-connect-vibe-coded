@@ -4,11 +4,6 @@ import { useMemo, useState } from 'react'
 
 import { Gift as GiftIcon, Send, ShoppingCart, Sparkles } from 'lucide-react'
 
-import { GiftInventoryItem, PurchaseGiftResponse } from '@/entities/gift'
-import { useGetCatalogQuery, useGetInventoryQuery } from '@/entities/gift'
-import { useBuyGift } from '@/features/buy-gift'
-import { useMatchesList } from '@/features/matches'
-import { useSendGift } from '@/features/send-gift'
 import { creditsFromCents, formatCredits } from '@/shared/lib/credits'
 import { cn } from '@/shared/lib/utils'
 import {
@@ -34,6 +29,11 @@ import {
 } from '@/shared/ui/dialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select'
 import { Skeleton } from '@/shared/ui/skeleton'
+import { useGetWalletQuery } from '@/entities/credit'
+import { GiftInventoryItem, PurchaseGiftResponse, useGetCatalogQuery, useGetInventoryQuery } from '@/entities/gift'
+import { useBuyGift } from '@/features/buy-gift'
+import { useMatchesList } from '@/features/matches'
+import { useSendGift } from '@/features/send-gift'
 
 const GiftCardSkeleton = () => (
     <Card className="border-primary/10">
@@ -94,6 +94,7 @@ export const GiftsPage = () => {
         isFetching: isInventoryFetching,
         refetch: refetchInventory,
     } = useGetInventoryQuery()
+    const { data: walletData } = useGetWalletQuery()
     const { users: matches, isLoading: isMatchesLoading } = useMatchesList()
     const { buyGift, isLoading: isPurchasing } = useBuyGift()
     const { sendGift, isLoading: isSending } = useSendGift()
@@ -121,9 +122,14 @@ export const GiftsPage = () => {
         setRecipientId('')
     }
 
+    const walletBalance = walletData?.wallet.balance ?? 0
+    const creditsNeeded = selectedGift ? creditsFromCents(selectedGift.priceCents) : 0
+    const canPayWithCredits = Boolean(selectedGift && walletBalance >= creditsNeeded)
+
     const handlePurchaseConfirm = async () => {
         if (!selectedGift) return
-        const response = await buyGift(selectedGift)
+        const paymentMode = canPayWithCredits ? 'credits' : 'payment'
+        const response = await buyGift(selectedGift, paymentMode)
         setLastPurchase(response)
         setPurchaseGiftId(null)
     }
@@ -264,8 +270,9 @@ export const GiftsPage = () => {
                             Latest purchase
                         </CardTitle>
                         <CardDescription>
-                            Complete checkout with the gateway widget. Your gift appears in inventory once payment
-                            is confirmed.
+                            {lastPurchase.paymentMode === 'credits'
+                                ? 'Paid with credits. Your gift is available to send now.'
+                                : 'Complete checkout with the gateway widget. Your gift appears in inventory once payment is confirmed.'}
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="grid gap-4 text-sm sm:grid-cols-2">
@@ -281,7 +288,11 @@ export const GiftsPage = () => {
                             <p className="text-xs uppercase text-muted-foreground tracking-[0.2em]">
                                 Checkout token
                             </p>
-                            <p className="font-medium break-all">{lastPurchase.checkoutToken ?? 'Pending'}</p>
+                            <p className="font-medium break-all">
+                                {lastPurchase.paymentMode === 'credits'
+                                    ? 'Paid with credits'
+                                    : lastPurchase.checkoutToken ?? 'Pending'}
+                            </p>
                         </div>
                     </CardContent>
                 </Card>
@@ -296,11 +307,13 @@ export const GiftsPage = () => {
                         <AlertDialogTitle>Confirm purchase</AlertDialogTitle>
                         <AlertDialogDescription>
                             {selectedGift
-                                ? `Buy ${selectedGift.name} for ${(selectedGift.priceCents / 100).toFixed(2)} ${
-                                      selectedGift.currency
-                                  } (${formatCredits(
-                                      creditsFromCents(selectedGift.priceCents)
-                                  )})? Payment is required before the gift can be sent.`
+                                ? canPayWithCredits
+                                    ? `Buy ${selectedGift.name} using ${formatCredits(creditsNeeded)} from your wallet?`
+                                    : `Buy ${selectedGift.name} for ${(selectedGift.priceCents / 100).toFixed(2)} ${
+                                          selectedGift.currency
+                                      } (${formatCredits(
+                                          creditsFromCents(selectedGift.priceCents)
+                                      )})? Payment is required before the gift can be sent.`
                                 : 'Confirm gift purchase.'}
                         </AlertDialogDescription>
                     </AlertDialogHeader>

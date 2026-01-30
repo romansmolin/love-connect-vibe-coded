@@ -54,6 +54,7 @@ export interface GiftInventoryResponse {
 
 export interface PurchaseGiftRequest {
     giftId: string
+    paymentMode?: 'credits' | 'payment'
 }
 
 export interface PurchaseGiftResponse {
@@ -61,6 +62,9 @@ export interface PurchaseGiftResponse {
     paymentToken: string
     checkoutToken?: string
     status: GiftTransactionStatus
+    paymentMode: 'credits' | 'payment'
+    creditsSpent?: number
+    walletBalance?: number
 }
 
 export interface SendGiftRequest {
