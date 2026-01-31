@@ -13,6 +13,7 @@ export const giftRepo = {
         id?: string
         name: string
         emoji: string
+        imageUrl: string
         priceCents: number
         currency?: string
         status?: GiftStatus
@@ -23,6 +24,7 @@ export const giftRepo = {
                 update: {
                     name: data.name,
                     emoji: data.emoji,
+                    imageUrl: data.imageUrl,
                     priceCents: data.priceCents,
                     currency: data.currency ?? 'EUR',
                     status: data.status ?? 'ACTIVE',
@@ -30,6 +32,7 @@ export const giftRepo = {
                 create: {
                     name: data.name,
                     emoji: data.emoji,
+                    imageUrl: data.imageUrl,
                     priceCents: data.priceCents,
                     currency: data.currency ?? 'EUR',
                     status: data.status ?? 'ACTIVE',
@@ -41,6 +44,7 @@ export const giftRepo = {
             data: {
                 name: data.name,
                 emoji: data.emoji,
+                imageUrl: data.imageUrl,
                 priceCents: data.priceCents,
                 currency: data.currency ?? 'EUR',
                 status: data.status ?? 'ACTIVE',
@@ -50,10 +54,10 @@ export const giftRepo = {
     findGiftById(id: string) {
         return prisma.gift.findUnique({ where: { id } })
     },
-    archiveMissingGifts(allowedEmojis: string[]) {
+    archiveMissingGifts(allowedImageUrls: string[]) {
         return prisma.gift.updateMany({
             where: {
-                NOT: { emoji: { in: allowedEmojis } },
+                NOT: { imageUrl: { in: allowedImageUrls } },
                 status: 'ACTIVE',
             },
             data: { status: 'ARCHIVED' },

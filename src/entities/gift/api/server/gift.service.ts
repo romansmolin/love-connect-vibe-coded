@@ -12,28 +12,31 @@ import type { GiftTransaction, GiftTransactionStatus } from '../../model/types'
 import { giftRepo } from './gift.repo'
 
 const defaultCatalog = [
-    { name: 'Balloon', emoji: '🎈', priceCents: 10 },
-    { name: 'Party Popper', emoji: '🎉', priceCents: 10 },
-    { name: 'Rose', emoji: '🌹', priceCents: 10 },
-    { name: 'Chocolate', emoji: '🍫', priceCents: 10 },
-    { name: 'Coffee', emoji: '☕️', priceCents: 10 },
-    { name: 'Gem', emoji: '💎', priceCents: 10 },
+    { name: 'Gift 11', emoji: '🎁', imageUrl: '/gifts/11.png', priceCents: 10 },
+    { name: 'Eternal Rose', emoji: '🌹', imageUrl: '/gifts/Eternal%20Rose.png', priceCents: 20 },
+    { name: 'Ginger Cookie', emoji: '🍪', imageUrl: '/gifts/Ginger%20Cookie.png', priceCents: 30 },
+    { name: 'Ionic Dryer', emoji: '💨', imageUrl: '/gifts/Ionic%20Dryer.png', priceCents: 45 },
+    { name: 'Neko Helmet', emoji: '🐱', imageUrl: '/gifts/Neko%20Helmet.png', priceCents: 60 },
+    { name: 'Sharp Tongue', emoji: '👅', imageUrl: '/gifts/Sharp%20Tongue.png', priceCents: 75 },
+    { name: 'Snoop Dogg', emoji: '🐶', imageUrl: '/gifts/Snoop%20Dogg.png', priceCents: 90 },
+    { name: 'Toy Bear', emoji: '🧸', imageUrl: '/gifts/Toy%20Bear.png', priceCents: 100 },
 ]
 
 const seedCatalogIfEmpty = async () => {
     const existing = await giftRepo.listActiveGifts()
 
-    const defaultEmojis = defaultCatalog.map((gift) => gift.emoji)
+    const defaultImageUrls = defaultCatalog.map((gift) => gift.imageUrl)
 
     // Upsert default gifts (update price/name/emoji if already present)
     await Promise.all(
         defaultCatalog.map((gift) => {
-            const matched = existing.find((item) => item.emoji === gift.emoji || item.name === gift.name)
+            const matched = existing.find((item) => item.imageUrl === gift.imageUrl || item.name === gift.name)
 
             return giftRepo.upsertGift({
                 id: matched?.id,
                 name: gift.name,
                 emoji: gift.emoji,
+                imageUrl: gift.imageUrl,
                 priceCents: gift.priceCents,
                 currency: 'EUR',
                 status: 'ACTIVE',
@@ -42,7 +45,7 @@ const seedCatalogIfEmpty = async () => {
     )
 
     // Archive any old gifts that are not in the default set so they don’t clutter the gallery
-    await giftRepo.archiveMissingGifts(defaultEmojis)
+    await giftRepo.archiveMissingGifts(defaultImageUrls)
 
     return giftRepo.listActiveGifts()
 }

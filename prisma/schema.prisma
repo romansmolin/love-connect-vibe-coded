@@ -101,6 +101,7 @@ model Gift {
   id          String     @id @default(cuid())
   name        String
   emoji       String
+  imageUrl    String     @default("")
   priceCents  Int
   currency    String     @default("EUR")
   status      GiftStatus @default(ACTIVE)

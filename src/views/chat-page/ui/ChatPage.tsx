@@ -81,8 +81,8 @@ const ContactsPane = ({
     const contacts = data?.contacts ?? []
 
     return (
-        <Card className="h-full border-primary/10">
-            <CardHeader className="space-y-3">
+        <Card className="h-full border-border/70">
+            <CardHeader className="space-y-2 pb-3">
                 <div className="flex items-center justify-between">
                     <div>
                         <CardTitle className="flex items-center gap-2 text-base">
@@ -112,7 +112,7 @@ const ContactsPane = ({
                 ) : contacts.length === 0 ? (
                     <div className="p-6 text-center text-sm text-muted-foreground">No conversations yet.</div>
                 ) : (
-                    <ScrollArea className="max-h-[calc(100vh-220px)] px-3 pb-3">
+                    <ScrollArea className="max-h-[calc(100vh-200px)] px-3 pb-3">
                         <div className="space-y-2">
                             {contacts.map((contact) => (
                                 <ContactItem
@@ -147,8 +147,8 @@ const ChatWindow = ({ contact }: { contact?: ContactPreview }) => {
     }
 
     return (
-        <Card className="h-full border-primary/10">
-            <CardHeader className="flex flex-col gap-2">
+        <Card className="h-full border-border/70">
+            <CardHeader className="flex flex-col gap-2 pb-3">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <Avatar className="h-10 w-10">
@@ -181,7 +181,7 @@ const ChatWindow = ({ contact }: { contact?: ContactPreview }) => {
             </CardHeader>
             <Separator />
             <CardContent className="flex h-[520px] flex-col p-0">
-                <ScrollArea className="flex-1 px-4 py-4">
+                <ScrollArea className="flex-1 px-3 py-3">
                     {isLoading ? (
                         <div className="space-y-3">
                             {Array.from({ length: 5 }).map((_, idx) => (
@@ -220,7 +220,7 @@ const ChatWindow = ({ contact }: { contact?: ContactPreview }) => {
                     )}
                 </ScrollArea>
                 <Separator />
-                <div className="flex items-center gap-2 p-4">
+                <div className="flex items-center gap-2 p-3">
                     <Input
                         disabled={!contact || isSending}
                         placeholder={contact ? 'Type your message…' : 'Select a conversation first'}
@@ -263,9 +263,9 @@ export const ChatPage = () => {
     )
 
     return (
-        <div className="mx-auto w-full max-w-6xl space-y-6">
-            <div className="space-y-2">
-                <h1 className="text-3xl font-semibold">Messages</h1>
+        <div className="mx-auto w-full space-y-4">
+            <div className="space-y-1">
+                <h1 className="text-2xl font-semibold">Messages</h1>
                 <p className="text-sm text-muted-foreground">View your conversations and reply directly.</p>
             </div>
             {sideBySide}

@@ -22,7 +22,7 @@ import {
 } from '@/shared/ui/alert-dialog'
 import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
+import { Card, CardContent } from '@/shared/ui/card'
 import { Checkbox } from '@/shared/ui/checkbox'
 import { Label } from '@/shared/ui/label'
 import { Skeleton } from '@/shared/ui/skeleton'
@@ -52,18 +52,18 @@ const SummaryCard = ({
     subtitle: string
     icon: typeof WalletIcon
 }) => (
-    <Card className="border-white/30 bg-white/90 text-foreground shadow-sm backdrop-blur">
-        <CardContent className="flex items-center gap-4 p-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+    <div className="flex items-center justify-between rounded-2xl border border-border/70 bg-background px-4 py-3">
+        <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <Icon className="h-5 w-5" />
             </div>
-            <div className="space-y-1">
+            <div className="space-y-0.5">
                 <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{title}</p>
-                <p className="text-2xl font-semibold text-primary">{value}</p>
-                <p className="text-xs text-muted-foreground">{subtitle}</p>
+                <p className="text-sm text-muted-foreground">{subtitle}</p>
             </div>
-        </CardContent>
-    </Card>
+        </div>
+        <p className="text-lg font-semibold text-foreground">{value}</p>
+    </div>
 )
 
 const TransactionRow = ({ transaction }: { transaction: CreditTransaction }) => {
@@ -74,7 +74,7 @@ const TransactionRow = ({ transaction }: { transaction: CreditTransaction }) => 
     const statusLabel = transaction.status.toLowerCase().replace('_', ' ')
 
     return (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border/60 bg-white/70 p-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/70 bg-background p-4">
             <div className="space-y-1">
                 <p className="font-semibold">{transaction.description ?? 'Credit transaction'}</p>
                 <p className="text-xs text-muted-foreground">
@@ -128,126 +128,144 @@ export const WalletPage = () => {
     }
 
     return (
-        <div className="mx-auto w-full max-w-6xl space-y-6">
-            <section className="rounded-3xl bg-gradient-to-br from-rose-500 via-pink-500 to-purple-600 px-6 py-10 text-white shadow-lg">
-                <div className="text-center">
-                    <h1 className="text-3xl font-semibold text-white">Wallet</h1>
-                    <p className="mt-2 text-sm text-white/80">
-                        Track your credits and keep your balance ready for gifts.
-                    </p>
+        <div className="mx-auto w-full space-y-6">
+            <section className="rounded-3xl border border-border/70 bg-background p-4 sm:p-5">
+                <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                    <div className="space-y-2">
+                        <Badge className="w-fit rounded-full border border-border px-3 py-1 text-xs uppercase tracking-[0.2em]">
+                            Wallet
+                        </Badge>
+                        <h1 className="text-3xl font-semibold text-foreground">Credits overview</h1>
+                        <p className="text-sm text-muted-foreground">
+                            Track your credits and keep your balance ready for gifts.
+                        </p>
+                    </div>
+                    <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                        <span className="rounded-full bg-muted/60 px-3 py-1">
+                            1 credit = {(CENTS_PER_CREDIT / 100).toFixed(2)} EUR
+                        </span>
+                        <span className="rounded-full bg-muted/60 px-3 py-1">Secure checkout</span>
+                        <span className="rounded-full bg-muted/60 px-3 py-1">Instant balance</span>
+                    </div>
                 </div>
-                <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    {isLoading ? (
-                        Array.from({ length: 4 }).map((_, index) => (
-                            <Card key={index} className="border-white/30 bg-white/80 p-4">
-                                <Skeleton className="h-16 w-full" />
-                            </Card>
-                        ))
-                    ) : (
-                        <>
-                            <SummaryCard
-                                icon={WalletIcon}
-                                subtitle="Ready to spend"
-                                title="Balance"
-                                value={wallet ? formatCredits(wallet.balance) : '0 credits'}
-                            />
-                            <SummaryCard
-                                icon={CreditCard}
-                                subtitle="All-time purchases"
-                                title="Purchased"
-                                value={wallet ? formatCredits(wallet.totalPurchased) : '0 credits'}
-                            />
-                            <SummaryCard
-                                icon={Crown}
-                                subtitle="Used on gifts"
-                                title="Spent"
-                                value={wallet ? formatCredits(wallet.totalSpent) : '0 credits'}
-                            />
-                            <SummaryCard
-                                icon={Landmark}
-                                subtitle={`1 credit = ${(CENTS_PER_CREDIT / 100).toFixed(2)} EUR`}
-                                title="Value"
-                                value={`${balanceValue.toFixed(2)} EUR`}
-                            />
-                        </>
-                    )}
+
+                <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_1.4fr]">
+                    <div className="space-y-2">
+                        {isLoading ? (
+                            Array.from({ length: 4 }).map((_, index) => (
+                                <Card key={index} className="border-border/70">
+                                    <CardContent className="p-4">
+                                        <Skeleton className="h-12 w-full" />
+                                    </CardContent>
+                                </Card>
+                            ))
+                        ) : (
+                            <>
+                                <SummaryCard
+                                    icon={WalletIcon}
+                                    subtitle="Ready to spend"
+                                    title="Balance"
+                                    value={wallet ? formatCredits(wallet.balance) : '0 credits'}
+                                />
+                                <SummaryCard
+                                    icon={CreditCard}
+                                    subtitle="All-time purchases"
+                                    title="Purchased"
+                                    value={wallet ? formatCredits(wallet.totalPurchased) : '0 credits'}
+                                />
+                                <SummaryCard
+                                    icon={Crown}
+                                    subtitle="Used on gifts"
+                                    title="Spent"
+                                    value={wallet ? formatCredits(wallet.totalSpent) : '0 credits'}
+                                />
+                                <SummaryCard
+                                    icon={Landmark}
+                                    subtitle="Value in EUR"
+                                    title="Balance value"
+                                    value={`${balanceValue.toFixed(2)} EUR`}
+                                />
+                            </>
+                        )}
+                    </div>
+
+                    <div className="rounded-2xl border border-border/70 bg-background p-4">
+                        <div className="flex flex-wrap items-start justify-between gap-2">
+                            <div>
+                                <h2 className="text-xl font-semibold text-foreground">Buy credits</h2>
+                                <p className="text-sm text-muted-foreground">
+                                    0.10 EUR equals 5 credits. Pick a pack and checkout securely.
+                                </p>
+                            </div>
+                            <Badge className="text-xs uppercase tracking-[0.2em]" variant="outline">
+                                {creditPackages.length} packs
+                            </Badge>
+                        </div>
+                        <div className="mt-3 space-y-2">
+                            {creditPackages.map((pack) => {
+                                const amountCents = centsFromCredits(pack.credits)
+                                const priceLabel = (amountCents / 100).toFixed(2)
+                                return (
+                                    <div
+                                        key={pack.id}
+                                        className={cn(
+                                            'flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/70 px-3 py-3',
+                                            pack.highlight && 'border-primary/30'
+                                        )}
+                                    >
+                                        <div className="space-y-1">
+                                            <div className="flex items-center gap-2">
+                                                <p className="text-lg font-semibold text-foreground">
+                                                    {pack.label}
+                                                </p>
+                                                {pack.highlight && (
+                                                    <Badge className="bg-primary text-primary-foreground">
+                                                        {pack.highlight}
+                                                    </Badge>
+                                                )}
+                                            </div>
+                                            <p className="text-sm text-muted-foreground">
+                                                {formatCredits(pack.credits)}
+                                            </p>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                            <div className="text-right">
+                                                <p className="text-lg font-semibold">{priceLabel} EUR</p>
+                                                <p className="text-xs text-muted-foreground">
+                                                    {creditsFromCents(amountCents)} credits included
+                                                </p>
+                                            </div>
+                                            <Button
+                                                disabled={isPurchasing}
+                                                onClick={() => {
+                                                    setSelectedPackage(pack)
+                                                    requestConsent(pack.credits)
+                                                }}
+                                            >
+                                                Buy credits
+                                            </Button>
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    </div>
                 </div>
             </section>
 
-            <Card className="border-primary/10">
-                <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <section className="rounded-3xl border border-border/70 bg-background p-4 sm:p-5">
+                <div className="flex flex-wrap items-start justify-between gap-2">
                     <div>
-                        <CardTitle className="text-xl">Buy credits</CardTitle>
-                        <CardDescription>
-                            0.10 EUR equals 5 credits. Pick a pack and checkout securely.
-                        </CardDescription>
-                    </div>
-                    <Badge className="text-xs uppercase tracking-[0.2em]" variant="outline">
-                        {creditPackages.length} packs
-                    </Badge>
-                </CardHeader>
-                <CardContent>
-                    <div className="grid gap-4 md:grid-cols-3">
-                        {creditPackages.map((pack) => {
-                            const amountCents = centsFromCredits(pack.credits)
-                            const priceLabel = (amountCents / 100).toFixed(2)
-                            return (
-                                <Card
-                                    key={pack.id}
-                                    className={cn(
-                                        'border-primary/10 bg-white/80 transition hover:border-primary/40',
-                                        pack.highlight && 'ring-1 ring-primary/30'
-                                    )}
-                                >
-                                    <CardContent className="flex h-full flex-col gap-4 p-5">
-                                        <div className="flex items-start justify-between">
-                                            <div>
-                                                <p className="text-lg font-semibold">{pack.label}</p>
-                                                <p className="text-sm text-muted-foreground">
-                                                    {formatCredits(pack.credits)}
-                                                </p>
-                                            </div>
-                                            {pack.highlight && (
-                                                <Badge className="bg-primary text-primary-foreground">
-                                                    {pack.highlight}
-                                                </Badge>
-                                            )}
-                                        </div>
-                                        <div className="rounded-xl bg-primary/5 p-4">
-                                            <p className="text-2xl font-semibold">{priceLabel} EUR</p>
-                                            <p className="text-xs text-muted-foreground">
-                                                {creditsFromCents(amountCents)} credits included
-                                            </p>
-                                        </div>
-                                        <Button
-                                            className="mt-auto w-full"
-                                            disabled={isPurchasing}
-                                            onClick={() => {
-                                                setSelectedPackage(pack)
-                                                requestConsent(pack.credits)
-                                            }}
-                                        >
-                                            Buy credits
-                                        </Button>
-                                    </CardContent>
-                                </Card>
-                            )
-                        })}
-                    </div>
-                </CardContent>
-            </Card>
-
-            <Card className="border-primary/10">
-                <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <CardTitle className="text-xl">Transaction history</CardTitle>
-                        <CardDescription>Review credit purchases and balance updates.</CardDescription>
+                        <h2 className="text-xl font-semibold text-foreground">Transaction history</h2>
+                        <p className="text-sm text-muted-foreground">
+                            Review credit purchases and balance updates.
+                        </p>
                     </div>
                     <Badge className="text-xs uppercase tracking-[0.2em]" variant="outline">
                         {transactions.length} items
                     </Badge>
-                </CardHeader>
-                <CardContent>
+                </div>
+                <div className="mt-4">
                     {isLoading ? (
                         <div className="space-y-3">
                             {Array.from({ length: 3 }).map((_, index) => (
@@ -255,49 +273,51 @@ export const WalletPage = () => {
                             ))}
                         </div>
                     ) : (
-                        <Tabs defaultValue="all">
-                            <TabsList className="w-full">
+                        <Tabs defaultValue="all" className="space-y-3">
+                            <TabsList className="w-full rounded-2xl border border-border p-1">
                                 <TabsTrigger value="all">All</TabsTrigger>
                                 <TabsTrigger value="purchased">Purchased</TabsTrigger>
                                 <TabsTrigger value="spent">Spent</TabsTrigger>
                             </TabsList>
-                            <TabsContent className="space-y-3" value="all">
-                                {filteredTransactions.all.length === 0 ? (
-                                    <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
-                                        No transactions yet.
-                                    </div>
-                                ) : (
-                                    filteredTransactions.all.map((transaction) => (
-                                        <TransactionRow key={transaction.id} transaction={transaction} />
-                                    ))
-                                )}
-                            </TabsContent>
-                            <TabsContent className="space-y-3" value="purchased">
-                                {filteredTransactions.purchased.length === 0 ? (
-                                    <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
-                                        No purchases yet.
-                                    </div>
-                                ) : (
-                                    filteredTransactions.purchased.map((transaction) => (
-                                        <TransactionRow key={transaction.id} transaction={transaction} />
-                                    ))
-                                )}
-                            </TabsContent>
-                            <TabsContent className="space-y-3" value="spent">
-                                {filteredTransactions.spent.length === 0 ? (
-                                    <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
-                                        No credits spent yet.
-                                    </div>
-                                ) : (
-                                    filteredTransactions.spent.map((transaction) => (
-                                        <TransactionRow key={transaction.id} transaction={transaction} />
-                                    ))
-                                )}
-                            </TabsContent>
+                            <div className="space-y-2">
+                                <TabsContent className="space-y-3" value="all">
+                                    {filteredTransactions.all.length === 0 ? (
+                                        <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
+                                            No transactions yet.
+                                        </div>
+                                    ) : (
+                                        filteredTransactions.all.map((transaction) => (
+                                            <TransactionRow key={transaction.id} transaction={transaction} />
+                                        ))
+                                    )}
+                                </TabsContent>
+                                <TabsContent className="space-y-3" value="purchased">
+                                    {filteredTransactions.purchased.length === 0 ? (
+                                        <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
+                                            No purchases yet.
+                                        </div>
+                                    ) : (
+                                        filteredTransactions.purchased.map((transaction) => (
+                                            <TransactionRow key={transaction.id} transaction={transaction} />
+                                        ))
+                                    )}
+                                </TabsContent>
+                                <TabsContent className="space-y-3" value="spent">
+                                    {filteredTransactions.spent.length === 0 ? (
+                                        <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
+                                            No credits spent yet.
+                                        </div>
+                                    ) : (
+                                        filteredTransactions.spent.map((transaction) => (
+                                            <TransactionRow key={transaction.id} transaction={transaction} />
+                                        ))
+                                    )}
+                                </TabsContent>
+                            </div>
                         </Tabs>
                     )}
-                </CardContent>
-            </Card>
+                </div>
+            </section>
 
             <AlertDialog
                 open={isConsentOpen && Boolean(selectedPackage)}

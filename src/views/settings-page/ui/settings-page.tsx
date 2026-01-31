@@ -98,7 +98,7 @@ export const SettingsPage = () => {
     }
 
     return (
-        <div className="mx-auto w-full max-w-6xl space-y-6">
+        <div className="mx-auto w-full space-y-6">
             <Card className="border-primary/20 bg-primary/5">
                 <CardHeader>
                     <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">

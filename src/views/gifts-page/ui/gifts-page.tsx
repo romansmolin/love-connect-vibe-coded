@@ -4,6 +4,12 @@ import { useMemo, useState } from 'react'
 
 import { Gift as GiftIcon, Send, ShoppingCart, Sparkles } from 'lucide-react'
 
+import { useGetWalletQuery } from '@/entities/credit'
+import type { Gift } from '@/entities/gift'
+import { GiftInventoryItem, PurchaseGiftResponse, useGetCatalogQuery, useGetInventoryQuery } from '@/entities/gift'
+import { useBuyGift } from '@/features/buy-gift'
+import { useMatchesList } from '@/features/matches'
+import { useSendGift } from '@/features/send-gift'
 import { creditsFromCents, formatCredits } from '@/shared/lib/credits'
 import { cn } from '@/shared/lib/utils'
 import {
@@ -29,11 +35,6 @@ import {
 } from '@/shared/ui/dialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select'
 import { Skeleton } from '@/shared/ui/skeleton'
-import { useGetWalletQuery } from '@/entities/credit'
-import { GiftInventoryItem, PurchaseGiftResponse, useGetCatalogQuery, useGetInventoryQuery } from '@/entities/gift'
-import { useBuyGift } from '@/features/buy-gift'
-import { useMatchesList } from '@/features/matches'
-import { useSendGift } from '@/features/send-gift'
 
 const GiftCardSkeleton = () => (
     <Card className="border-primary/10">
@@ -59,6 +60,21 @@ const InventorySkeleton = () => (
     </div>
 )
 
+const GiftVisual = ({ gift, className }: { gift: Gift; className?: string }) => {
+    if (gift.imageUrl) {
+        return (
+            <img
+                src={gift.imageUrl}
+                alt={gift.name}
+                className={cn('h-12 w-12 rounded-xl border border-border bg-muted/40 object-cover', className)}
+                loading="lazy"
+            />
+        )
+    }
+
+    return <div className={cn('text-3xl', className)}>{gift.emoji}</div>
+}
+
 const InventoryCard = ({
     item,
     onSend,
@@ -66,10 +82,10 @@ const InventoryCard = ({
     item: GiftInventoryItem
     onSend: (item: GiftInventoryItem) => void
 }) => (
-    <Card className="border-primary/10 bg-white/70">
-        <CardContent className="flex h-full flex-col gap-4 p-5">
+    <Card className="border-border/70 bg-background">
+        <CardContent className="flex h-full flex-col gap-3 p-4">
             <div className="flex items-start justify-between">
-                <div className="text-3xl">{item.gift.emoji}</div>
+                <GiftVisual gift={item.gift} />
                 <Badge variant="outline">Available</Badge>
             </div>
             <div className="space-y-1">
@@ -145,33 +161,31 @@ export const GiftsPage = () => {
     }
 
     return (
-        <div className="mx-auto w-full max-w-6xl space-y-6">
-            <Card className="border-primary/10 bg-primary/5">
-                <CardHeader>
-                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                        <div className="space-y-2">
-                            <CardTitle className="flex items-center gap-2 text-3xl font-semibold">
-                                <GiftIcon className="h-6 w-6 text-primary" />
-                                Buy gifts
-                            </CardTitle>
-                            <CardDescription>
-                                Pick a gift, complete the Secure Processor checkout, then send it later to a mutual
-                                match.
-                            </CardDescription>
+        <div className="mx-auto w-full space-y-4">
+            <section className="rounded-2xl border border-border/70 bg-background p-4">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="space-y-1">
+                        <div className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em]">
+                            <GiftIcon className="h-3.5 w-3.5" />
+                            Gifts
                         </div>
-                        <div className="flex flex-wrap gap-2">
-                            <Badge className="bg-white/70 text-primary">Payment required</Badge>
-                            <Badge variant="outline">Send later</Badge>
-                        </div>
+                        <h1 className="text-2xl font-semibold">Buy gifts</h1>
+                        <p className="text-sm text-muted-foreground">
+                            Pick a gift, complete checkout, then send it later to a mutual match.
+                        </p>
                     </div>
-                </CardHeader>
-            </Card>
+                    <div className="flex flex-wrap gap-2">
+                        <Badge variant="outline">Payment required</Badge>
+                        <Badge variant="outline">Send later</Badge>
+                    </div>
+                </div>
+            </section>
 
-            <Card>
-                <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <Card className="border-border/70">
+                <CardHeader className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <CardTitle className="text-xl">Gift gallery</CardTitle>
-                        <CardDescription>Emoji gifts you can purchase now.</CardDescription>
+                        <CardDescription>Digital gifts you can purchase now.</CardDescription>
                     </div>
                     <Badge className="text-xs uppercase tracking-[0.2em]" variant="outline">
                         {gifts.length} items
@@ -179,7 +193,7 @@ export const GiftsPage = () => {
                 </CardHeader>
                 <CardContent>
                     {isCatalogLoading ? (
-                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                             {Array.from({ length: 6 }).map((_, index) => (
                                 <GiftCardSkeleton key={index} />
                             ))}
@@ -189,15 +203,15 @@ export const GiftsPage = () => {
                             No gifts available yet.
                         </div>
                     ) : (
-                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                             {gifts.map((gift) => (
                                 <Card
                                     key={gift.id}
-                                    className={cn('border-primary/10 transition hover:border-primary/40')}
+                                    className={cn('border-border/70 transition hover:border-primary/40')}
                                 >
-                                    <CardContent className="flex h-full flex-col gap-4 p-5">
+                                    <CardContent className="flex h-full flex-col gap-3 p-4">
                                         <div className="flex items-start justify-between">
-                                            <div className="text-3xl">{gift.emoji}</div>
+                                            <GiftVisual gift={gift} />
                                             <div className="text-lg font-semibold">
                                                 {(gift.priceCents / 100).toFixed(2)} {gift.currency}
                                                 <p className="text-xs text-muted-foreground">
@@ -230,8 +244,8 @@ export const GiftsPage = () => {
                 </CardContent>
             </Card>
 
-            <Card className="bg-primary/5">
-                <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <Card className="border-border/70">
+                <CardHeader className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <CardTitle className="text-xl">Your gifts</CardTitle>
                         <CardDescription>Purchased gifts ready to send to a match.</CardDescription>
@@ -253,7 +267,7 @@ export const GiftsPage = () => {
                             You don&apos;t have any gifts yet. Purchase one from the gallery above.
                         </div>
                     ) : (
-                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                             {inventoryItems.map((item) => (
                                 <InventoryCard key={item.id} item={item} onSend={() => setSendGiftId(item.id)} />
                             ))}
@@ -263,7 +277,7 @@ export const GiftsPage = () => {
             </Card>
 
             {lastPurchase && (
-                <Card className="border-primary/10">
+                <Card className="border-border/70">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2 text-xl">
                             <Sparkles className="h-5 w-5 text-primary" />
@@ -291,7 +305,7 @@ export const GiftsPage = () => {
                             <p className="font-medium break-all">
                                 {lastPurchase.paymentMode === 'credits'
                                     ? 'Paid with credits'
-                                    : lastPurchase.checkoutToken ?? 'Pending'}
+                                    : (lastPurchase.checkoutToken ?? 'Pending')}
                             </p>
                         </div>
                     </CardContent>
@@ -341,7 +355,11 @@ export const GiftsPage = () => {
                     </DialogHeader>
                     <div className="space-y-3">
                         <div className="flex items-center gap-3 rounded-lg border border-primary/10 bg-primary/5 p-3">
-                            <div className="text-3xl">{selectedInventoryItem?.gift.emoji}</div>
+                            {selectedInventoryItem ? (
+                                <GiftVisual gift={selectedInventoryItem.gift} className="h-14 w-14" />
+                            ) : (
+                                <div className="h-14 w-14 rounded-xl border border-dashed border-border bg-muted/40" />
+                            )}
                             <div>
                                 <p className="font-semibold">{selectedInventoryItem?.gift.name ?? 'Gift'}</p>
                                 <p className="text-xs text-muted-foreground">Available to send</p>

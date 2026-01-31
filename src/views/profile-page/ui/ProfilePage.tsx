@@ -496,85 +496,62 @@ export const ProfilePage = () => {
     }, [profile])
 
     return (
-        <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
-            <Card className="border-primary/10">
-                <CardContent className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
-                    <div className="flex items-center gap-4">
-                        <Avatar className="h-16 w-16">
-                            {profile?.avatarUrl ? (
-                                <AvatarImage alt={profile.username} src={profile.avatarUrl} />
-                            ) : null}
-                            <AvatarFallback className="text-lg font-semibold">
-                                {initials(profile?.username)}
-                            </AvatarFallback>
-                        </Avatar>
-                        <div className="space-y-1">
-                            {isLoading ? (
-                                <InfoSkeleton />
-                            ) : (
-                                <>
-                                    <div className="flex items-center gap-2">
-                                        <h1 className="text-2xl font-bold">{profile?.username ?? 'My Profile'}</h1>
-                                        <Badge className="gap-1" variant="outline">
-                                            <StatusDot status="online" /> Online now
-                                        </Badge>
-                                    </div>
-                                    <p className="text-sm text-muted-foreground">
-                                        {profile?.age ? `${profile.age} yrs` : '-- years'} •{' '}
-                                        {profile?.location ?? 'Location'}
-                                    </p>
-                                    {profile?.email ? (
-                                        <p className="text-xs text-muted-foreground">{profile.email}</p>
-                                    ) : null}
-                                </>
-                            )}
-                        </div>
-                    </div>
-                    <EditProfileDialog
-                        profile={profile}
-                        trigger={
-                            <Button variant="outline">
-                                Edit Profile
-                                <ArrowUpRight className="ml-2 h-4 w-4" />
-                            </Button>
-                        }
-                        onUpdated={refetch}
-                    />
-                </CardContent>
-            </Card>
-
-            <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
-                <Card className="border-primary/10">
-                    <CardHeader>
-                        <CardTitle>Your Photos</CardTitle>
-                        <CardDescription>Show your best shots to get more matches.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        {isLoading ? (
-                            <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-                                {Array.from({ length: 6 }).map((_, idx) => (
-                                    <Skeleton key={idx} className="aspect-square rounded-lg" />
-                                ))}
+        <div className="mx-auto flex w-full flex-col gap-4">
+            <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+                <Card className="border-border/70">
+                    <CardContent className="flex flex-col gap-3 p-4">
+                        <div className="flex items-center gap-4">
+                            <Avatar className="h-16 w-16">
+                                {profile?.avatarUrl ? (
+                                    <AvatarImage alt={profile.username} src={profile.avatarUrl} />
+                                ) : null}
+                                <AvatarFallback className="text-lg font-semibold">
+                                    {initials(profile?.username)}
+                                </AvatarFallback>
+                            </Avatar>
+                            <div className="space-y-1">
+                                {isLoading ? (
+                                    <InfoSkeleton />
+                                ) : (
+                                    <>
+                                        <div className="flex items-center gap-2">
+                                            <h1 className="text-2xl font-bold">
+                                                {profile?.username ?? 'My Profile'}
+                                            </h1>
+                                            <Badge className="gap-1" variant="outline">
+                                                <StatusDot status="online" /> Online now
+                                            </Badge>
+                                        </div>
+                                        <p className="text-sm text-muted-foreground">
+                                            {profile?.age ? `${profile.age} yrs` : '-- years'} •{' '}
+                                            {profile?.location ?? 'Location'}
+                                        </p>
+                                        {profile?.email ? (
+                                            <p className="text-xs text-muted-foreground">{profile.email}</p>
+                                        ) : null}
+                                    </>
+                                )}
                             </div>
-                        ) : (
-                            <PhotoGrid photos={profile?.photos ?? []} />
-                        )}
-                        <div className="flex items-center justify-between rounded-lg border border-dashed border-border/60 bg-card/40 px-4 py-3 text-sm">
-                            <div className="flex items-center gap-2 text-muted-foreground">
-                                <CheckCircle className="h-4 w-4 text-primary" />
-                                <span>Profile completion</span>
-                            </div>
-                            <span className="font-semibold">{profileCompletion}</span>
                         </div>
+                        <EditProfileDialog
+                            profile={profile}
+                            trigger={
+                                <Button variant="outline">
+                                    Edit Profile
+                                    <ArrowUpRight className="ml-2 h-4 w-4" />
+                                </Button>
+                            }
+                            onUpdated={refetch}
+                        />
                     </CardContent>
                 </Card>
 
-                <Card className="border-primary/10">
+                <Card className="border-border/70">
                     <CardHeader>
                         <CardTitle>Quick Actions</CardTitle>
                         <CardDescription>Jump into key flows.</CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-3">
+                    <CardContent className="space-y-2">
                         <QuickAction
                             color="red"
                             description="Find new people nearby"
@@ -606,6 +583,31 @@ export const ProfilePage = () => {
                     </CardContent>
                 </Card>
             </div>
+
+            <Card className="border-border/70">
+                <CardHeader>
+                    <CardTitle>Your Photos</CardTitle>
+                    <CardDescription>Show your best shots to get more matches.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    {isLoading ? (
+                        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                            {Array.from({ length: 8 }).map((_, idx) => (
+                                <Skeleton key={idx} className="aspect-square rounded-lg" />
+                            ))}
+                        </div>
+                    ) : (
+                        <PhotoGrid photos={profile?.photos ?? []} />
+                    )}
+                    <div className="flex items-center justify-between rounded-lg border border-dashed border-border/60 bg-card/40 px-3 py-2 text-sm">
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                            <CheckCircle className="h-4 w-4 text-primary" />
+                            <span>Profile completion</span>
+                        </div>
+                        <span className="font-semibold">{profileCompletion}</span>
+                    </div>
+                </CardContent>
+            </Card>
         </div>
     )
 }
