@@ -559,7 +559,10 @@ const PrivacyPolicy = () => {
                             <div className="bg-muted p-4 rounded-lg">
                                 <p className="font-medium">LoveBond Privacy Team</p>
                                 <p>Email: privacy@LoveBond.com</p>
-                                <p>Address: Lubānas iela 129k-1, Riga, Latvia</p>
+                                <p>Rix RB s.r.o.</p>
+                                <p>ID: 237 15 189</p>
+                                <p>Sinkulova 160/16</p>
+                                <p>Podolí, 147 00 Praha 4</p>
                                 <p className="mt-2 text-sm text-muted-foreground">
                                     We will be happy to answer your questions and address any issues to the best of
                                     our ability. Your trust is important to us, and we are committed to

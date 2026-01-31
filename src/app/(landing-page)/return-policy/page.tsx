@@ -58,6 +58,13 @@ const ReturnPolicy = () => {
                                 If you have questions about this Return Policy, please reach out via the contact
                                 form on our website.
                             </p>
+                            <div className="bg-muted p-4 rounded-lg">
+                                <p className="font-medium">LoveBond Support</p>
+                                <p>Rix RB s.r.o.</p>
+                                <p>ID: 237 15 189</p>
+                                <p>Sinkulova 160/16</p>
+                                <p>Podolí, 147 00 Praha 4</p>
+                            </div>
                         </section>
                     </div>
                 </div>
