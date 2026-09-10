@@ -558,7 +558,7 @@ const PrivacyPolicy = () => {
 
                             <div className="bg-muted p-4 rounded-lg">
                                 <p className="font-medium">LoveBond Privacy Team</p>
-                                <p>Email: privacy@LoveBond.com</p>
+                                <p>Email: privacy@love-bond.com</p>
                                 <p>Rix RB s.r.o.</p>
                                 <p>ID: 237 15 189</p>
                                 <p>Sinkulova 160/16</p>

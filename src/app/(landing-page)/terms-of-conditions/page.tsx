@@ -521,7 +521,7 @@ const TermsAndConditions = () => {
                             </p>
                             <div className="bg-muted p-4 rounded-lg mt-4">
                                 <p className="font-medium">LoveBond Support</p>
-                                <p>Email: support@LoveBond.com</p>
+                                <p>Email: support@love-bond.com</p>
                                 <p>Rix RB s.r.o.</p>
                                 <p>ID: 237 15 189</p>
                                 <p>Sinkulova 160/16</p>
@@ -529,7 +529,7 @@ const TermsAndConditions = () => {
                                 <p>
                                     Website:{' '}
                                     <Link className="text-blue-600 hover:underline" href="/">
-                                        www.LoveBond.com
+                                        www.love-bond.com
                                     </Link>
                                 </p>
                             </div>
