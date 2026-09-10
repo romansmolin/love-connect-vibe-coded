@@ -6,7 +6,7 @@ import { BeforeAfter } from './before-after/before-after'
 import Faq2 from './faq/faq2'
 import { Features } from './features/features'
 import { HeroSection } from './hero-section/hero-section'
-import { Testimonial } from './testimonials/testimonial'
+import PricingSection from './pricing/pricing'
 
 import { People } from './platforms'
 
@@ -28,7 +28,7 @@ const LandingPage = () => {
             <div className="px-4">
                 <Features variant={5} />
             </div>
-            <Testimonial variant={2} />
+            <PricingSection />
             <Faq2 />
         </>
     )

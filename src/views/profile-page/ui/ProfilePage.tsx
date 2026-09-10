@@ -270,8 +270,8 @@ const EditProfileDialog = ({
                 <DialogHeader className="gap-1">
                     <DialogTitle>Edit Profile</DialogTitle>
                     <DialogDescription>
-                        Only fields supported by the API are shown. Select values match the site you referenced and
-                        are sent as their numeric codes.
+                        Only fields supported by the API are shown. Select values match the available profile
+                        options.
                     </DialogDescription>
                 </DialogHeader>
                 <form className="space-y-6" onSubmit={handleSubmit}>
@@ -308,7 +308,7 @@ const EditProfileDialog = ({
                                 onChange={handleChange('weight')}
                             />
                         </FormField>
-                        <FormField hint="Values based on your provided selector list." label="Eye color">
+                        <FormField hint="Choose your eye color." label="Eye color">
                             <Select value={form.eyeColor} onValueChange={handleSelectChange('eyeColor')}>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Select eye color" />
@@ -323,7 +323,7 @@ const EditProfileDialog = ({
                                 </SelectContent>
                             </Select>
                         </FormField>
-                        <FormField hint="Values based on your provided selector list." label="Hair color">
+                        <FormField hint="Choose your hair color." label="Hair color">
                             <Select value={form.hairColor} onValueChange={handleSelectChange('hairColor')}>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Select hair color" />

@@ -10,17 +10,17 @@ const TermsAndConditions = () => {
                     <h1 className="text-4xl font-bold mb-8 text-center">LoveBond Terms and Conditions</h1>
 
                     <p className="text-muted-foreground mb-8 text-center">
-                        <strong>Last Updated:</strong> 11.09.2026
+                        <strong>Effective date:</strong> 10.09.2026
                     </p>
 
                     <div className="space-y-8">
                         <section>
                             <p className="mb-6">
-                                Welcome to LoveBond, a service that enables you to schedule and manage social media
-                                posts across multiple platforms. By accessing or using LoveBond (the
-                                &quot;Service&quot;), you agree to be bound by the following Terms and Conditions
-                                (&quot;Terms&quot;). If you do not agree with these Terms, please do not use the
-                                Service.
+                                Welcome to LoveBond, a dating service that helps people discover compatible
+                                profiles, communicate, and exchange digital gifts. By accessing or using LoveBond
+                                (the &quot;Service&quot;), you agree to be bound by the following Terms and
+                                Conditions (&quot;Terms&quot;). If you do not agree with these Terms, please do not
+                                use the Service.
                             </p>
                         </section>
 
@@ -37,11 +37,9 @@ const TermsAndConditions = () => {
 
                             <h3 className="text-xl font-medium mb-3">Eligibility</h3>
                             <p>
-                                You must be at least 13 years old (or the minimum age of digital consent in your
-                                jurisdiction) to use LoveBond. If you are using LoveBond on behalf of an
-                                organization, you represent that you have authority to bind that organization to
-                                these Terms. The Service is available worldwide, but you are responsible for
-                                ensuring that your use complies with local laws and regulations.
+                                You must be at least 18 years old to use LoveBond. The Service is available
+                                worldwide, but you are responsible for ensuring that your use complies with local
+                                laws and regulations.
                             </p>
                         </section>
 
@@ -51,17 +49,16 @@ const TermsAndConditions = () => {
                             </h2>
 
                             <p className="mb-4">
-                                LoveBond may offer both free and paid subscription plans (e.g., Free, Standart,
-                                Creator, and Pro plans).
+                                LoveBond may offer free features and paid in-app credit packages. Credits are used
+                                for eligible in-app actions, including digital gifts.
                             </p>
 
                             <h3 className="text-xl font-medium mb-3">Fees and Charges</h3>
                             <p className="mb-4">
                                 Some features of the Service require payment. You will have the opportunity to
                                 review and accept any fees before they are charged. Prices may vary by plan and are
-                                posted on our website. All fees are in U.S. Dollars (unless otherwise indicated)
-                                and are non-refundable, except as required by law or expressly allowed by these
-                                Terms.
+                                posted on our website. All fees are in euros unless otherwise indicated, and are
+                                non-refundable, except as required by law or expressly allowed by these Terms.
                             </p>
 
                             <h3 className="text-xl font-medium mb-3">Subscription Renewals</h3>
@@ -504,12 +501,22 @@ const TermsAndConditions = () => {
 
                         <section>
                             <h2 className="text-2xl font-semibold mb-4">11. Governing Law and Disputes</h2>
+                            <p className="mb-4">
+                                These Terms are governed by the laws of the Czech Republic, without regard to its
+                                conflict-of-law rules. This choice of law does not deprive consumers in the
+                                European Union of mandatory protections that apply in their country of residence.
+                            </p>
+                            <p className="mb-4">
+                                We encourage you to contact support first so we can try to resolve any complaint
+                                informally. If a dispute cannot be resolved, it may be brought before the competent
+                                courts of the Czech Republic. EU consumers retain the right to bring proceedings in
+                                the courts available under mandatory consumer-protection law in their country of
+                                residence.
+                            </p>
                             <p>
-                                These Terms are governed by and construed in accordance with the laws of the
-                                jurisdiction where LoveBond&apos;s owning company is established (unless otherwise
-                                required by the laws of your country of residence). We will notify you of the
-                                specific governing jurisdiction here once our company registration details are
-                                finalized.
+                                Nothing in this section limits any non-waivable right to use an applicable
+                                alternative dispute-resolution body or an online dispute-resolution process where
+                                required by law.
                             </p>
                         </section>
 
@@ -522,10 +529,10 @@ const TermsAndConditions = () => {
                             <div className="bg-muted p-4 rounded-lg mt-4">
                                 <p className="font-medium">LoveBond Support</p>
                                 <p>Email: support@love-bond.com</p>
-                                <p>Rix RB s.r.o.</p>
-                                <p>ID: 237 15 189</p>
-                                <p>Sinkulova 160/16</p>
-                                <p>Podolí, 147 00 Praha 4</p>
+                                <p>NewEcoPay s.r.o.</p>
+                                <p>Registration No. 222 32 354</p>
+                                <p>Vlkova 532/8, Žižkov</p>
+                                <p>130 00 Praha 3, Czech Republic</p>
                                 <p>
                                     Website:{' '}
                                     <Link className="text-blue-600 hover:underline" href="/">

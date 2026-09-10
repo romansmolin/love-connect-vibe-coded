@@ -10,29 +10,6 @@ import { RetroGrid } from '@/shared/ui/retro-grid'
 import { WordRotate } from '@/shared/ui/word-rotate'
 
 export const HeroSection04 = () => {
-    const avatars = [
-        {
-            src: 'https://deifkwefumgah.cloudfront.net/shadcnblocks/block/guri3/avatar1.png',
-            alt: 'Avatar 1',
-        },
-        {
-            src: 'https://deifkwefumgah.cloudfront.net/shadcnblocks/block/guri3/avatar2.png',
-            alt: 'Avatar 2',
-        },
-        {
-            src: 'https://deifkwefumgah.cloudfront.net/shadcnblocks/block/guri3/avatar3.png',
-            alt: 'Avatar 3',
-        },
-        {
-            src: 'https://deifkwefumgah.cloudfront.net/shadcnblocks/block/guri3/avatar4.png',
-            alt: 'Avatar 4',
-        },
-        {
-            src: 'https://deifkwefumgah.cloudfront.net/shadcnblocks/block/guri3/avatar5.png',
-            alt: 'Avatar 5',
-        },
-    ]
-
     return (
         <section className="relative flex min-h-[calc(100dvh-4rem)] flex-col overflow-hidden">
             <RetroGrid
@@ -78,7 +55,7 @@ export const HeroSection04 = () => {
                             className="group h-14 gap-2 rounded-xl bg-gradient-to-r from-primary to-pink-500 px-8 text-base font-semibold shadow-lg shadow-primary/25 transition-all hover:shadow-xl hover:shadow-primary/30"
                             size="lg"
                         >
-                            <Link href="#pricing">
+                            <Link href="/#pricing">
                                 <Zap className="h-5 w-5" />
                                 Get Started Free
                                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -94,24 +71,9 @@ export const HeroSection04 = () => {
                         </Button>
                     </div>
 
-                    <div className="flex items-center gap-4 pt-4">
-                        <div className="flex -space-x-3">
-                            {avatars.map((avatar) => (
-                                <Image
-                                    key={avatar.src}
-                                    alt={avatar.alt}
-                                    className="h-10 w-10 rounded-full border-2 border-background object-cover"
-                                    height={40}
-                                    src={avatar.src}
-                                    width={40}
-                                />
-                            ))}
-                        </div>
-                        <div className="text-sm">
-                            <span className="font-semibold text-foreground">50,000+</span>
-                            <span className="text-muted-foreground"> happy couples</span>
-                        </div>
-                    </div>
+                    <p className="pt-4 text-sm text-muted-foreground">
+                        Create a profile, choose your preferences, and start a conversation at your own pace.
+                    </p>
                 </div>
 
                 <div className="flex flex-1 items-center justify-center size-full">

@@ -23,11 +23,10 @@ const pacifico = Pacifico({
 
 const navigationData = [
     { title: 'Home', href: '/' },
-    { title: 'How It Works', href: '#how-it-works' },
-    { title: 'Features', href: '#features' },
-    { title: 'Success Stories', href: '#testimonials' },
-    { title: 'Pricing', href: '#pricing' },
-    { title: 'FAQ', href: '#faq' },
+    { title: 'How It Works', href: '/#how-it-works' },
+    { title: 'Features', href: '/#features' },
+    { title: 'Pricing', href: '/#pricing' },
+    { title: 'FAQ', href: '/#faq' },
 ]
 
 const headerActions = (

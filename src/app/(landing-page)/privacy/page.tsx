@@ -8,18 +8,25 @@ const PrivacyPolicy = () => {
                     <h1 className="text-4xl font-bold mb-8 text-center">LoveBond Privacy Policy</h1>
 
                     <p className="text-muted-foreground mb-8 text-center">
-                        <strong>Last Updated:</strong> 11.09.2026
+                        <strong>Effective date:</strong> 10.09.2026
                     </p>
 
                     <div className="space-y-8">
                         <section>
                             <p className="mb-6">
-                                Your privacy is important to us at LoveBond. This Privacy Policy explains what
-                                information we collect from you as a user of the LoveBond Service, how we use and
-                                share that information, and your rights in relation to that information. By using
-                                LoveBond, you agree to the collection and use of information in accordance with
-                                this policy. If you do not agree, please refrain from using the Service.
+                                Your privacy is important to us at LoveBond. NewEcoPay s.r.o. is the data
+                                controller responsible for the personal data processed through the LoveBond website
+                                and service. This Privacy Policy explains what information we collect from you as a
+                                user of the LoveBond Service, how we use and share that information, and your
+                                rights in relation to that information. By using LoveBond, you agree to the
+                                collection and use of information in accordance with this policy. If you do not
+                                agree, please refrain from using the Service.
                             </p>
+                            <div className="rounded-lg bg-muted p-4 text-sm">
+                                <p className="font-medium">Data controller</p>
+                                <p>NewEcoPay s.r.o., Registration No. 222 32 354</p>
+                                <p>Vlkova 532/8, Žižkov, 130 00 Praha 3, Czech Republic</p>
+                            </div>
                         </section>
 
                         <section>
@@ -174,8 +181,8 @@ const PrivacyPolicy = () => {
                                 execute the post. This means we share data with the social networks at your
                                 direction. For example, if you schedule a post for Platform X, the content is
                                 transmitted to Platform X when the time comes, just as if you had entered it on
-                                their app. These third-party platforms process that content under their own terms
-                                and privacy policies.
+                                their platform. These third-party platforms process that content under their own
+                                terms and privacy policies.
                             </p>
 
                             <h3 className="text-xl font-medium mb-3">Service Providers and Partners</h3>
@@ -559,10 +566,10 @@ const PrivacyPolicy = () => {
                             <div className="bg-muted p-4 rounded-lg">
                                 <p className="font-medium">LoveBond Privacy Team</p>
                                 <p>Email: privacy@love-bond.com</p>
-                                <p>Rix RB s.r.o.</p>
-                                <p>ID: 237 15 189</p>
-                                <p>Sinkulova 160/16</p>
-                                <p>Podolí, 147 00 Praha 4</p>
+                                <p>NewEcoPay s.r.o.</p>
+                                <p>Registration No. 222 32 354</p>
+                                <p>Vlkova 532/8, Žižkov</p>
+                                <p>130 00 Praha 3, Czech Republic</p>
                                 <p className="mt-2 text-sm text-muted-foreground">
                                     We will be happy to answer your questions and address any issues to the best of
                                     our ability. Your trust is important to us, and we are committed to

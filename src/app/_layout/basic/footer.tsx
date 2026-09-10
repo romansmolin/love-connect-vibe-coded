@@ -40,7 +40,7 @@ export const FooterSection = () => {
                         </div>
 
                         <div>
-                            <Link className="opacity-60 hover:opacity-100" href="#faq">
+                            <Link className="opacity-60 hover:opacity-100" href="/#faq">
                                 FAQ
                             </Link>
                         </div>

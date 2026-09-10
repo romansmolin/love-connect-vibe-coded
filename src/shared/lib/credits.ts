@@ -1,4 +1,4 @@
-const CENTS_PER_CREDIT = 2
+const CENTS_PER_CREDIT = 10
 
 export const creditsFromCents = (amountCents: number) => Math.round(amountCents / CENTS_PER_CREDIT)
 

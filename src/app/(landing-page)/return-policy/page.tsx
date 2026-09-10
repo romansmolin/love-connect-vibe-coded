@@ -8,7 +8,7 @@ const ReturnPolicy = () => {
                     <h1 className="text-4xl font-bold mb-8 text-center">LoveBond Return Policy</h1>
 
                     <p className="text-muted-foreground mb-8 text-center">
-                        <strong>Last Updated:</strong> 11.09.2026
+                        <strong>Effective date:</strong> 10.09.2026
                     </p>
 
                     <div className="space-y-8">
@@ -60,10 +60,10 @@ const ReturnPolicy = () => {
                             </p>
                             <div className="bg-muted p-4 rounded-lg">
                                 <p className="font-medium">LoveBond Support</p>
-                                <p>Rix RB s.r.o.</p>
-                                <p>ID: 237 15 189</p>
-                                <p>Sinkulova 160/16</p>
-                                <p>Podolí, 147 00 Praha 4</p>
+                                <p>NewEcoPay s.r.o.</p>
+                                <p>Registration No. 222 32 354</p>
+                                <p>Vlkova 532/8, Žižkov</p>
+                                <p>130 00 Praha 3, Czech Republic</p>
                             </div>
                         </section>
                     </div>

@@ -41,10 +41,9 @@ const Footer2 = ({
             title: 'Product',
             links: [
                 { text: 'Overview', url: '/' },
-                { text: 'Features', url: '#features' },
-                { text: 'Platforms', url: '#platform' },
-                { text: 'Pricing', url: '#pricing' },
-                { text: 'Testimonials', url: '#testimonials' },
+                { text: 'Features', url: '/#features' },
+                { text: 'Platforms', url: '/#platform' },
+                { text: 'Pricing', url: '/#pricing' },
             ],
         },
         {
@@ -60,7 +59,7 @@ const Footer2 = ({
             title: 'Resources',
             links: [
                 { text: 'Help Center', url: '/contact-us' },
-                { text: 'FAQ', url: '#faq' },
+                { text: 'FAQ', url: '/#faq' },
                 // { text: 'Status', url: '/#' },
             ],
         },
@@ -100,10 +99,10 @@ const Footer2 = ({
                         <div>
                             <h3 className="mb-4 text-base font-bold text-foreground">Company Info</h3>
                             <ul className="space-y-3 text-sm text-muted-foreground">
-                                <li className="font-medium">Rix RB s.r.o.</li>
-                                <li className="font-medium">ID: 237 15 189</li>
-                                <li className="font-medium">Sinkulova 160/16</li>
-                                <li className="font-medium">Podolí, 147 00 Praha 4</li>
+                                <li className="font-medium">NewEcoPay s.r.o.</li>
+                                <li className="font-medium">Registration No. 222 32 354</li>
+                                <li className="font-medium">Vlkova 532/8, Žižkov</li>
+                                <li className="font-medium">130 00 Praha 3, Czech Republic</li>
                             </ul>
                         </div>
                     </div>

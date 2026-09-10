@@ -114,7 +114,7 @@ export const Header04 = ({ navigationData, actions }: Header04Props) => {
                     {/* Mobile CTA */}
                     {actions ? <div className="border-t border-border/50 p-6 space-y-3">{actions}</div> : null}
                     <div className="border-t border-border/50 p-6">
-                        <Link className="block" href="#pricing" onClick={() => setIsMobileOpen(false)}>
+                        <Link className="block" href="/#pricing" onClick={() => setIsMobileOpen(false)}>
                             <ShimmerButton
                                 background="linear-gradient(135deg, #7c3aed 0%, #ec4899 100%)"
                                 className="h-14 w-full gap-2 text-base font-semibold"

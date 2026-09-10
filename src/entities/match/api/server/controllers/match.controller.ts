@@ -51,6 +51,13 @@ export const matchController = {
         const ageFrom = toOptionalNumber(searchParams.get('ageFrom'))
         const ageTo = toOptionalNumber(searchParams.get('ageTo'))
         const genderParam = searchParams.get('gender')
+        const isPoolRequest = searchParams.get('pool') === '1'
+        const excludedIds = new Set(
+            (searchParams.get('excludeIds') ?? '')
+                .split(',')
+                .map((value) => Number(value))
+                .filter((value) => Number.isInteger(value) && value > 0)
+        )
         const hasExplicitFilters = Boolean(genderParam || ageFrom || ageTo)
 
         const params = cleanParams({
@@ -63,7 +70,9 @@ export const matchController = {
             searchAction: hasExplicitFilters ? undefined : 'Last',
         })
 
-        return matchService.discover(sessionId, params)
+        return isPoolRequest
+            ? matchService.discoverPool(sessionId, params, excludedIds)
+            : matchService.discover(sessionId, params)
     },
     async listMatches(request: NextRequest) {
         const sessionId = requireSessionId(request)

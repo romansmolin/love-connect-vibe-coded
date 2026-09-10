@@ -56,7 +56,7 @@ export const HeroSection01 = () => {
                 </p>
 
                 <Button asChild size="lg">
-                    <Link href="#pricing">Get started</Link>
+                    <Link href="/#pricing">Get started</Link>
                 </Button>
             </div>
 

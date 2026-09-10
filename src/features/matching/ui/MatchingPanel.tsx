@@ -10,6 +10,7 @@ import { Card, CardContent } from '@/shared/ui/card'
 import { Skeleton } from '@/shared/ui/skeleton'
 
 import { useMatchFlow } from '../hooks/use-match-flow'
+import type { DemoCity } from '../lib/demo-city'
 
 const LoadingState = () => (
     <Card className="overflow-hidden">
@@ -43,8 +44,8 @@ const ErrorState = ({ message, onRetry }: { message: string; onRetry: () => void
     </Card>
 )
 
-export const MatchingPanel = () => {
-    const { current, isLoading, isActing, error, like, dislike, refetch, remaining } = useMatchFlow()
+export const MatchingPanel = ({ city, pool }: { city?: DemoCity; pool?: boolean }) => {
+    const { current, isLoading, isActing, error, like, dislike, refetch, remaining } = useMatchFlow({ city, pool })
 
     if (isLoading) {
         return <LoadingState />

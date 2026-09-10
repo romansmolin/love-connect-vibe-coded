@@ -104,7 +104,9 @@ NEXT_PUBLIC_SECURE_PROCESSOR_CHECKOUT_URL=https://checkout.secure-processor.com
 
 ## Customization points
 
-- Pricing: update the credits-to-cents conversion rate.
+- Pricing: 1 credit = €0.10. The supported credit packages are 100 credits (€10),
+  250 credits (€25), and 500 credits (€50).
+- Gift prices are charged in credits: 10, 30, 50, 100, 150, 250, 350, and 500.
 - Currency: update the configured currency and ensure gateway support.
 - Metadata: adjust purchase descriptions and reference metadata.
 - Client UX: update UI feedback and wallet refresh behavior.

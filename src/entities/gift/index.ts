@@ -18,3 +18,6 @@ export type {
     SendGiftRequest,
     SendGiftResponse,
 } from './model/types'
+
+export { GIFT_PRICE_CREDITS } from './model/pricing'
+export type { GiftPriceCredits } from './model/pricing'

@@ -60,7 +60,7 @@ export const HeroSection03 = () => {
 
                 {/* CTA Buttons */}
                 <div className="flex flex-col gap-4 sm:flex-row">
-                    <Link href="#pricing">
+                    <Link href="/#pricing">
                         <ShimmerButton
                             background="linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #ec4899 100%)"
                             className="h-12 min-w-[200px] text-base font-semibold"
@@ -73,7 +73,7 @@ export const HeroSection03 = () => {
                     </Link>
                     <Link
                         className="inline-flex h-12 items-center justify-center rounded-full border border-primary/30 bg-background/50 px-8 text-base font-medium backdrop-blur-sm transition-all hover:border-primary/50 hover:bg-primary/5"
-                        href="#features"
+                        href="/#features"
                     >
                         See How It Works
                     </Link>

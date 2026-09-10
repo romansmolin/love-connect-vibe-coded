@@ -30,16 +30,13 @@ const Header = ({ isAuth, children, showModeToggle = true }: HeaderProps) => {
                     {/* Navigation for large screens */}
                     {!isAuth && (
                         <div className="hidden lg:flex gap-10">
-                            <Link className="text-xl font-bold" href="#pricing">
+                            <Link className="text-xl font-bold" href="/#pricing">
                                 Pricing
                             </Link>
-                            <Link className="text-xl font-bold" href="#testimonials">
-                                Reviews
-                            </Link>
-                            <Link className="text-xl font-bold" href="#features">
+                            <Link className="text-xl font-bold" href="/#features">
                                 Features
                             </Link>
-                            <Link className="text-xl font-bold" href="#faq">
+                            <Link className="text-xl font-bold" href="/#faq">
                                 FAQ
                             </Link>
                             <Link className="text-xl font-bold" href="/blog">
@@ -89,28 +86,21 @@ const Header = ({ isAuth, children, showModeToggle = true }: HeaderProps) => {
                         <>
                             <Link
                                 className="text-2xl font-bold"
-                                href="#pricing"
+                                href="/#pricing"
                                 onClick={() => setMobileMenuOpen(false)}
                             >
                                 Pricing
                             </Link>
                             <Link
                                 className="text-2xl font-bold"
-                                href="#testimonials"
-                                onClick={() => setMobileMenuOpen(false)}
-                            >
-                                Reviews
-                            </Link>
-                            <Link
-                                className="text-2xl font-bold"
-                                href="#features"
+                                href="/#features"
                                 onClick={() => setMobileMenuOpen(false)}
                             >
                                 Features
                             </Link>
                             <Link
                                 className="text-2xl font-bold"
-                                href="#faq"
+                                href="/#faq"
                                 onClick={() => setMobileMenuOpen(false)}
                             >
                                 FAQ

@@ -4,7 +4,6 @@ import { HandHeart, Heart, HeartHandshake, Rainbow, Shield, ShieldCheck } from '
 
 import AnimatedContent from '@/shared/ui/AnimatedContent'
 import { Badge } from '@/shared/ui/badge'
-import CountUp from '@/shared/ui/count-up'
 
 const values = [
     {
@@ -27,13 +26,6 @@ const values = [
         description: 'Everyone gets seen, supported, and welcomed here.',
         icon: HandHeart,
     },
-]
-
-const stats = [
-    { label: 'Inclusive', value: 100, suffix: '%' },
-    { label: 'Customer support', value: 24, suffix: '/7' },
-    { label: 'Tolerance for hate', value: 0, suffix: '' },
-    { label: 'Successful couples', value: 100, prefix: '+' },
 ]
 
 const Features5 = () => {
@@ -78,34 +70,16 @@ const Features5 = () => {
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-primary">
-                                Community Impact
+                                Safety tools
                             </p>
-                            <h3 className="mt-2 text-2xl font-semibold">Numbers that back our promise</h3>
+                            <h3 className="mt-2 text-2xl font-semibold">
+                                Tools that support better conversations
+                            </h3>
                         </div>
-                        <span className="rounded-full border border-border bg-muted/40 px-3 py-1 text-xs font-semibold text-muted-foreground">
-                            Live
-                        </span>
-                    </div>
-
-                    <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                        {stats.map((stat) => (
-                            <div
-                                key={stat.label}
-                                className="rounded-xl border border-border bg-muted/40 p-4 text-left"
-                            >
-                                <div className="text-3xl font-semibold text-foreground">
-                                    {stat.prefix ?? ''}
-                                    {/*@ts-ignore*/}
-                                    <CountUp duration={1.6} to={stat.value} />
-                                    {stat.suffix ?? ''}
-                                </div>
-                                <p className="mt-1 text-sm text-muted-foreground">{stat.label}</p>
-                            </div>
-                        ))}
                     </div>
 
                     <div className="mt-6 rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground">
-                        We monitor reports 24/7 and keep our community safe with transparent moderation guidelines.
+                        Use reporting and moderation tools whenever a conversation or profile does not feel right.
                     </div>
                 </AnimatedContent>
             </div>

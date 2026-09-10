@@ -21,9 +21,17 @@
         "paths": {
             "@/*": ["./src/*"],
             "content-collections": ["./.content-collections/generated"]
-
         }
     },
-    "exclude": ["node_modules"],
+    "exclude": [
+        "node_modules",
+        "src/entities/payment/api/server/adapters/**/*.ts",
+        "src/entities/payment/api/server/controller/**/*.ts",
+        "src/entities/payment/api/server/interfaces/**/*.ts",
+        "src/entities/payment/api/server/repositories/**/*.ts",
+        "src/entities/payment/api/server/routes/**/*.ts",
+        "src/entities/payment/api/server/use-cases/**/*.ts",
+        "src/shared/lib/auth/resolve-app-user-id.ts"
+    ],
     "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"]
 }

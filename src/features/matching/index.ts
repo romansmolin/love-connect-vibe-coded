@@ -1,3 +1,6 @@
 export { MatchingPanel } from './ui/MatchingPanel'
+export { CityFilter } from './ui/CityFilter'
 export { useMatchFlow } from './hooks/use-match-flow'
 export type { MatchFlowFilters, UseMatchFlowReturn } from './hooks/use-match-flow'
+export { DEMO_CITIES, getDemoCity, getExcludedProfileIds } from './lib/demo-city'
+export type { DemoCity } from './lib/demo-city'

@@ -1,9 +1,10 @@
-import { HttpError } from '@/shared/http-client'
-import { prisma } from '@/shared/lib/prisma'
-import { centsFromCredits } from '@/shared/lib/credits'
 import { emailService } from '@/entities/email/api/server/services/email.service'
 import { paymentService } from '@/entities/payment/api/server/payment.service'
+import { HttpError } from '@/shared/http-client'
+import { centsFromCredits } from '@/shared/lib/credits'
+import { prisma } from '@/shared/lib/prisma'
 
+import { isCreditPackage } from '../../model/pricing'
 import type { CreditTransactionStatus } from '../../model/types'
 
 import { creditRepo } from './credit.repo'
@@ -109,6 +110,10 @@ export const creditService = {
     async createPurchase(params: { userId: string; credits: number }) {
         if (!params.credits || params.credits <= 0)
             throw new HttpError('Credits amount must be greater than zero.', 400)
+
+        if (!isCreditPackage(params.credits)) {
+            throw new HttpError('Choose one of the available credit packages.', 400)
+        }
 
         const wallet = await ensureWallet(params.userId)
         const amountCents = centsFromCredits(params.credits)

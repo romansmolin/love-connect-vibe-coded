@@ -5,11 +5,9 @@ import { useMemo, useState } from 'react'
 import { CreditCard, Crown, Landmark, Wallet as WalletIcon } from 'lucide-react'
 import Link from 'next/link'
 
-import { CreditTransaction } from '@/entities/credit'
-import { useGetWalletQuery } from '@/entities/credit'
+import { CREDIT_PACKAGES, CreditTransaction, useGetWalletQuery } from '@/entities/credit'
 import { useBuyCredits } from '@/features/buy-credits'
 import { CENTS_PER_CREDIT, centsFromCredits, creditsFromCents, formatCredits } from '@/shared/lib/credits'
-import { cn } from '@/shared/lib/utils'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -28,18 +26,9 @@ import { Label } from '@/shared/ui/label'
 import { Skeleton } from '@/shared/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs'
 
-type CreditPackage = {
-    id: string
-    credits: number
-    label: string
-    highlight?: string
-}
+type CreditPackage = (typeof CREDIT_PACKAGES)[number]
 
-const creditPackages: CreditPackage[] = [
-    { id: 'starter', credits: 5, label: 'Starter pack' },
-    { id: 'boost', credits: 25, label: 'Boost pack', highlight: 'Popular' },
-    { id: 'pro', credits: 50, label: 'Pro pack', highlight: 'Best value' },
-]
+const creditPackages = CREDIT_PACKAGES
 
 const SummaryCard = ({
     title,
@@ -194,7 +183,7 @@ export const WalletPage = () => {
                             <div>
                                 <h2 className="text-xl font-semibold text-foreground">Buy credits</h2>
                                 <p className="text-sm text-muted-foreground">
-                                    0.10 EUR equals 5 credits. Pick a pack and checkout securely.
+                                    1 credit = 0.10 EUR. Pick a pack and checkout securely.
                                 </p>
                             </div>
                             <Badge className="text-xs uppercase tracking-[0.2em]" variant="outline">
@@ -208,21 +197,13 @@ export const WalletPage = () => {
                                 return (
                                     <div
                                         key={pack.id}
-                                        className={cn(
-                                            'flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/70 px-3 py-3',
-                                            pack.highlight && 'border-primary/30'
-                                        )}
+                                        className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/70 px-3 py-3"
                                     >
                                         <div className="space-y-1">
                                             <div className="flex items-center gap-2">
                                                 <p className="text-lg font-semibold text-foreground">
                                                     {pack.label}
                                                 </p>
-                                                {pack.highlight && (
-                                                    <Badge className="bg-primary text-primary-foreground">
-                                                        {pack.highlight}
-                                                    </Badge>
-                                                )}
                                             </div>
                                             <p className="text-sm text-muted-foreground">
                                                 {formatCredits(pack.credits)}
@@ -273,7 +254,7 @@ export const WalletPage = () => {
                             ))}
                         </div>
                     ) : (
-                        <Tabs defaultValue="all" className="space-y-3">
+                        <Tabs className="space-y-3" defaultValue="all">
                             <TabsList className="w-full rounded-2xl border border-border p-1">
                                 <TabsTrigger value="all">All</TabsTrigger>
                                 <TabsTrigger value="purchased">Purchased</TabsTrigger>

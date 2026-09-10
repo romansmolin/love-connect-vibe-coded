@@ -63,7 +63,7 @@ const HeroSections02 = () => {
 
                 <div className="flex gap-5 w-full">
                     <Button asChild className="h-12 text-md w-full" size="lg">
-                        <Link href="#pricing">
+                        <Link href="/#pricing">
                             <Heart />
                             Try For Free
                         </Link>

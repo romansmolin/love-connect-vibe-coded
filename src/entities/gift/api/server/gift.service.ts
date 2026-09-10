@@ -1,25 +1,26 @@
 import crypto from 'node:crypto'
 
-import { HttpError } from '@/shared/http-client'
-import { creditsFromCents } from '@/shared/lib/credits'
-import { prisma } from '@/shared/lib/prisma'
 import { creditService } from '@/entities/credit/api/server/credit.service'
 import { matchService } from '@/entities/match/api/server/services/match.service'
 import { paymentService } from '@/entities/payment/api/server/payment.service'
+import { HttpError } from '@/shared/http-client'
+import { centsFromCredits, creditsFromCents } from '@/shared/lib/credits'
+import { prisma } from '@/shared/lib/prisma'
 
+import { GIFT_PRICE_CREDITS } from '../../model/pricing'
 import type { GiftTransaction, GiftTransactionStatus } from '../../model/types'
 
 import { giftRepo } from './gift.repo'
 
 const defaultCatalog = [
-    { name: 'Gift 11', emoji: '🎁', imageUrl: '/gifts/11.png', priceCents: 10 },
-    { name: 'Eternal Rose', emoji: '🌹', imageUrl: '/gifts/Eternal%20Rose.png', priceCents: 20 },
-    { name: 'Ginger Cookie', emoji: '🍪', imageUrl: '/gifts/Ginger%20Cookie.png', priceCents: 30 },
-    { name: 'Ionic Dryer', emoji: '💨', imageUrl: '/gifts/Ionic%20Dryer.png', priceCents: 45 },
-    { name: 'Neko Helmet', emoji: '🐱', imageUrl: '/gifts/Neko%20Helmet.png', priceCents: 60 },
-    { name: 'Sharp Tongue', emoji: '👅', imageUrl: '/gifts/Sharp%20Tongue.png', priceCents: 75 },
-    { name: 'Snoop Dogg', emoji: '🐶', imageUrl: '/gifts/Snoop%20Dogg.png', priceCents: 90 },
-    { name: 'Toy Bear', emoji: '🧸', imageUrl: '/gifts/Toy%20Bear.png', priceCents: 100 },
+    { name: 'Gift 11', emoji: '🎁', imageUrl: '/gifts/11.png', priceCredits: GIFT_PRICE_CREDITS[0] },
+    { name: 'Eternal Rose', emoji: '🌹', imageUrl: '/gifts/Eternal%20Rose.png', priceCredits: GIFT_PRICE_CREDITS[1] },
+    { name: 'Ginger Cookie', emoji: '🍪', imageUrl: '/gifts/Ginger%20Cookie.png', priceCredits: GIFT_PRICE_CREDITS[2] },
+    { name: 'Ionic Dryer', emoji: '💨', imageUrl: '/gifts/Ionic%20Dryer.png', priceCredits: GIFT_PRICE_CREDITS[3] },
+    { name: 'Neko Helmet', emoji: '🐱', imageUrl: '/gifts/Neko%20Helmet.png', priceCredits: GIFT_PRICE_CREDITS[4] },
+    { name: 'Sharp Tongue', emoji: '👅', imageUrl: '/gifts/Sharp%20Tongue.png', priceCredits: GIFT_PRICE_CREDITS[5] },
+    { name: 'Snoop Dogg', emoji: '🐶', imageUrl: '/gifts/Snoop%20Dogg.png', priceCredits: GIFT_PRICE_CREDITS[6] },
+    { name: 'Toy Bear', emoji: '🧸', imageUrl: '/gifts/Toy%20Bear.png', priceCredits: GIFT_PRICE_CREDITS[7] },
 ]
 
 const seedCatalogIfEmpty = async () => {
@@ -37,7 +38,7 @@ const seedCatalogIfEmpty = async () => {
                 name: gift.name,
                 emoji: gift.emoji,
                 imageUrl: gift.imageUrl,
-                priceCents: gift.priceCents,
+                priceCents: centsFromCredits(gift.priceCredits),
                 currency: 'EUR',
                 status: 'ACTIVE',
             })

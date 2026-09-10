@@ -2,6 +2,7 @@ import React from 'react'
 
 import { CheckCircle2, ShieldQuestion } from 'lucide-react'
 
+import { GIFT_PRICE_CREDITS } from '@/entities/gift'
 import AnimatedContent from '@/shared/ui/AnimatedContent'
 import { Badge } from '@/shared/ui/badge'
 
@@ -21,12 +22,12 @@ const steps = [
 ]
 
 const giftPreviewItems = [
-    { emoji: '🌹', label: 'Rose' },
-    { emoji: '💌', label: 'Love note' },
-    { emoji: '🍫', label: 'Choco' },
-    { emoji: '🧸', label: 'Teddy' },
-    { emoji: '✨', label: 'Sparkle' },
-    { emoji: '🎁', label: 'Surprise' },
+    { emoji: '🌹', label: 'Rose', credits: GIFT_PRICE_CREDITS[0] },
+    { emoji: '💌', label: 'Love note', credits: GIFT_PRICE_CREDITS[1] },
+    { emoji: '🍫', label: 'Choco', credits: GIFT_PRICE_CREDITS[2] },
+    { emoji: '🧸', label: 'Teddy', credits: GIFT_PRICE_CREDITS[3] },
+    { emoji: '✨', label: 'Sparkle', credits: GIFT_PRICE_CREDITS[4] },
+    { emoji: '🎁', label: 'Surprise', credits: GIFT_PRICE_CREDITS[5] },
 ]
 
 const Features4 = () => {
@@ -188,7 +189,7 @@ const Features4 = () => {
                                             Send a gift
                                         </p>
                                         <p className="text-sm text-muted-foreground">
-                                            0.10 = <span className="font-semibold text-foreground">5 credits</span>
+                                            1 credit = <span className="font-semibold text-foreground">€0.10</span>
                                         </p>
                                     </div>
                                     <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
@@ -203,7 +204,9 @@ const Features4 = () => {
                                         >
                                             <span className="text-lg">{gift.emoji}</span>
                                             <span className="text-[11px] text-muted-foreground">{gift.label}</span>
-                                            <span className="text-[11px] font-semibold text-foreground">5 cr</span>
+                                            <span className="text-[11px] font-semibold text-foreground">
+                                                {gift.credits} cr
+                                            </span>
                                         </div>
                                     ))}
                                 </div>
@@ -232,7 +235,7 @@ const Features4 = () => {
                         </div>
                         <div className="grid gap-4 sm:grid-cols-3">
                             {[
-                                { title: 'Send a Gift', value: '5 credits', note: 'Make it memorable' },
+                                { title: 'Send a Gift', value: '10+ credits', note: 'Make it memorable' },
                                 { title: 'Quick Reply', value: '2 taps', note: 'Keep the vibe' },
                                 { title: 'Date Invite', value: '1 click', note: 'Plan a meetup' },
                             ].map((item) => (
