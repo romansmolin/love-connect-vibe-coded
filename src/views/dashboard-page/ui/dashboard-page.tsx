@@ -1,70 +1,18 @@
 'use client'
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import { Activity, Eye, HeartPulse, RefreshCw, Sparkles, Users } from 'lucide-react'
 import Link from 'next/link'
 
 import type { CommunityActivityResponse, RecentVisitorsResponse, TopMembersResponse } from '@/entities/dashboard'
+import { useApiFetch as useDashboardFetch } from '@/shared/lib/react/use-api-fetch'
 import { cn } from '@/shared/lib/utils'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar'
 import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
 import { Skeleton } from '@/shared/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs'
-
-type ApiResult<T> = {
-    data: T | null
-    loading: boolean
-    error: string | null
-    refetch: () => void
-}
-
-const useDashboardFetch = <T,>(path: string): ApiResult<T> => {
-    const [data, setData] = useState<T | null>(null)
-    const [error, setError] = useState<string | null>(null)
-    const [loading, setLoading] = useState<boolean>(true)
-    const [nonce, setNonce] = useState(0)
-
-    const refetch = useCallback(() => setNonce((value) => value + 1), [])
-
-    useEffect(() => {
-        let active = true
-        const run = async () => {
-            setLoading(true)
-            setError(null)
-            try {
-                const response = await fetch(path, { cache: 'no-store' })
-                const json = await response.json()
-                if (!active) return
-
-                if (!response.ok || json?.ok === false) {
-                    const message = json?.message ?? 'Something went wrong.'
-                    throw new Error(message)
-                }
-
-                setData(json as T)
-            } catch (err) {
-                if (!active) return
-                const message = (err as Error)?.message ?? 'Unable to load data.'
-                setError(message)
-                setData(null)
-            } finally {
-                if (active) {
-                    setLoading(false)
-                }
-            }
-        }
-
-        run()
-
-        return () => {
-            active = false
-        }
-    }, [nonce, path])
-
-    return { data, loading, error, refetch }
-}
 
 const initials = (value: string) =>
     value
