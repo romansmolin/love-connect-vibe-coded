@@ -11,6 +11,7 @@ import type {
     ReportUserResponse,
     VotersResponse,
 } from '../../../model/types'
+import { matchActionRepo } from '../repositories/match-action.repo'
 import { matchRepo } from '../repositories/match.repo'
 import type { MembreBlock, MembreVoteBlock } from '../repositories/match.repo'
 
@@ -109,15 +110,25 @@ const mapVoter = (member: MembreVoteBlock): MatchCandidate & { vote?: number } =
 })
 
 export const matchService = {
-    async discover(sessionId: string, params: Record<string, unknown>): Promise<DiscoverMatchesResponse> {
+    async discover(
+        sessionId: string,
+        params: Record<string, unknown>,
+        appUserId?: string
+    ): Promise<DiscoverMatchesResponse> {
         const response = await matchRepo.discover(sessionId, params)
 
         if (response.connected === 0) {
             throw new HttpError('Unauthorized', 401)
         }
 
+        const actedIds = appUserId ? new Set(await matchActionRepo.listActedTargetIds(appUserId)) : null
+
+        const items = (response.result ?? [])
+            .filter((member) => !actedIds || typeof member.id !== 'number' || !actedIds.has(member.id))
+            .map((member) => mapMember(member))
+
         return {
-            items: response.result?.map((member) => mapMember(member)) ?? [],
+            items,
             page: typeof params.page === 'number' ? params.page : undefined,
             totalPages: response.nb_pages,
             total: response.total,
@@ -127,7 +138,8 @@ export const matchService = {
         sessionId: string,
         params: Record<string, unknown>,
         excludedIds: Set<number>,
-        cityFilter?: string
+        cityFilter?: string,
+        appUserId?: string
     ): Promise<DiscoverMatchesResponse> {
         const members = new Map<number, MembreBlock>()
         const maxPages = 50
@@ -135,6 +147,11 @@ export const matchService = {
         const targetSize = 200
         let totalPages: number | undefined
         const normalizedCity = cityFilter?.trim().toLowerCase()
+
+        if (appUserId) {
+            const actedIds = await matchActionRepo.listActedTargetIds(appUserId)
+            for (const id of actedIds) excludedIds.add(id)
+        }
 
         const matchesCity = (member: MembreBlock) =>
             !normalizedCity || (member.zone_name ?? '').toLowerCase().includes(normalizedCity)
@@ -196,7 +213,7 @@ export const matchService = {
             total,
         }
     },
-    async like(sessionId: string, userId: number): Promise<MatchActionResponse> {
+    async like(sessionId: string, userId: number, appUserId?: string): Promise<MatchActionResponse> {
         const response = await matchRepo.sendAction({
             sessionId,
             apiKey: FOTOCHAT_API_KEY,
@@ -205,13 +222,18 @@ export const matchService = {
         })
 
         const result = response.result
+        const isMatch = result === 'match'
+
+        if (appUserId) {
+            await matchActionRepo.recordAction({ userId: appUserId, targetUserId: userId, action: 'LIKE', isMatch })
+        }
 
         return {
             result,
-            isMatch: result === 'match',
+            isMatch,
         }
     },
-    async dislike(sessionId: string, userId: number): Promise<MatchActionResponse> {
+    async dislike(sessionId: string, userId: number, appUserId?: string): Promise<MatchActionResponse> {
         const response = await matchRepo.sendAction({
             sessionId,
             apiKey: FOTOCHAT_API_KEY,
@@ -220,10 +242,20 @@ export const matchService = {
         })
 
         const result = response.result
+        const isMatch = result === 'match'
+
+        if (appUserId) {
+            await matchActionRepo.recordAction({
+                userId: appUserId,
+                targetUserId: userId,
+                action: 'DISLIKE',
+                isMatch,
+            })
+        }
 
         return {
             result,
-            isMatch: result === 'match',
+            isMatch,
         }
     },
     async getVoters(sessionId: string, page?: number): Promise<VotersResponse> {

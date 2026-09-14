@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
 
-import { SESSION_COOKIE_NAME } from '@/shared/api/fotochat'
+import { SESSION_COOKIE_NAME, USER_COOKIE_NAME } from '@/shared/api/fotochat'
 import { HttpError } from '@/shared/http-client'
 
 import type {
@@ -22,6 +22,8 @@ const requireSessionId = (request: NextRequest) => {
 
     return sessionId
 }
+
+const getAppUserId = (request: NextRequest) => request.cookies.get(USER_COOKIE_NAME)?.value
 
 const toOptionalNumber = (value: string | null) => {
     if (value === null) return undefined
@@ -78,9 +80,11 @@ export const matchController = {
             searchAction: hasExplicitFilters ? undefined : 'Last',
         })
 
+        const appUserId = getAppUserId(request)
+
         return isPoolRequest
-            ? matchService.discoverPool(sessionId, params, excludedIds, cityParam)
-            : matchService.discover(sessionId, params)
+            ? matchService.discoverPool(sessionId, params, excludedIds, cityParam, appUserId)
+            : matchService.discover(sessionId, params, appUserId)
     },
     async listMatches(request: NextRequest) {
         const sessionId = requireSessionId(request)
@@ -107,11 +111,13 @@ export const matchController = {
             throw new HttpError('Invalid userId', 400)
         }
 
+        const appUserId = getAppUserId(request)
+
         if (payload.action === 'like') {
-            return matchService.like(sessionId, userId)
+            return matchService.like(sessionId, userId, appUserId)
         }
 
-        return matchService.dislike(sessionId, userId)
+        return matchService.dislike(sessionId, userId, appUserId)
     },
     async getVoters(request: NextRequest): Promise<VotersResponse> {
         const sessionId = requireSessionId(request)

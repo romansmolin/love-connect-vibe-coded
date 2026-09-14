@@ -59,6 +59,11 @@ enum CreditTransactionType {
   ADJUSTMENT
 }
 
+enum MatchActionType {
+  LIKE
+  DISLIKE
+}
+
 model User {
   id           String     @id @default(cuid())
   name         String
@@ -193,4 +198,17 @@ model EmailVerificationToken {
 
   @@index([emailContactId])
   @@index([expiresAt])
+}
+
+model MatchAction {
+  id           String          @id @default(cuid())
+  userId       String
+  targetUserId Int
+  action       MatchActionType
+  isMatch      Boolean         @default(false)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  @@unique([userId, targetUserId])
+  @@index([userId])
 }
