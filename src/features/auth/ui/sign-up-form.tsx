@@ -25,12 +25,34 @@ const SignUpForm = ({ thirdPartyAuth }: { thirdPartyAuth?: JSX.Element }) => {
     const [dateOfBirth, setDateOfBirth] = useState('')
     const [city, setCity] = useState('')
     const [consentAccepted, setConsentAccepted] = useState(false)
+    const [ageConfirmed, setAgeConfirmed] = useState(false)
     const [signUp, { isLoading }] = useSignUpMutation()
     const router = useRouter()
+
+    const isAtLeast18 = (birthDate: string) => {
+        const birth = new Date(birthDate)
+        const today = new Date()
+        let age = today.getFullYear() - birth.getFullYear()
+        const monthDiff = today.getMonth() - birth.getMonth()
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+            age -= 1
+        }
+        return age >= 18
+    }
 
     const handleSignUp = async () => {
         if (!name || !email || !password || !username || !gender || !lookingFor || !dateOfBirth || !city) {
             toast.error('All fields are required.')
+            return
+        }
+
+        if (!isAtLeast18(dateOfBirth)) {
+            toast.error('You must be at least 18 years old to sign up.')
+            return
+        }
+
+        if (!ageConfirmed) {
+            toast.error('Please confirm that you are 18 years of age or older.')
             return
         }
 
@@ -188,6 +210,18 @@ const SignUpForm = ({ thirdPartyAuth }: { thirdPartyAuth?: JSX.Element }) => {
                             value={city}
                             onChange={(e) => setCity(e.target.value)}
                         />
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                        <Checkbox
+                            checked={ageConfirmed}
+                            disabled={isLoading}
+                            id="sign-up-age-confirm"
+                            onCheckedChange={(value) => setAgeConfirmed(Boolean(value))}
+                        />
+                        <Label className="text-sm leading-5 text-muted-foreground" htmlFor="sign-up-age-confirm">
+                            I confirm that I am 18 years of age or older.
+                        </Label>
                     </div>
 
                     <div className="flex items-start gap-3">

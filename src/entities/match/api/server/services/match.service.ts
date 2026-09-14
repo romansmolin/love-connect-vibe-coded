@@ -39,12 +39,12 @@ const pickPhotoUrl = (member: MembreBlock) => {
     )
 }
 
-const mapMember = (member: MembreBlock, options?: { hideSourceLocation?: boolean }): MatchCandidate => ({
+const mapMember = (member: MembreBlock): MatchCandidate => ({
     id: member.id ?? 0,
     username: member.pseudo ?? member.prenom ?? 'Member',
     age: member.age,
     gender: mapGender(member.sexe1),
-    location: options?.hideSourceLocation ? undefined : member.zone_name,
+    location: member.zone_name,
     rating: member.moyenne,
     photoCount: member.photo,
     photoUrl: pickPhotoUrl(member),
@@ -111,12 +111,18 @@ export const matchService = {
     async discoverPool(
         sessionId: string,
         params: Record<string, unknown>,
-        excludedIds: Set<number>
+        excludedIds: Set<number>,
+        cityFilter?: string
     ): Promise<DiscoverMatchesResponse> {
         const members = new Map<number, MembreBlock>()
         const maxPages = 50
         const perPage = 100
+        const targetSize = 200
         let totalPages: number | undefined
+        const normalizedCity = cityFilter?.trim().toLowerCase()
+
+        const matchesCity = (member: MembreBlock) =>
+            !normalizedCity || (member.zone_name ?? '').toLowerCase().includes(normalizedCity)
 
         for (let page = 0; page < maxPages; page += 1) {
             const response = await matchRepo.discover(sessionId, {
@@ -135,15 +141,21 @@ export const matchService = {
 
             for (const member of pageMembers) {
                 if (typeof member.id !== 'number' || member.id <= 0 || excludedIds.has(member.id)) continue
+                if (!matchesCity(member)) continue
                 members.set(member.id, member)
             }
 
-            if (pageMembers.length === 0 || (typeof totalPages === 'number' && page + 1 >= totalPages)) break
+            const reachedTarget = normalizedCity ? members.size >= targetSize : false
+
+            if (
+                pageMembers.length === 0 ||
+                reachedTarget ||
+                (typeof totalPages === 'number' && page + 1 >= totalPages)
+            )
+                break
         }
 
-        const items = [...members.values()]
-            .slice(0, maxPages * perPage)
-            .map((member) => mapMember(member, { hideSourceLocation: true }))
+        const items = [...members.values()].slice(0, maxPages * perPage).map((member) => mapMember(member))
 
         return {
             items,

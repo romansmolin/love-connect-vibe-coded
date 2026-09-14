@@ -51,6 +51,7 @@ export const matchController = {
         const ageFrom = toOptionalNumber(searchParams.get('ageFrom'))
         const ageTo = toOptionalNumber(searchParams.get('ageTo'))
         const genderParam = searchParams.get('gender')
+        const cityParam = searchParams.get('city')?.trim() || undefined
         const isPoolRequest = searchParams.get('pool') === '1'
         const excludedIds = new Set(
             (searchParams.get('excludeIds') ?? '')
@@ -71,7 +72,7 @@ export const matchController = {
         })
 
         return isPoolRequest
-            ? matchService.discoverPool(sessionId, params, excludedIds)
+            ? matchService.discoverPool(sessionId, params, excludedIds, cityParam)
             : matchService.discover(sessionId, params)
     },
     async listMatches(request: NextRequest) {

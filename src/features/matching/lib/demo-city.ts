@@ -1,19 +1,3 @@
-export const DEMO_CITIES = [
-    'Amsterdam',
-    'Berlin',
-    'London',
-    'Madrid',
-    'New York',
-    'Paris',
-    'Prague',
-    'Riga',
-    'Rome',
-    'Warsaw',
-] as const
-
-export type DemoCity = (typeof DEMO_CITIES)[number]
-
-const DEMO_CITY_STORAGE_KEY = 'lovebond:demo-profile-cities'
 const PROCESSED_PROFILE_STORAGE_KEY = 'lovebond:processed-profile-ids'
 const BLOCKED_PROFILE_STORAGE_KEY = 'lovebond:blocked-profile-ids'
 
@@ -34,18 +18,6 @@ const writeJson = (key: string, value: unknown) => {
     } catch {
         // The browser may block storage. The deterministic fallback still works.
     }
-}
-
-export const getDemoCity = (profileId: number): DemoCity => {
-    const assignments = readJson<Record<string, DemoCity>>(DEMO_CITY_STORAGE_KEY, {})
-    const key = String(profileId)
-    const savedCity = assignments[key]
-
-    if (savedCity && DEMO_CITIES.includes(savedCity)) return savedCity
-
-    const city = DEMO_CITIES[Math.abs(profileId) % DEMO_CITIES.length]
-    writeJson(DEMO_CITY_STORAGE_KEY, { ...assignments, [key]: city })
-    return city
 }
 
 export const getProcessedProfileIds = (): number[] => {

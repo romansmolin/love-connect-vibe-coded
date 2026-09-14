@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server'
 
 import { HttpError } from '@/shared/http-client'
 
-import type { UpdateProfileRequest, UserProfileResponse } from '../../../model/types'
+import type { PublicMemberProfileResponse, UpdateProfileRequest, UserProfileResponse } from '../../../model/types'
 import { SESSION_COOKIE_NAME, USER_COOKIE_NAME } from '../config'
 import { userService } from '../services/user.service'
 
@@ -33,6 +33,17 @@ export const userController = {
         const userId = requireUserId(request)
 
         const user = await userService.getProfile({ sessionId, userId })
+
+        return { user }
+    },
+    async getMemberProfile(request: NextRequest, memberId: number): Promise<PublicMemberProfileResponse> {
+        const sessionId = requireSessionId(request)
+
+        if (!Number.isFinite(memberId) || memberId <= 0) {
+            throw new HttpError('Invalid member id', 400)
+        }
+
+        const user = await userService.getMemberProfile({ sessionId, userId: memberId })
 
         return { user }
     },
@@ -90,6 +101,35 @@ export const userController = {
         }
 
         return userService.requestPasswordReset(body.emailOrUsername.trim())
+    },
+    async uploadPhoto(request: NextRequest) {
+        const sessionId = requireSessionId(request)
+        const formData = await request.formData()
+
+        const file = formData.get('file')
+        if (!(file instanceof Blob)) {
+            throw new HttpError('Missing file', 400)
+        }
+
+        const filename = file instanceof File ? file.name : 'photo.jpg'
+
+        const x = Number(formData.get('x'))
+        const y = Number(formData.get('y'))
+        const w = Number(formData.get('w'))
+        const h = Number(formData.get('h'))
+
+        if (![x, y, w, h].every(Number.isFinite) || w < 215 || h < 215) {
+            throw new HttpError('Invalid crop dimensions. Minimum size is 215x215px.', 400)
+        }
+
+        const photos = await userService.uploadPhoto({
+            sessionId,
+            file,
+            filename,
+            crop: { x, y, w, h },
+        })
+
+        return { photos }
     },
     async deleteAccount(request: NextRequest) {
         const sessionId = requireSessionId(request)

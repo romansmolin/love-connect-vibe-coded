@@ -3,6 +3,7 @@
 import React from 'react'
 
 import { Heart, X } from 'lucide-react'
+import Link from 'next/link'
 
 import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
@@ -10,7 +11,7 @@ import { Card, CardContent } from '@/shared/ui/card'
 import { Skeleton } from '@/shared/ui/skeleton'
 
 import { useMatchFlow } from '../hooks/use-match-flow'
-import type { DemoCity } from '../lib/demo-city'
+import type { MatchGender } from './GenderFilter'
 
 const LoadingState = () => (
     <Card className="overflow-hidden">
@@ -44,8 +45,20 @@ const ErrorState = ({ message, onRetry }: { message: string; onRetry: () => void
     </Card>
 )
 
-export const MatchingPanel = ({ city, pool }: { city?: DemoCity; pool?: boolean }) => {
-    const { current, isLoading, isActing, error, like, dislike, refetch, remaining } = useMatchFlow({ city, pool })
+export const MatchingPanel = ({
+    city,
+    gender,
+    pool,
+}: {
+    city?: string
+    gender?: MatchGender
+    pool?: boolean
+}) => {
+    const { current, isLoading, isActing, error, like, dislike, refetch, remaining } = useMatchFlow({
+        city,
+        gender,
+        pool,
+    })
 
     if (isLoading) {
         return <LoadingState />
@@ -63,7 +76,10 @@ export const MatchingPanel = ({ city, pool }: { city?: DemoCity; pool?: boolean 
     return (
         <Card className="overflow-hidden">
             <div className="p-4">
-                <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-muted/40 shadow-sm">
+                <Link
+                    className="relative block overflow-hidden rounded-2xl border border-border/60 bg-muted/40 shadow-sm"
+                    href={`/profile/${current.id}`}
+                >
                     <div className="aspect-[4/5] w-full">
                         {current.photoUrl ? (
                             <img
@@ -95,7 +111,7 @@ export const MatchingPanel = ({ city, pool }: { city?: DemoCity; pool?: boolean 
                             ) : null}
                         </div>
                     </div>
-                </div>
+                </Link>
             </div>
             <CardContent className="space-y-4 p-6">
                 <div className="text-xs text-muted-foreground">

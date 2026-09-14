@@ -4,7 +4,7 @@ import { HttpError } from '@/shared/http-client'
 import { centsFromCredits } from '@/shared/lib/credits'
 import { prisma } from '@/shared/lib/prisma'
 
-import { isCreditPackage } from '../../model/pricing'
+import { isValidCreditAmount, MAX_CUSTOM_CREDITS, MIN_CUSTOM_CREDITS } from '../../model/pricing'
 import type { CreditTransactionStatus } from '../../model/types'
 
 import { creditRepo } from './credit.repo'
@@ -111,8 +111,11 @@ export const creditService = {
         if (!params.credits || params.credits <= 0)
             throw new HttpError('Credits amount must be greater than zero.', 400)
 
-        if (!isCreditPackage(params.credits)) {
-            throw new HttpError('Choose one of the available credit packages.', 400)
+        if (!isValidCreditAmount(params.credits)) {
+            throw new HttpError(
+                `Choose an amount between ${MIN_CUSTOM_CREDITS} and ${MAX_CUSTOM_CREDITS} credits.`,
+                400
+            )
         }
 
         const wallet = await ensureWallet(params.userId)

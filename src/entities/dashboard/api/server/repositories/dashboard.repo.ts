@@ -1,4 +1,5 @@
 import { FOTOCHAT_API_KEY, fotochatHttpClient } from '@/shared/api/fotochat'
+import type { PhotoBlock, PhotoBlockV2 } from '@/entities/user/api/server/repositories/user.repo'
 
 export type WallAddPhotoBlock = {
     user_id?: number
@@ -55,6 +56,9 @@ export type MembreBlock = {
     age?: number
     zone_name?: string
     moyenne?: number
+    photo?: number
+    photos?: PhotoBlock[]
+    photos_v2?: PhotoBlockV2[]
 }
 
 export type TopMembersResponse = {

@@ -14,6 +14,7 @@ import type {
     MembreBlock,
     TopMembersResponse as ApiTopMembersResponse,
 } from '../repositories/dashboard.repo'
+import type { PhotoBlock, PhotoBlockV2 } from '@/entities/user/api/server/repositories/user.repo'
 
 const DEFAULT_USERNAME = 'Member'
 
@@ -30,6 +31,23 @@ const mapGender = (value?: number): MemberGender | undefined => {
     }
 }
 
+const normalizeText = (value?: string) => (value && value.trim().length > 0 ? value : undefined)
+
+const getPhotoFromV2 = (photo?: PhotoBlockV2): string | undefined => {
+    if (!photo) return undefined
+
+    return normalizeText(photo.sq_430) ?? normalizeText(photo.sq_middle) ?? normalizeText(photo.sq_small)
+}
+
+const getPhotoFromLegacy = (photo?: PhotoBlock): string | undefined => {
+    if (!photo) return undefined
+
+    return normalizeText(photo.url_middle) ?? normalizeText(photo.url_small) ?? normalizeText(photo.url_big)
+}
+
+const getPhotoUrl = (member: MembreBlock): string | undefined =>
+    getPhotoFromV2(member.photos_v2?.[0]) ?? getPhotoFromLegacy(member.photos?.[0])
+
 const mapMember = (member: MembreBlock): MemberSummary => ({
     id: member.id ?? 0,
     username: member.pseudo ?? member.prenom ?? DEFAULT_USERNAME,
@@ -37,6 +55,7 @@ const mapMember = (member: MembreBlock): MemberSummary => ({
     age: member.age,
     location: member.zone_name,
     rating: member.moyenne,
+    photoUrl: getPhotoUrl(member),
 })
 
 const ensureConnected = (payload: ApiTopMembersResponse | GuestVisitesResponse) => {

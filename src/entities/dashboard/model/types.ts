@@ -23,6 +23,7 @@ export interface MemberSummary {
     location?: string
     rating?: number
     visitedAt?: string
+    photoUrl?: string
 }
 
 export interface TopMembersResponse {

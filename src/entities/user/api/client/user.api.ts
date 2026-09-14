@@ -6,6 +6,7 @@ import type {
     LogoutResponse,
     LostPassRequest,
     LostPassResponse,
+    PublicMemberProfileResponse,
     SignInRequest,
     SignInResponse,
     SignUpRequest,
@@ -13,6 +14,7 @@ import type {
     UpdateProfileRequest,
     UpdateProfileResponse,
     UserInfoResponse,
+    UserPhoto,
     UserProfileResponse,
 } from '../../model/types'
 
@@ -49,11 +51,24 @@ export const userApi = createApi({
                 method: 'GET',
             }),
         }),
+        getMemberProfile: builder.query<PublicMemberProfileResponse, number>({
+            query: (id) => ({
+                url: `user/${id}`,
+                method: 'GET',
+            }),
+        }),
         updateProfile: builder.mutation<UpdateProfileResponse, UpdateProfileRequest>({
             query: (body) => ({
                 url: 'user/profile',
                 method: 'PATCH',
                 body,
+            }),
+        }),
+        uploadPhoto: builder.mutation<{ photos: UserPhoto[] }, FormData>({
+            query: (formData) => ({
+                url: 'user/photos',
+                method: 'POST',
+                body: formData,
             }),
         }),
         requestPasswordReset: builder.mutation<LostPassResponse, LostPassRequest>({
@@ -84,7 +99,9 @@ export const {
     useSignUpMutation,
     useGetUserInfoQuery,
     useGetUserProfileQuery,
+    useGetMemberProfileQuery,
     useUpdateProfileMutation,
+    useUploadPhotoMutation,
     useRequestPasswordResetMutation,
     useLogoutMutation,
     useDeleteAccountMutation,

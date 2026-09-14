@@ -1,4 +1,4 @@
-import { FOTOCHAT_API_KEY, fotochatHttpClient } from '../config'
+import { FOTOCHAT_API_KEY, FOTOCHAT_BASE_URL, fotochatHttpClient } from '../config'
 
 export type PhotoBlock = {
     num?: number
@@ -76,6 +76,25 @@ const UPDATE_DESCRIPTION_ENDPOINT = '/index_api/user/modify/description'
 const LOGOUT_ENDPOINT = '/index_api/logout'
 const LOST_PASS_ENDPOINT = '/index_api/lostpass'
 const DELETE_ACCOUNT_ENDPOINT = '/index_api/delete'
+const UPLOAD_PHOTO_ENDPOINT = '/ajax_api/upload_photo'
+const EDIT_PHOTO_ENDPOINT = '/index_api/user_edit_photos/modify'
+
+export type InfoUploadPhoto = {
+    success?: number
+    error?: number
+    id_photo?: number
+    token_video?: number
+}
+
+export type UploadPhotoResponse = {
+    result?: InfoUploadPhoto
+}
+
+export type ModifyPhotoResponse = {
+    connected?: number
+    modify?: string
+    photos?: PhotoBlock[]
+}
 
 export type UpdateInformationsParams = {
     sessionId: string
@@ -169,6 +188,45 @@ export const userRepo = {
                 api_key: FOTOCHAT_API_KEY,
                 ActionDelete: 1,
                 pass: params.password,
+            },
+        })
+    },
+    async uploadPhoto(params: {
+        sessionId: string
+        file: Blob
+        filename: string
+        isPrivate?: boolean
+    }): Promise<UploadPhotoResponse> {
+        const formData = new FormData()
+        formData.append('file', params.file, params.filename)
+
+        const url = new URL(`${FOTOCHAT_BASE_URL}${UPLOAD_PHOTO_ENDPOINT}`)
+        url.searchParams.set('session_id', params.sessionId)
+        url.searchParams.set('api_key', FOTOCHAT_API_KEY)
+        url.searchParams.set('is_private', params.isPrivate ? '1' : '0')
+
+        const response = await fetch(url, { method: 'POST', body: formData })
+
+        return (await response.json()) as UploadPhotoResponse
+    },
+    editPhoto(params: {
+        sessionId: string
+        photoNum: number
+        crop: { x: number; y: number; w: number; h: number }
+        isPrivate?: boolean
+        isMain?: boolean
+    }) {
+        return fotochatHttpClient.post<ModifyPhotoResponse>(EDIT_PHOTO_ENDPOINT, undefined, {
+            params: {
+                session_id: params.sessionId,
+                api_key: FOTOCHAT_API_KEY,
+                photo_num: params.photoNum,
+                is_private: params.isPrivate ? 1 : 0,
+                x: params.crop.x,
+                y: params.crop.y,
+                w: params.crop.w,
+                h: params.crop.h,
+                is_main: params.isMain ? 1 : undefined,
             },
         })
     },

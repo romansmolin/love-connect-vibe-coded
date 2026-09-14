@@ -84,6 +84,12 @@ export interface UserProfileResponse {
     user: UserProfile
 }
 
+export type PublicMemberProfile = Omit<UserProfile, 'email'>
+
+export interface PublicMemberProfileResponse {
+    user: PublicMemberProfile
+}
+
 export interface UserPreview {
     id: number
     username: string

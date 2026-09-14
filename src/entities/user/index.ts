@@ -2,12 +2,14 @@ export {
     userApi,
     useGetUserInfoQuery,
     useGetUserProfileQuery,
+    useGetMemberProfileQuery,
     useDeleteAccountMutation,
     useLogoutMutation,
     useRequestPasswordResetMutation,
     useSignInMutation,
     useSignUpMutation,
     useUpdateProfileMutation,
+    useUploadPhotoMutation,
 } from './api/client/user.api'
 export type {
     DeleteAccountRequest,
@@ -17,6 +19,8 @@ export type {
     LostPassResponse,
     LookingFor,
     LogoutResponse,
+    PublicMemberProfile,
+    PublicMemberProfileResponse,
     SignInRequest,
     SignInResponse,
     SignUpRequest,

@@ -7,7 +7,7 @@ import Link from 'next/link'
 
 import type { CommunityActivityResponse, RecentVisitorsResponse, TopMembersResponse } from '@/entities/dashboard'
 import { cn } from '@/shared/lib/utils'
-import { Avatar, AvatarFallback } from '@/shared/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar'
 import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
 import { Skeleton } from '@/shared/ui/skeleton'
@@ -99,7 +99,7 @@ const formatDate = (value?: string) => {
     if (!value) return 'just now'
     const date = new Date(value)
     if (Number.isNaN(date.getTime())) return value
-    return date.toLocaleString(undefined, {
+    return date.toLocaleString('en-GB', {
         month: 'short',
         day: 'numeric',
         hour: '2-digit',
@@ -303,12 +303,16 @@ const TopMembersCard = () => {
                     ) : (
                         <div className="grid gap-3 sm:grid-cols-2">
                             {list.map((member, index) => (
-                                <div
+                                <Link
                                     key={member.id}
-                                    className="flex items-center justify-between rounded-2xl border border-border/70 bg-background p-4"
+                                    className="flex items-center justify-between rounded-2xl border border-border/70 bg-background p-4 transition-colors hover:bg-muted/40"
+                                    href={`/profile/${member.id}`}
                                 >
                                     <div className="flex items-center gap-3">
                                         <Avatar className="h-12 w-12">
+                                            {member.photoUrl ? (
+                                                <AvatarImage alt={member.username} src={member.photoUrl} />
+                                            ) : null}
                                             <AvatarFallback>{initials(member.username)}</AvatarFallback>
                                         </Avatar>
                                         <div className="space-y-1">
@@ -332,7 +336,7 @@ const TopMembersCard = () => {
                                             {member.rating}
                                         </Badge>
                                     </div>
-                                </div>
+                                </Link>
                             ))}
                         </div>
                     )}
@@ -372,12 +376,16 @@ const RecentVisitorsCard = () => {
             ) : (
                 <div className="grid gap-3 sm:grid-cols-2">
                     {visitors.map((visitor) => (
-                        <div
+                        <Link
                             key={visitor.id}
-                            className="flex items-center justify-between rounded-2xl border border-border/70 bg-background p-4"
+                            className="flex items-center justify-between rounded-2xl border border-border/70 bg-background p-4 transition-colors hover:bg-muted/40"
+                            href={`/profile/${visitor.id}`}
                         >
                             <div className="flex items-center gap-3">
                                 <Avatar className="h-11 w-11">
+                                    {visitor.photoUrl ? (
+                                        <AvatarImage alt={visitor.username} src={visitor.photoUrl} />
+                                    ) : null}
                                     <AvatarFallback>{initials(visitor.username)}</AvatarFallback>
                                 </Avatar>
                                 <div className="space-y-1">
@@ -398,7 +406,7 @@ const RecentVisitorsCard = () => {
                             <Badge className="rounded-full" variant="outline">
                                 {visitor.visitedAt ? formatDate(visitor.visitedAt) : 'Recently'}
                             </Badge>
-                        </div>
+                        </Link>
                     ))}
                 </div>
             )}

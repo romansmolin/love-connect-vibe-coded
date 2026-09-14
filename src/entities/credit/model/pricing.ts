@@ -25,3 +25,9 @@ export const CREDIT_PACKAGE_CREDITS = CREDIT_PACKAGES.map((pack) => pack.credits
 
 export const isCreditPackage = (credits: number): boolean =>
     CREDIT_PACKAGE_CREDITS.some((value) => value === credits)
+
+export const MIN_CUSTOM_CREDITS = 10
+export const MAX_CUSTOM_CREDITS = 10000
+
+export const isValidCreditAmount = (credits: number): boolean =>
+    Number.isInteger(credits) && credits >= MIN_CUSTOM_CREDITS && credits <= MAX_CUSTOM_CREDITS

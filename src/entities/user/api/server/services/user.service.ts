@@ -1,6 +1,6 @@
 import { HttpError } from '@/shared/http-client'
 
-import type { UserGender, UserProfile } from '../../../model/types'
+import type { PublicMemberProfile, UserGender, UserPhoto, UserProfile } from '../../../model/types'
 import { userRepo } from '../repositories/user.repo'
 import type {
     DeleteAccountResponse,
@@ -85,8 +85,6 @@ export const userService = {
             withPhotos: true,
         })
 
-        console.log('PROFILE: ', response)
-
         if (response.connected === 0) {
             throw new HttpError('Unauthorized', 401)
         }
@@ -96,6 +94,25 @@ export const userService = {
         }
 
         return mapProfile(response.result)
+    },
+    async getMemberProfile(params: { sessionId: string; userId: number }): Promise<PublicMemberProfile> {
+        const response = await userRepo.getProfile({
+            sessionId: params.sessionId,
+            userId: params.userId,
+            withPhotos: true,
+        })
+
+        if (response.connected === 0) {
+            throw new HttpError('Unauthorized', 401)
+        }
+
+        if (!response.result) {
+            throw new HttpError('Profile not found', 404)
+        }
+
+        const { email: _email, ...publicProfile } = mapProfile(response.result)
+
+        return publicProfile
     },
     async updateProfile(sessionId: string, payload: UpdateInformationsParams & { description?: string }) {
         const infoResponse = await userRepo.updateInformations({
@@ -154,5 +171,41 @@ export const userService = {
             result: response.result,
             error: response.error,
         }
+    },
+    async uploadPhoto(params: {
+        sessionId: string
+        file: Blob
+        filename: string
+        crop: { x: number; y: number; w: number; h: number }
+    }): Promise<UserPhoto[]> {
+        const uploadResponse = await userRepo.uploadPhoto({
+            sessionId: params.sessionId,
+            file: params.file,
+            filename: params.filename,
+        })
+
+        const info = uploadResponse.result
+
+        if (!info || info.success !== 1 || !info.id_photo || info.id_photo <= 0) {
+            const message =
+                info?.error === -2
+                    ? 'Image is too small. Minimum size is 215x215px.'
+                    : info?.error === -1
+                      ? 'Unsupported image format. Use JPG or PNG.'
+                      : 'Unable to upload photo.'
+            throw new HttpError(message, 400)
+        }
+
+        const editResponse = await userRepo.editPhoto({
+            sessionId: params.sessionId,
+            photoNum: info.id_photo,
+            crop: params.crop,
+        })
+
+        if (editResponse.connected === 0) {
+            throw new HttpError('Unauthorized', 401)
+        }
+
+        return editResponse.photos?.map(mapPhoto) ?? []
     },
 }

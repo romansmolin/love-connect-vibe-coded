@@ -7,15 +7,14 @@ import { toast } from 'sonner'
 import type { MatchAction, MatchCandidate } from '@/entities/match'
 import { useDiscoverMatchesQuery, useMatchActionMutation } from '@/entities/match'
 
-import { getDemoCity, getExcludedProfileIds, rememberProcessedProfile } from '../lib/demo-city'
-import type { DemoCity } from '../lib/demo-city'
+import { getExcludedProfileIds, rememberProcessedProfile } from '../lib/demo-city'
 
 export interface MatchFlowFilters {
     gender?: 'men' | 'women' | 'couple'
     ageFrom?: number
     ageTo?: number
     perPage?: number
-    city?: DemoCity
+    city?: string
     pool?: boolean
 }
 
@@ -46,20 +45,27 @@ export const useMatchFlow = (filters: MatchFlowFilters = {}) => {
             gender: filters.gender,
             ageFrom: filters.ageFrom,
             ageTo: filters.ageTo,
+            city: filters.pool ? filters.city : undefined,
             pool: filters.pool ? 1 : undefined,
             excludeIds: filters.pool ? initialExcludedIds.join(',') : undefined,
         }),
-        [filters.ageFrom, filters.ageTo, filters.gender, filters.perPage, filters.pool, initialExcludedIds, page]
+        [
+            filters.ageFrom,
+            filters.ageTo,
+            filters.city,
+            filters.gender,
+            filters.perPage,
+            filters.pool,
+            initialExcludedIds,
+            page,
+        ]
     )
 
     const { data, isLoading, isFetching, error, refetch } = useDiscoverMatchesQuery(queryParams)
 
     const items = useMemo(() => {
-        return (data?.items ?? [])
-            .filter((candidate) => !processedProfileIds.includes(candidate.id))
-            .map((candidate) => ({ ...candidate, location: getDemoCity(candidate.id) }))
-            .filter((candidate) => !filters.city || candidate.location === filters.city)
-    }, [data?.items, filters.city, processedProfileIds])
+        return (data?.items ?? []).filter((candidate) => !processedProfileIds.includes(candidate.id))
+    }, [data?.items, processedProfileIds])
     const current = items[index] ?? null
 
     useEffect(() => {

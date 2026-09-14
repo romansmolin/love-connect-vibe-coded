@@ -5,7 +5,13 @@ import { useMemo, useState } from 'react'
 import { CreditCard, Crown, Landmark, Wallet as WalletIcon } from 'lucide-react'
 import Link from 'next/link'
 
-import { CREDIT_PACKAGES, CreditTransaction, useGetWalletQuery } from '@/entities/credit'
+import {
+    CREDIT_PACKAGES,
+    CreditTransaction,
+    MAX_CUSTOM_CREDITS,
+    MIN_CUSTOM_CREDITS,
+    useGetWalletQuery,
+} from '@/entities/credit'
 import { useBuyCredits } from '@/features/buy-credits'
 import { CENTS_PER_CREDIT, centsFromCredits, creditsFromCents, formatCredits } from '@/shared/lib/credits'
 import {
@@ -22,11 +28,12 @@ import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
 import { Card, CardContent } from '@/shared/ui/card'
 import { Checkbox } from '@/shared/ui/checkbox'
+import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
 import { Skeleton } from '@/shared/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs'
 
-type CreditPackage = (typeof CREDIT_PACKAGES)[number]
+type SelectedAmount = { credits: number; label: string }
 
 const creditPackages = CREDIT_PACKAGES
 
@@ -95,7 +102,8 @@ export const WalletPage = () => {
         isLoading: isPurchasing,
     } = useBuyCredits()
 
-    const [selectedPackage, setSelectedPackage] = useState<CreditPackage | null>(null)
+    const [selectedPackage, setSelectedPackage] = useState<SelectedAmount | null>(null)
+    const [customAmount, setCustomAmount] = useState('')
 
     const wallet = data?.wallet
     const transactions = data?.transactions ?? []
@@ -114,6 +122,7 @@ export const WalletPage = () => {
         if (!selectedPackage) return
         await confirmConsent()
         setSelectedPackage(null)
+        setCustomAmount('')
     }
 
     return (
@@ -230,6 +239,54 @@ export const WalletPage = () => {
                                 )
                             })}
                         </div>
+
+                        <div className="mt-4 rounded-2xl border border-dashed border-border/70 p-3">
+                            <p className="text-sm font-semibold text-foreground">Custom amount</p>
+                            <p className="text-xs text-muted-foreground">
+                                Choose any amount between {formatCredits(MIN_CUSTOM_CREDITS)} and{' '}
+                                {formatCredits(MAX_CUSTOM_CREDITS)}.
+                            </p>
+                            <div className="mt-2 flex flex-wrap items-center gap-2">
+                                <Input
+                                    className="w-32"
+                                    inputMode="numeric"
+                                    placeholder="e.g. 150"
+                                    value={customAmount}
+                                    onChange={(event) => setCustomAmount(event.target.value.replace(/\D/g, ''))}
+                                />
+                                <span className="text-sm text-muted-foreground">credits</span>
+                                {(() => {
+                                    const customCredits = Number(customAmount)
+                                    const isValid =
+                                        customAmount.length > 0 &&
+                                        Number.isInteger(customCredits) &&
+                                        customCredits >= MIN_CUSTOM_CREDITS &&
+                                        customCredits <= MAX_CUSTOM_CREDITS
+
+                                    return (
+                                        <>
+                                            {isValid ? (
+                                                <span className="text-sm text-muted-foreground">
+                                                    = {(centsFromCredits(customCredits) / 100).toFixed(2)} EUR
+                                                </span>
+                                            ) : null}
+                                            <Button
+                                                disabled={isPurchasing || !isValid}
+                                                onClick={() => {
+                                                    setSelectedPackage({
+                                                        credits: customCredits,
+                                                        label: 'Custom amount',
+                                                    })
+                                                    requestConsent(customCredits)
+                                                }}
+                                            >
+                                                Buy credits
+                                            </Button>
+                                        </>
+                                    )
+                                })()}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -306,6 +363,7 @@ export const WalletPage = () => {
                     if (!open) {
                         closeConsent()
                         setSelectedPackage(null)
+                        setCustomAmount('')
                     }
                 }}
             >

@@ -1,6 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const protectedRoutes = ['/dashboard']
+const protectedRoutes = [
+    '/dashboard',
+    '/dashborad',
+    '/settings',
+    '/matching',
+    '/chat',
+    '/matches',
+    '/profile',
+    '/gifts',
+    '/wallet',
+]
 
 export function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl

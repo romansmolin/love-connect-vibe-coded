@@ -1,11 +1,12 @@
 'use client'
 
-import { type ChangeEvent, type ElementType, type ReactNode, useEffect, useMemo, useState } from 'react'
+import { type ChangeEvent, type ElementType, type ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 
-import { ArrowUpRight, Camera, CheckCircle, Heart, MessageCircle, Sparkles } from 'lucide-react'
+import { ArrowUpRight, Camera, CheckCircle, Heart, Loader2, MessageCircle, Sparkles, Upload } from 'lucide-react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
-import { useGetUserProfileQuery, useUpdateProfileMutation } from '@/entities/user'
+import { useGetUserProfileQuery, useUpdateProfileMutation, useUploadPhotoMutation } from '@/entities/user'
 import { cn } from '@/shared/lib/utils'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar'
 import { Badge } from '@/shared/ui/badge'
@@ -73,6 +74,83 @@ const PhotoGrid = ({ photos }: { photos: { urlSmall?: string; urlMedium?: string
                 </div>
             ))}
         </div>
+    )
+}
+
+const MIN_PHOTO_SIZE = 215
+
+const readImageDimensions = (file: File): Promise<{ width: number; height: number }> =>
+    new Promise((resolve, reject) => {
+        const objectUrl = URL.createObjectURL(file)
+        const image = new Image()
+
+        image.onload = () => {
+            URL.revokeObjectURL(objectUrl)
+            resolve({ width: image.naturalWidth, height: image.naturalHeight })
+        }
+        image.onerror = () => {
+            URL.revokeObjectURL(objectUrl)
+            reject(new Error('Unable to read image dimensions.'))
+        }
+
+        image.src = objectUrl
+    })
+
+const PhotoUploadButton = ({ onUploaded }: { onUploaded: () => void }) => {
+    const inputRef = useRef<HTMLInputElement>(null)
+    const [uploadPhoto, { isLoading }] = useUploadPhotoMutation()
+
+    const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0]
+        event.target.value = ''
+        if (!file) return
+
+        try {
+            const { width, height } = await readImageDimensions(file)
+            const size = Math.min(width, height)
+
+            if (size < MIN_PHOTO_SIZE) {
+                toast.error(`Image is too small. Minimum size is ${MIN_PHOTO_SIZE}x${MIN_PHOTO_SIZE}px.`)
+                return
+            }
+
+            const x = Math.round((width - size) / 2)
+            const y = Math.round((height - size) / 2)
+
+            const formData = new FormData()
+            formData.append('file', file, file.name)
+            formData.append('x', String(x))
+            formData.append('y', String(y))
+            formData.append('w', String(size))
+            formData.append('h', String(size))
+
+            await uploadPhoto(formData).unwrap()
+            toast.success('Photo uploaded!')
+            onUploaded()
+        } catch (error) {
+            const message = (error as { data?: { message?: string } })?.data?.message ?? 'Unable to upload photo.'
+            toast.error(message)
+        }
+    }
+
+    return (
+        <>
+            <input
+                ref={inputRef}
+                accept="image/jpeg,image/png,image/webp"
+                className="hidden"
+                type="file"
+                onChange={handleFileChange}
+            />
+            <Button
+                disabled={isLoading}
+                variant="outline"
+                onClick={() => inputRef.current?.click()}
+            >
+                {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
+                Upload photo
+            </Button>
+        </>
     )
 }
 
@@ -576,7 +654,7 @@ export const ProfilePage = () => {
                         <QuickAction
                             color="gray"
                             description="Manage your account"
-                            href="/dashboard"
+                            href="/settings"
                             icon={ArrowUpRight}
                             title="Settings"
                         />
@@ -585,9 +663,12 @@ export const ProfilePage = () => {
             </div>
 
             <Card className="border-border/70">
-                <CardHeader>
-                    <CardTitle>Your Photos</CardTitle>
-                    <CardDescription>Show your best shots to get more matches.</CardDescription>
+                <CardHeader className="flex flex-row items-start justify-between gap-4">
+                    <div>
+                        <CardTitle>Your Photos</CardTitle>
+                        <CardDescription>Show your best shots to get more matches.</CardDescription>
+                    </div>
+                    <PhotoUploadButton onUploaded={refetch} />
                 </CardHeader>
                 <CardContent className="space-y-4">
                     {isLoading ? (
