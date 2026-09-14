@@ -1,16 +1,32 @@
 'use client'
 
-import { ArrowLeft, Gift, Heart, X } from 'lucide-react'
+import { useState } from 'react'
+
+import { ArrowLeft, Flag, Gift, Heart, ShieldOff, X } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
-import { useMatchActionMutation } from '@/entities/match'
+import { useBlockUserMutation, useMatchActionMutation, useReportUserMutation } from '@/entities/match'
 import { useGetMemberProfileQuery } from '@/entities/user'
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/shared/ui/alert-dialog'
 import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
 import { Card, CardContent } from '@/shared/ui/card'
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/shared/ui/dialog'
 import { Skeleton } from '@/shared/ui/skeleton'
+import { Textarea } from '@/shared/ui/textarea'
+
+const REPORT_REASONS = ['Fake profile', 'Inappropriate photos', 'Harassment', 'Spam', 'Underage user', 'Other']
 
 const LoadingState = () => (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-6">
@@ -31,10 +47,80 @@ const ErrorState = ({ message }: { message: string }) => (
     </div>
 )
 
+const ReportDialog = ({
+    open,
+    onOpenChange,
+    onSubmit,
+    isSubmitting,
+}: {
+    open: boolean
+    onOpenChange: (open: boolean) => void
+    onSubmit: (reason: string, details: string) => void
+    isSubmitting: boolean
+}) => {
+    const [reason, setReason] = useState<string | null>(null)
+    const [details, setDetails] = useState('')
+
+    return (
+        <Dialog
+            open={open}
+            onOpenChange={(next) => {
+                if (!next) {
+                    setReason(null)
+                    setDetails('')
+                }
+                onOpenChange(next)
+            }}
+        >
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Report this profile</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                    <p className="text-sm text-muted-foreground">Select a reason for your report.</p>
+                    <div className="flex flex-wrap gap-2">
+                        {REPORT_REASONS.map((option) => (
+                            <button
+                                key={option}
+                                type="button"
+                                className={`rounded-lg border px-3 py-1.5 text-sm transition-colors ${
+                                    reason === option
+                                        ? 'border-foreground bg-foreground text-background'
+                                        : 'border-border hover:border-foreground/30'
+                                }`}
+                                onClick={() => setReason(option)}
+                            >
+                                {option}
+                            </button>
+                        ))}
+                    </div>
+                    <Textarea
+                        placeholder="Additional details (optional)"
+                        value={details}
+                        onChange={(event) => setDetails(event.target.value)}
+                    />
+                </div>
+                <DialogFooter>
+                    <Button
+                        disabled={!reason || isSubmitting}
+                        onClick={() => reason && onSubmit(reason, details)}
+                    >
+                        Submit report
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
 export const MemberProfilePage = ({ id }: { id: number }) => {
     const router = useRouter()
     const { data, isLoading, error } = useGetMemberProfileQuery(id, { skip: !Number.isFinite(id) || id <= 0 })
     const [matchAction, { isLoading: isActing }] = useMatchActionMutation()
+    const [blockUser, { isLoading: isBlocking }] = useBlockUserMutation()
+    const [reportUser, { isLoading: isReporting }] = useReportUserMutation()
+    const [isBlockConfirmOpen, setIsBlockConfirmOpen] = useState(false)
+    const [isReportOpen, setIsReportOpen] = useState(false)
 
     if (isLoading) {
         return <LoadingState />
@@ -61,6 +147,31 @@ export const MemberProfilePage = ({ id }: { id: number }) => {
         } catch (actionError) {
             const message =
                 (actionError as { data?: { message?: string } })?.data?.message ?? 'Unable to update match.'
+            toast.error(message)
+        }
+    }
+
+    const handleBlock = async () => {
+        try {
+            await blockUser({ targetId: user.id, action: 'add' }).unwrap()
+            toast.success('Profile blocked.')
+            setIsBlockConfirmOpen(false)
+            router.back()
+        } catch (blockError) {
+            const message =
+                (blockError as { data?: { message?: string } })?.data?.message ?? 'Unable to block this profile.'
+            toast.error(message)
+        }
+    }
+
+    const handleReport = async (reason: string, details: string) => {
+        try {
+            await reportUser({ targetId: user.id, reason, details: details.trim() || undefined }).unwrap()
+            toast.success('Report submitted. Thank you.')
+            setIsReportOpen(false)
+        } catch (reportError) {
+            const message =
+                (reportError as { data?: { message?: string } })?.data?.message ?? 'Unable to submit report.'
             toast.error(message)
         }
     }
@@ -134,8 +245,54 @@ export const MemberProfilePage = ({ id }: { id: number }) => {
                             Send a gift
                         </Link>
                     </Button>
+
+                    <div className="flex gap-3 border-t border-border/60 pt-4">
+                        <Button
+                            className="flex-1 text-muted-foreground"
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => setIsReportOpen(true)}
+                        >
+                            <Flag className="mr-2 h-4 w-4" />
+                            Report
+                        </Button>
+                        <Button
+                            className="flex-1 text-destructive hover:text-destructive"
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => setIsBlockConfirmOpen(true)}
+                        >
+                            <ShieldOff className="mr-2 h-4 w-4" />
+                            Block
+                        </Button>
+                    </div>
                 </CardContent>
             </Card>
+
+            <AlertDialog open={isBlockConfirmOpen} onOpenChange={setIsBlockConfirmOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Block {user.username}?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            You won&apos;t see each other in Discover or matches anymore. You can&apos;t undo this
+                            from here.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={isBlocking}>Cancel</AlertDialogCancel>
+                        <AlertDialogAction disabled={isBlocking} onClick={handleBlock}>
+                            Block
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            <ReportDialog
+                isSubmitting={isReporting}
+                open={isReportOpen}
+                onOpenChange={setIsReportOpen}
+                onSubmit={handleReport}
+            />
         </div>
     )
 }

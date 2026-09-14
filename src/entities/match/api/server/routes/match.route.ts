@@ -66,3 +66,42 @@ export const matchesRoute = async (request: NextRequest) => {
         return handleError(error)
     }
 }
+
+export const votersRoute = async (request: NextRequest) => {
+    if (request.method !== 'GET') {
+        return NextResponse.json({ message: 'Method Not Allowed' }, { status: 405 })
+    }
+
+    try {
+        const response = await matchController.getVoters(request)
+        return NextResponse.json(response)
+    } catch (error) {
+        return handleError(error)
+    }
+}
+
+export const blockRoute = async (request: NextRequest) => {
+    if (request.method !== 'POST') {
+        return NextResponse.json({ message: 'Method Not Allowed' }, { status: 405 })
+    }
+
+    try {
+        const response = await matchController.blockUser(request)
+        return NextResponse.json(response)
+    } catch (error) {
+        return handleError(error)
+    }
+}
+
+export const reportRoute = async (request: NextRequest) => {
+    if (request.method !== 'POST') {
+        return NextResponse.json({ message: 'Method Not Allowed' }, { status: 405 })
+    }
+
+    try {
+        const response = await matchController.reportUser(request)
+        return NextResponse.json(response)
+    } catch (error) {
+        return handleError(error)
+    }
+}

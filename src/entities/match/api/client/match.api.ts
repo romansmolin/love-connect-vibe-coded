@@ -3,10 +3,15 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 import baseQuery from '@/shared/api/base-query'
 
 import type {
+    BlockUserRequest,
+    BlockUserResponse,
     DiscoverMatchesResponse,
     MatchActionRequest,
     MatchActionResponse,
     MatchListResponse,
+    ReportUserRequest,
+    ReportUserResponse,
+    VotersResponse,
 } from '../../model/types'
 
 export const matchApi = createApi({
@@ -33,7 +38,35 @@ export const matchApi = createApi({
                 body,
             }),
         }),
+        getVoters: builder.query<VotersResponse, Record<string, string | number | undefined>>({
+            query: (params) => ({
+                url: 'match/voters',
+                method: 'GET',
+                params,
+            }),
+        }),
+        blockUser: builder.mutation<BlockUserResponse, BlockUserRequest>({
+            query: (body) => ({
+                url: 'match/block',
+                method: 'POST',
+                body,
+            }),
+        }),
+        reportUser: builder.mutation<ReportUserResponse, ReportUserRequest>({
+            query: (body) => ({
+                url: 'match/report',
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
 })
 
-export const { useDiscoverMatchesQuery, useGetMatchesQuery, useMatchActionMutation } = matchApi
+export const {
+    useDiscoverMatchesQuery,
+    useGetMatchesQuery,
+    useMatchActionMutation,
+    useGetVotersQuery,
+    useBlockUserMutation,
+    useReportUserMutation,
+} = matchApi

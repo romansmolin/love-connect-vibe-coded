@@ -2,14 +2,17 @@ import { FOTOCHAT_API_KEY } from '@/shared/api/fotochat'
 import { HttpError } from '@/shared/http-client'
 
 import type {
+    BlockUserResponse,
     DiscoverMatchesResponse,
     MatchActionResponse,
     MatchCandidate,
     MatchGender,
     MatchListResponse,
+    ReportUserResponse,
+    VotersResponse,
 } from '../../../model/types'
 import { matchRepo } from '../repositories/match.repo'
-import type { MembreBlock } from '../repositories/match.repo'
+import type { MembreBlock, MembreVoteBlock } from '../repositories/match.repo'
 
 const mapGender = (value?: number): MatchGender | undefined => {
     switch (value) {
@@ -92,6 +95,18 @@ const extractTotal = (payload: Awaited<ReturnType<typeof matchRepo.listMatches>>
 
     return undefined
 }
+
+const mapVoter = (member: MembreVoteBlock): MatchCandidate & { vote?: number } => ({
+    id: member.id ?? 0,
+    username: member.pseudo ?? member.prenom ?? 'Member',
+    age: member.age,
+    gender: mapGender(member.sexe1),
+    location: member.zone_name,
+    rating: member.moyenne,
+    photoCount: member.photo,
+    photoUrl: pickPhotoUrl(member),
+    vote: member.vote,
+})
 
 export const matchService = {
     async discover(sessionId: string, params: Record<string, unknown>): Promise<DiscoverMatchesResponse> {
@@ -210,5 +225,41 @@ export const matchService = {
             result,
             isMatch: result === 'match',
         }
+    },
+    async getVoters(sessionId: string, page?: number): Promise<VotersResponse> {
+        const response = await matchRepo.getVoters(sessionId, page)
+
+        if (response.connected === 0) {
+            throw new HttpError('Unauthorized', 401)
+        }
+
+        return {
+            items: response.result?.map(mapVoter) ?? [],
+            page,
+            totalPages: response.nb_pages,
+        }
+    },
+    async blockUser(sessionId: string, targetId: number, action: 'add' | 'del'): Promise<BlockUserResponse> {
+        const response = await matchRepo.setIgnore({ sessionId, targetId, action })
+
+        if (response.result === 0 || response.result === '0') {
+            throw new HttpError('Unable to update block list.', 400)
+        }
+
+        return { success: true }
+    },
+    async reportUser(
+        sessionId: string,
+        targetId: number,
+        reason: string,
+        details?: string
+    ): Promise<ReportUserResponse> {
+        const response = await matchRepo.reportUser({ sessionId, targetId, reason, details })
+
+        if (response.result === 0 || response.result === '0') {
+            throw new HttpError(response.error || 'Unable to submit report.', 400)
+        }
+
+        return { success: true }
     },
 }

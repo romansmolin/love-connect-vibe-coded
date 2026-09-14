@@ -3,7 +3,14 @@ import type { NextRequest } from 'next/server'
 import { SESSION_COOKIE_NAME } from '@/shared/api/fotochat'
 import { HttpError } from '@/shared/http-client'
 
-import type { DiscoverMatchesResponse, MatchAction, MatchActionResponse } from '../../../model/types'
+import type {
+    BlockUserResponse,
+    DiscoverMatchesResponse,
+    MatchAction,
+    MatchActionResponse,
+    ReportUserResponse,
+    VotersResponse,
+} from '../../../model/types'
 import { matchService } from '../services/match.service'
 
 const requireSessionId = (request: NextRequest) => {
@@ -105,5 +112,55 @@ export const matchController = {
         }
 
         return matchService.dislike(sessionId, userId)
+    },
+    async getVoters(request: NextRequest): Promise<VotersResponse> {
+        const sessionId = requireSessionId(request)
+        const { searchParams } = new URL(request.url)
+        const page = toOptionalNumber(searchParams.get('page'))
+
+        return matchService.getVoters(sessionId, page)
+    },
+    async blockUser(request: NextRequest): Promise<BlockUserResponse> {
+        const sessionId = requireSessionId(request)
+        const body = await request.json().catch(() => null)
+
+        if (!body || typeof body !== 'object') {
+            throw new HttpError('Invalid request payload', 400)
+        }
+
+        const payload = body as { targetId?: number | string; action?: string }
+        const targetId = typeof payload.targetId === 'string' ? Number(payload.targetId) : payload.targetId
+        const action = payload.action
+
+        if (!targetId || !Number.isFinite(targetId) || targetId <= 0) {
+            throw new HttpError('Invalid targetId', 400)
+        }
+
+        if (action !== 'add' && action !== 'del') {
+            throw new HttpError('Invalid action', 400)
+        }
+
+        return matchService.blockUser(sessionId, targetId, action)
+    },
+    async reportUser(request: NextRequest): Promise<ReportUserResponse> {
+        const sessionId = requireSessionId(request)
+        const body = await request.json().catch(() => null)
+
+        if (!body || typeof body !== 'object') {
+            throw new HttpError('Invalid request payload', 400)
+        }
+
+        const payload = body as { targetId?: number | string; reason?: string; details?: string }
+        const targetId = typeof payload.targetId === 'string' ? Number(payload.targetId) : payload.targetId
+
+        if (!targetId || !Number.isFinite(targetId) || targetId <= 0) {
+            throw new HttpError('Invalid targetId', 400)
+        }
+
+        if (!payload.reason || typeof payload.reason !== 'string') {
+            throw new HttpError('Reason is required', 400)
+        }
+
+        return matchService.reportUser(sessionId, targetId, payload.reason, payload.details)
     },
 }

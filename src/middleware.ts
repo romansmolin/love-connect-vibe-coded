@@ -10,6 +10,7 @@ const protectedRoutes = [
     '/profile',
     '/gifts',
     '/wallet',
+    '/who-liked',
 ]
 
 export function middleware(request: NextRequest) {

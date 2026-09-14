@@ -1,1 +1,8 @@
-export { actionRoute, discoverRoute, matchesRoute } from '../server/routes/match.route'
+export {
+    actionRoute,
+    blockRoute,
+    discoverRoute,
+    matchesRoute,
+    reportRoute,
+    votersRoute,
+} from '../server/routes/match.route'
