@@ -2,15 +2,15 @@
 
 import React, { useMemo, useState } from 'react'
 
-import { Activity, Eye, HeartPulse, RefreshCw, Sparkles, Users } from 'lucide-react'
+import { HeartPulse, RefreshCw, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 
 import type { CommunityActivityResponse, RecentVisitorsResponse, TopMembersResponse } from '@/entities/dashboard'
 import { useApiFetch as useDashboardFetch } from '@/shared/lib/react/use-api-fetch'
-import { cn } from '@/shared/lib/utils'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar'
 import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
 import { Skeleton } from '@/shared/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs'
 
@@ -107,17 +107,16 @@ const SectionShell = ({
     action?: React.ReactNode
     children: React.ReactNode
 }) => (
-    <section className="grid gap-6 border-t border-dashed border-border pt-8 lg:grid-cols-[240px_1fr]">
-        <div className="space-y-3">
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">Section</p>
+    <Card>
+        <CardHeader className="flex flex-row items-start justify-between gap-3">
             <div>
-                <h2 className="text-2xl font-semibold text-foreground">{title}</h2>
-                <p className="text-sm text-muted-foreground">{subtitle}</p>
+                <CardTitle className="text-lg">{title}</CardTitle>
+                <CardDescription>{subtitle}</CardDescription>
             </div>
             {action}
-        </div>
-        <div>{children}</div>
-    </section>
+        </CardHeader>
+        <CardContent>{children}</CardContent>
+    </Card>
 )
 
 const DashboardHero = () => (
@@ -143,27 +142,13 @@ const DashboardHero = () => (
                         Start matching
                     </Link>
                 </Button>
-                <Button asChild variant="outline" className="rounded-full px-6 py-5 text-base">
+                <Button asChild className="rounded-full px-6 py-5 text-base" variant="outline">
                     <Link href="/gifts">
                         <Sparkles className="h-5 w-5" />
                         Send a gift
                     </Link>
                 </Button>
             </div>
-        </div>
-        <div className="mt-6 grid gap-3 sm:grid-cols-3">
-            {[
-                { label: 'New visitors', value: 'Stay visible' },
-                { label: 'Top members', value: 'Find standouts' },
-                { label: 'Live activity', value: 'Track the buzz' },
-            ].map((item) => (
-                <div key={item.label} className="rounded-2xl border border-border/70 bg-muted/30 px-4 py-3">
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                        {item.label}
-                    </p>
-                    <p className="mt-2 text-sm font-semibold text-foreground">{item.value}</p>
-                </div>
-            ))}
         </div>
     </div>
 )
@@ -174,10 +159,10 @@ const ActivityCard = () => {
 
     return (
         <SectionShell
-            title="Community activity"
             subtitle="Everything shifting right now."
+            title="Community activity"
             action={
-                <Button size="sm" variant="outline" className="rounded-full" onClick={refetch}>
+                <Button className="rounded-full" size="sm" variant="outline" onClick={refetch}>
                     <RefreshCw className="mr-2 h-4 w-4" />
                     Refresh
                 </Button>
@@ -227,7 +212,7 @@ const TopMembersCard = () => {
     const list = data?.items ?? []
 
     return (
-        <SectionShell title="Top members" subtitle="Profiles getting the most love right now.">
+        <SectionShell subtitle="Profiles getting the most love right now." title="Top members">
             <Tabs className="w-full" value={tab} onValueChange={(value) => setTab(value as 'men' | 'women')}>
                 <TabsList className="w-full rounded-full border border-border p-1">
                     <TabsTrigger className="rounded-full" value="men">
@@ -302,10 +287,10 @@ const RecentVisitorsCard = () => {
 
     return (
         <SectionShell
-            title="Recent visitors"
             subtitle="People who checked your profile."
+            title="Recent visitors"
             action={
-                <Button size="sm" variant="outline" className="rounded-full" onClick={refetch}>
+                <Button className="rounded-full" size="sm" variant="outline" onClick={refetch}>
                     <RefreshCw className="mr-2 h-4 w-4" />
                     Refresh
                 </Button>
@@ -364,7 +349,7 @@ const RecentVisitorsCard = () => {
 
 export const DashboardPage = () => {
     return (
-        <div className="space-y-10">
+        <div className="space-y-6">
             <DashboardHero />
             <ActivityCard />
             <TopMembersCard />
