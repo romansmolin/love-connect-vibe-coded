@@ -212,3 +212,52 @@ model MatchAction {
   @@unique([userId, targetUserId])
   @@index([userId])
 }
+
+model AppUser {
+  id         String   @id // fotochat numeric user id, as string
+  username   String?
+  lastSeenAt DateTime @default(now()) @updatedAt
+  createdAt  DateTime @default(now())
+}
+
+model SimulatedPersona {
+  id             String   @id @default(cuid())
+  fotochatUserId Int      @unique
+  username       String
+  age            Int?
+  location       String?
+  gender         String?
+  photoUrl       String?
+  bio            String?
+  createdAt      DateTime @default(now())
+}
+
+enum SimulatedMatchKind {
+  LIKE
+  MUTUAL_MATCH
+}
+
+model SimulatedMatch {
+  id        String             @id @default(cuid())
+  appUserId String
+  personaId String
+  kind      SimulatedMatchKind
+  createdAt DateTime           @default(now())
+
+  @@unique([appUserId, personaId, kind])
+  @@index([appUserId, kind, createdAt(sort: Desc)])
+}
+
+model SimulatedMessage {
+  id               String    @id @default(cuid())
+  appUserId        String
+  personaId        String
+  senderIsPersona  Boolean
+  text             String
+  sentAt           DateTime  @default(now())
+  scheduledReplyAt DateTime?
+  repliedAt        DateTime?
+
+  @@index([appUserId, personaId, sentAt])
+  @@index([senderIsPersona, scheduledReplyAt, repliedAt])
+}
