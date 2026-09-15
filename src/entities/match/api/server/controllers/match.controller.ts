@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server'
 
+import { appUserRepo } from '@/entities/demo-activity/api/server/repositories/app-user.repo'
 import { SESSION_COOKIE_NAME, USER_COOKIE_NAME } from '@/shared/api/fotochat'
 import { HttpError } from '@/shared/http-client'
 
@@ -81,6 +82,10 @@ export const matchController = {
         })
 
         const appUserId = getAppUserId(request)
+
+        if (appUserId) {
+            await appUserRepo.touch(appUserId)
+        }
 
         return isPoolRequest
             ? matchService.discoverPool(sessionId, params, excludedIds, cityParam, appUserId)

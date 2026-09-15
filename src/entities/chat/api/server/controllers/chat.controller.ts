@@ -1,6 +1,7 @@
 import type { NextRequest } from 'next/server'
 
-import { SESSION_COOKIE_NAME } from '@/shared/api/fotochat'
+import { appUserRepo } from '@/entities/demo-activity/api/server/repositories/app-user.repo'
+import { SESSION_COOKIE_NAME, USER_COOKIE_NAME } from '@/shared/api/fotochat'
 import { HttpError } from '@/shared/http-client'
 
 import type { SendMessageRequest } from '../../../model/types'
@@ -12,9 +13,17 @@ const requireSessionId = (request: NextRequest) => {
     return sessionId
 }
 
+const getAppUserId = (request: NextRequest) => request.cookies.get(USER_COOKIE_NAME)?.value
+
 export const chatController = {
     async contacts(request: NextRequest) {
         const sessionId = requireSessionId(request)
+        const appUserId = getAppUserId(request)
+
+        if (appUserId) {
+            await appUserRepo.touch(appUserId)
+        }
+
         return chatService.listContacts(sessionId)
     },
     async messages(request: NextRequest) {
