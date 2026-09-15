@@ -2,7 +2,8 @@
 
 import { useMemo, useState } from 'react'
 
-import { Gift as GiftIcon, Send, ShoppingCart, Sparkles } from 'lucide-react'
+import { CheckCircle2, Send, ShoppingCart } from 'lucide-react'
+import Link from 'next/link'
 
 import { useGetWalletQuery } from '@/entities/credit'
 import type { Gift } from '@/entities/gift'
@@ -64,10 +65,10 @@ const GiftVisual = ({ gift, className }: { gift: Gift; className?: string }) => 
     if (gift.imageUrl) {
         return (
             <img
-                src={gift.imageUrl}
                 alt={gift.name}
                 className={cn('h-12 w-12 rounded-xl border border-border bg-muted/40 object-cover', className)}
                 loading="lazy"
+                src={gift.imageUrl}
             />
         )
     }
@@ -161,35 +162,18 @@ export const GiftsPage = () => {
     }
 
     return (
-        <div className="mx-auto w-full space-y-4">
-            <section className="rounded-2xl border border-border/70 bg-background p-4">
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="space-y-1">
-                        <div className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em]">
-                            <GiftIcon className="h-3.5 w-3.5" />
-                            Gifts
-                        </div>
-                        <h1 className="text-2xl font-semibold">Buy gifts</h1>
-                        <p className="text-sm text-muted-foreground">
-                            Pick a gift, complete checkout, then send it later to a mutual match.
-                        </p>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                        <Badge variant="outline">Payment required</Badge>
-                        <Badge variant="outline">Send later</Badge>
-                    </div>
-                </div>
-            </section>
+        <div className="mx-auto w-full max-w-4xl space-y-6">
+            <div>
+                <h1 className="text-2xl font-semibold text-foreground">Gifts</h1>
+                <p className="text-sm text-muted-foreground">
+                    Buy a gift now, then send it to a match whenever you&apos;re ready.
+                </p>
+            </div>
 
-            <Card className="border-border/70">
-                <CardHeader className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <CardTitle className="text-xl">Gift gallery</CardTitle>
-                        <CardDescription>Digital gifts you can purchase now.</CardDescription>
-                    </div>
-                    <Badge className="text-xs uppercase tracking-[0.2em]" variant="outline">
-                        {gifts.length} items
-                    </Badge>
+            <Card>
+                <CardHeader>
+                    <CardTitle className="text-lg">Gift shop</CardTitle>
+                    <CardDescription>Pick something and complete payment to add it to your gifts.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     {isCatalogLoading ? (
@@ -219,12 +203,7 @@ export const GiftsPage = () => {
                                                 </p>
                                             </div>
                                         </div>
-                                        <div className="space-y-1">
-                                            <p className="text-base font-semibold">{gift.name}</p>
-                                            <CardDescription>
-                                                Digital gift • Instant delivery after payment
-                                            </CardDescription>
-                                        </div>
+                                        <p className="text-base font-semibold">{gift.name}</p>
                                         <Button
                                             className="mt-auto w-full"
                                             disabled={isPurchasing}
@@ -244,11 +223,22 @@ export const GiftsPage = () => {
                 </CardContent>
             </Card>
 
-            <Card className="border-border/70">
+            {lastPurchase ? (
+                <Card className="flex-row items-center gap-3 border-primary/20 bg-primary/5 p-4 text-sm">
+                    <CheckCircle2 className="h-5 w-5 shrink-0 text-primary" />
+                    <p className="text-foreground">
+                        {lastPurchase.paymentMode === 'credits'
+                            ? 'Purchase complete — your gift is ready to send.'
+                            : "Payment started — your gift will show up below once it's confirmed."}
+                    </p>
+                </Card>
+            ) : null}
+
+            <Card>
                 <CardHeader className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <CardTitle className="text-xl">Your gifts</CardTitle>
-                        <CardDescription>Purchased gifts ready to send to a match.</CardDescription>
+                        <CardTitle className="text-lg">Your gifts</CardTitle>
+                        <CardDescription>Ready to send to one of your matches.</CardDescription>
                     </div>
                     <Button
                         disabled={isInventoryLoading || isInventoryFetching}
@@ -264,7 +254,7 @@ export const GiftsPage = () => {
                         <InventorySkeleton />
                     ) : inventoryItems.length === 0 ? (
                         <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
-                            You don&apos;t have any gifts yet. Purchase one from the gallery above.
+                            Nothing here yet — buy a gift above to get started.
                         </div>
                     ) : (
                         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -275,42 +265,6 @@ export const GiftsPage = () => {
                     )}
                 </CardContent>
             </Card>
-
-            {lastPurchase && (
-                <Card className="border-border/70">
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-xl">
-                            <Sparkles className="h-5 w-5 text-primary" />
-                            Latest purchase
-                        </CardTitle>
-                        <CardDescription>
-                            {lastPurchase.paymentMode === 'credits'
-                                ? 'Paid with credits. Your gift is available to send now.'
-                                : 'Complete checkout with the gateway widget. Your gift appears in inventory once payment is confirmed.'}
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="grid gap-4 text-sm sm:grid-cols-2">
-                        <div className="space-y-1">
-                            <p className="text-xs uppercase text-muted-foreground tracking-[0.2em]">Transaction</p>
-                            <p className="font-medium">{lastPurchase.transactionId}</p>
-                        </div>
-                        <div className="space-y-1">
-                            <p className="text-xs uppercase text-muted-foreground tracking-[0.2em]">Status</p>
-                            <p className="font-medium">{lastPurchase.status}</p>
-                        </div>
-                        <div className="space-y-1 sm:col-span-2">
-                            <p className="text-xs uppercase text-muted-foreground tracking-[0.2em]">
-                                Checkout token
-                            </p>
-                            <p className="font-medium break-all">
-                                {lastPurchase.paymentMode === 'credits'
-                                    ? 'Paid with credits'
-                                    : (lastPurchase.checkoutToken ?? 'Pending')}
-                            </p>
-                        </div>
-                    </CardContent>
-                </Card>
-            )}
 
             <AlertDialog
                 open={Boolean(purchaseGiftId)}
@@ -356,7 +310,7 @@ export const GiftsPage = () => {
                     <div className="space-y-3">
                         <div className="flex items-center gap-3 rounded-lg border border-primary/10 bg-primary/5 p-3">
                             {selectedInventoryItem ? (
-                                <GiftVisual gift={selectedInventoryItem.gift} className="h-14 w-14" />
+                                <GiftVisual className="h-14 w-14" gift={selectedInventoryItem.gift} />
                             ) : (
                                 <div className="h-14 w-14 rounded-xl border border-dashed border-border bg-muted/40" />
                             )}
@@ -366,8 +320,11 @@ export const GiftsPage = () => {
                             </div>
                         </div>
                         {matches.length === 0 && !isMatchesLoading ? (
-                            <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
-                                You need a mutual match before sending gifts.
+                            <div className="space-y-2 rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
+                                <p>You don&apos;t have any matches to send this to yet.</p>
+                                <Link className="font-medium text-primary hover:underline" href="/matching">
+                                    Start discovering people
+                                </Link>
                             </div>
                         ) : (
                             <div className="space-y-2">

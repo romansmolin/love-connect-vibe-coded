@@ -1,6 +1,6 @@
 'use client'
 
-import { Heart, RefreshCw } from 'lucide-react'
+import { Heart, MessageCircle, RefreshCw } from 'lucide-react'
 import Link from 'next/link'
 
 import { useGetVotersQuery } from '@/entities/match'
@@ -66,8 +66,11 @@ export const WhoLikedPage = () => {
                         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                             {voters.map((voter) => (
                                 <Card key={voter.id} className="transition-shadow hover:shadow-md">
-                                    <Link className="block" href={`/profile/${voter.id}`}>
-                                        <CardContent className="flex items-center gap-3 p-4">
+                                    <CardContent className="flex items-center gap-3 p-4">
+                                        <Link
+                                            className="flex min-w-0 flex-1 items-center gap-3"
+                                            href={`/profile/${voter.id}`}
+                                        >
                                             <Avatar className="h-12 w-12">
                                                 {voter.photoUrl ? (
                                                     <AvatarImage alt={voter.username} src={voter.photoUrl} />
@@ -87,14 +90,22 @@ export const WhoLikedPage = () => {
                                                         .join(' · ')}
                                                 </p>
                                             </div>
-                                            {typeof voter.vote === 'number' ? (
-                                                <Badge className="gap-1" variant="secondary">
-                                                    <Heart className="h-3 w-3" />
-                                                    {voter.vote}
-                                                </Badge>
-                                            ) : null}
-                                        </CardContent>
-                                    </Link>
+                                        </Link>
+                                        {typeof voter.vote === 'number' ? (
+                                            <Badge className="gap-1" variant="secondary">
+                                                <Heart className="h-3 w-3" />
+                                                {voter.vote}
+                                            </Badge>
+                                        ) : null}
+                                        <Button asChild size="icon" variant="ghost">
+                                            <Link
+                                                href={`/chat?contactId=${voter.id}&contact=${encodeURIComponent(voter.username)}`}
+                                                title={`Message ${voter.username}`}
+                                            >
+                                                <MessageCircle className="h-4 w-4" />
+                                            </Link>
+                                        </Button>
+                                    </CardContent>
                                 </Card>
                             ))}
                         </div>

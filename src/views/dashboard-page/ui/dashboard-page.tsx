@@ -120,20 +120,15 @@ const SectionShell = ({
 )
 
 const DashboardHero = () => (
-    <div className="rounded-3xl border border-border/70 bg-background p-6 shadow-sm sm:p-8">
+    <Card className="p-6 shadow-sm sm:p-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-            <div className="space-y-4">
-                <Badge className="w-fit rounded-full border border-border px-3 py-1 text-xs uppercase tracking-[0.2em]">
-                    Your space
-                </Badge>
-                <div className="space-y-2">
-                    <h1 className="text-4xl font-bold leading-tight text-foreground sm:text-5xl">
-                        <span className="font-pacifico text-primary">Spark</span> real conversations today
-                    </h1>
-                    <p className="max-w-xl text-base text-muted-foreground sm:text-lg">
-                        Keep the momentum with fresh matches, quick gestures, and the latest activity around you.
-                    </p>
-                </div>
+            <div className="space-y-2">
+                <h1 className="text-4xl font-bold leading-tight text-foreground sm:text-5xl">
+                    <span className="font-pacifico text-primary">Spark</span> real conversations today
+                </h1>
+                <p className="max-w-xl text-base text-muted-foreground sm:text-lg">
+                    Keep the momentum with fresh matches, quick gestures, and the latest activity around you.
+                </p>
             </div>
             <div className="flex flex-wrap gap-3">
                 <Button asChild className="rounded-full px-6 py-5 text-base font-semibold">
@@ -150,7 +145,7 @@ const DashboardHero = () => (
                 </Button>
             </div>
         </div>
-    </div>
+    </Card>
 )
 
 const ActivityCard = () => {

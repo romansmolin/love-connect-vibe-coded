@@ -26,10 +26,11 @@ import {
 } from '@/shared/ui/alert-dialog'
 import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
-import { Card, CardContent } from '@/shared/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card'
 import { Checkbox } from '@/shared/ui/checkbox'
 import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
+import { Separator } from '@/shared/ui/separator'
 import { Skeleton } from '@/shared/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/tabs'
 
@@ -37,7 +38,7 @@ type SelectedAmount = { credits: number; label: string }
 
 const creditPackages = CREDIT_PACKAGES
 
-const SummaryCard = ({
+const StatRow = ({
     title,
     value,
     subtitle,
@@ -48,17 +49,15 @@ const SummaryCard = ({
     subtitle: string
     icon: typeof WalletIcon
 }) => (
-    <div className="flex items-center justify-between rounded-2xl border border-border/70 bg-background px-4 py-3">
-        <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                <Icon className="h-5 w-5" />
-            </div>
-            <div className="space-y-0.5">
-                <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{title}</p>
-                <p className="text-sm text-muted-foreground">{subtitle}</p>
-            </div>
+    <div className="flex items-center gap-3">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <Icon className="h-5 w-5" />
         </div>
-        <p className="text-lg font-semibold text-foreground">{value}</p>
+        <div className="min-w-0 flex-1">
+            <p className="text-sm font-medium text-foreground">{title}</p>
+            <p className="text-xs text-muted-foreground">{subtitle}</p>
+        </div>
+        <p className="shrink-0 text-lg font-semibold text-foreground">{value}</p>
     </div>
 )
 
@@ -72,9 +71,9 @@ const TransactionRow = ({ transaction }: { transaction: CreditTransaction }) => 
     return (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/70 bg-background p-4">
             <div className="space-y-1">
-                <p className="font-semibold">{transaction.description ?? 'Credit transaction'}</p>
+                <p className="font-semibold">{transaction.description ?? typeLabel}</p>
                 <p className="text-xs text-muted-foreground">
-                    {new Date(transaction.createdAt).toLocaleDateString()} • {typeLabel}
+                    {typeLabel} on {new Date(transaction.createdAt).toLocaleDateString()}
                 </p>
             </div>
             <div className="flex items-center gap-3">
@@ -118,6 +117,13 @@ export const WalletPage = () => {
         }
     }, [transactions])
 
+    const customCredits = Number(customAmount)
+    const isCustomAmountValid =
+        customAmount.length > 0 &&
+        Number.isInteger(customCredits) &&
+        customCredits >= MIN_CUSTOM_CREDITS &&
+        customCredits <= MAX_CUSTOM_CREDITS
+
     const handlePurchaseConfirm = async () => {
         if (!selectedPackage) return
         await confirmConsent()
@@ -126,184 +132,139 @@ export const WalletPage = () => {
     }
 
     return (
-        <div className="mx-auto w-full space-y-6">
-            <section className="rounded-3xl border border-border/70 bg-background p-4 sm:p-5">
-                <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-                    <div className="space-y-2">
-                        <Badge className="w-fit rounded-full border border-border px-3 py-1 text-xs uppercase tracking-[0.2em]">
-                            Wallet
-                        </Badge>
-                        <h1 className="text-3xl font-semibold text-foreground">Credits overview</h1>
-                        <p className="text-sm text-muted-foreground">
-                            Track your credits and keep your balance ready for gifts.
-                        </p>
-                    </div>
-                    <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-                        <span className="rounded-full bg-muted/60 px-3 py-1">
-                            1 credit = {(CENTS_PER_CREDIT / 100).toFixed(2)} EUR
-                        </span>
-                        <span className="rounded-full bg-muted/60 px-3 py-1">Secure checkout</span>
-                        <span className="rounded-full bg-muted/60 px-3 py-1">Instant balance</span>
-                    </div>
-                </div>
+        <div className="mx-auto w-full max-w-2xl space-y-6">
+            <div>
+                <h1 className="text-2xl font-semibold text-foreground">Wallet</h1>
+                <p className="text-sm text-muted-foreground">
+                    1 credit = {(CENTS_PER_CREDIT / 100).toFixed(2)} EUR. Use credits to buy and send gifts.
+                </p>
+            </div>
 
-                <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_1.4fr]">
-                    <div className="space-y-2">
-                        {isLoading ? (
-                            Array.from({ length: 4 }).map((_, index) => (
-                                <Card key={index} className="border-border/70">
-                                    <CardContent className="p-4">
-                                        <Skeleton className="h-12 w-full" />
-                                    </CardContent>
-                                </Card>
-                            ))
-                        ) : (
-                            <>
-                                <SummaryCard
-                                    icon={WalletIcon}
-                                    subtitle="Ready to spend"
-                                    title="Balance"
-                                    value={wallet ? formatCredits(wallet.balance) : '0 credits'}
-                                />
-                                <SummaryCard
-                                    icon={CreditCard}
-                                    subtitle="All-time purchases"
-                                    title="Purchased"
-                                    value={wallet ? formatCredits(wallet.totalPurchased) : '0 credits'}
-                                />
-                                <SummaryCard
-                                    icon={Crown}
-                                    subtitle="Used on gifts"
-                                    title="Spent"
-                                    value={wallet ? formatCredits(wallet.totalSpent) : '0 credits'}
-                                />
-                                <SummaryCard
-                                    icon={Landmark}
-                                    subtitle="Value in EUR"
-                                    title="Balance value"
-                                    value={`${balanceValue.toFixed(2)} EUR`}
-                                />
-                            </>
-                        )}
-                    </div>
-
-                    <div className="rounded-2xl border border-border/70 bg-background p-4">
-                        <div className="flex flex-wrap items-start justify-between gap-2">
-                            <div>
-                                <h2 className="text-xl font-semibold text-foreground">Buy credits</h2>
-                                <p className="text-sm text-muted-foreground">
-                                    1 credit = 0.10 EUR. Pick a pack and checkout securely.
-                                </p>
-                            </div>
-                            <Badge className="text-xs uppercase tracking-[0.2em]" variant="outline">
-                                {creditPackages.length} packs
-                            </Badge>
+            <Card>
+                <CardHeader>
+                    <CardTitle className="text-lg">Balance</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    {isLoading ? (
+                        <div className="space-y-4">
+                            {Array.from({ length: 4 }).map((_, index) => (
+                                <Skeleton key={index} className="h-10 w-full" />
+                            ))}
                         </div>
-                        <div className="mt-3 space-y-2">
-                            {creditPackages.map((pack) => {
-                                const amountCents = centsFromCredits(pack.credits)
-                                const priceLabel = (amountCents / 100).toFixed(2)
-                                return (
-                                    <div
-                                        key={pack.id}
-                                        className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/70 px-3 py-3"
+                    ) : (
+                        <>
+                            <StatRow
+                                icon={WalletIcon}
+                                subtitle="Ready to spend"
+                                title="Balance"
+                                value={wallet ? formatCredits(wallet.balance) : '0 credits'}
+                            />
+                            <Separator />
+                            <StatRow
+                                icon={CreditCard}
+                                subtitle="All-time purchases"
+                                title="Purchased"
+                                value={wallet ? formatCredits(wallet.totalPurchased) : '0 credits'}
+                            />
+                            <Separator />
+                            <StatRow
+                                icon={Crown}
+                                subtitle="Used on gifts"
+                                title="Spent"
+                                value={wallet ? formatCredits(wallet.totalSpent) : '0 credits'}
+                            />
+                            <Separator />
+                            <StatRow
+                                icon={Landmark}
+                                subtitle="Value in EUR"
+                                title="Balance value"
+                                value={`${balanceValue.toFixed(2)} EUR`}
+                            />
+                        </>
+                    )}
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle className="text-lg">Buy credits</CardTitle>
+                    <CardDescription>Pick an amount and check out securely.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                    {creditPackages.map((pack) => {
+                        const amountCents = centsFromCredits(pack.credits)
+                        const priceLabel = (amountCents / 100).toFixed(2)
+                        return (
+                            <div
+                                key={pack.id}
+                                className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/70 px-4 py-3"
+                            >
+                                <div>
+                                    <p className="text-base font-semibold text-foreground">
+                                        {formatCredits(pack.credits)}
+                                    </p>
+                                    <p className="text-xs text-muted-foreground">
+                                        {creditsFromCents(amountCents)} credits included
+                                    </p>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <p className="text-lg font-semibold">{priceLabel} EUR</p>
+                                    <Button
+                                        disabled={isPurchasing}
+                                        onClick={() => {
+                                            setSelectedPackage(pack)
+                                            requestConsent(pack.credits)
+                                        }}
                                     >
-                                        <div className="space-y-1">
-                                            <div className="flex items-center gap-2">
-                                                <p className="text-lg font-semibold text-foreground">
-                                                    {pack.label}
-                                                </p>
-                                            </div>
-                                            <p className="text-sm text-muted-foreground">
-                                                {formatCredits(pack.credits)}
-                                            </p>
-                                        </div>
-                                        <div className="flex items-center gap-3">
-                                            <div className="text-right">
-                                                <p className="text-lg font-semibold">{priceLabel} EUR</p>
-                                                <p className="text-xs text-muted-foreground">
-                                                    {creditsFromCents(amountCents)} credits included
-                                                </p>
-                                            </div>
-                                            <Button
-                                                disabled={isPurchasing}
-                                                onClick={() => {
-                                                    setSelectedPackage(pack)
-                                                    requestConsent(pack.credits)
-                                                }}
-                                            >
-                                                Buy credits
-                                            </Button>
-                                        </div>
-                                    </div>
-                                )
-                            })}
-                        </div>
-
-                        <div className="mt-4 rounded-2xl border border-dashed border-border/70 p-3">
-                            <p className="text-sm font-semibold text-foreground">Custom amount</p>
-                            <p className="text-xs text-muted-foreground">
-                                Choose any amount between {formatCredits(MIN_CUSTOM_CREDITS)} and{' '}
-                                {formatCredits(MAX_CUSTOM_CREDITS)}.
-                            </p>
-                            <div className="mt-2 flex flex-wrap items-center gap-2">
-                                <Input
-                                    className="w-32"
-                                    inputMode="numeric"
-                                    placeholder="e.g. 150"
-                                    value={customAmount}
-                                    onChange={(event) => setCustomAmount(event.target.value.replace(/\D/g, ''))}
-                                />
-                                <span className="text-sm text-muted-foreground">credits</span>
-                                {(() => {
-                                    const customCredits = Number(customAmount)
-                                    const isValid =
-                                        customAmount.length > 0 &&
-                                        Number.isInteger(customCredits) &&
-                                        customCredits >= MIN_CUSTOM_CREDITS &&
-                                        customCredits <= MAX_CUSTOM_CREDITS
-
-                                    return (
-                                        <>
-                                            {isValid ? (
-                                                <span className="text-sm text-muted-foreground">
-                                                    = {(centsFromCredits(customCredits) / 100).toFixed(2)} EUR
-                                                </span>
-                                            ) : null}
-                                            <Button
-                                                disabled={isPurchasing || !isValid}
-                                                onClick={() => {
-                                                    setSelectedPackage({
-                                                        credits: customCredits,
-                                                        label: 'Custom amount',
-                                                    })
-                                                    requestConsent(customCredits)
-                                                }}
-                                            >
-                                                Buy credits
-                                            </Button>
-                                        </>
-                                    )
-                                })()}
+                                        Buy
+                                    </Button>
+                                </div>
                             </div>
+                        )
+                    })}
+
+                    <Separator />
+
+                    <div className="space-y-2">
+                        <p className="text-sm font-medium text-foreground">Or choose a custom amount</p>
+                        <p className="text-xs text-muted-foreground">
+                            Between {formatCredits(MIN_CUSTOM_CREDITS)} and {formatCredits(MAX_CUSTOM_CREDITS)}.
+                        </p>
+                        <div className="flex flex-wrap items-center gap-2 pt-1">
+                            <Input
+                                className="w-32"
+                                inputMode="numeric"
+                                placeholder="e.g. 150"
+                                value={customAmount}
+                                onChange={(event) => setCustomAmount(event.target.value.replace(/\D/g, ''))}
+                            />
+                            <span className="text-sm text-muted-foreground">credits</span>
+                            {isCustomAmountValid ? (
+                                <span className="text-sm text-muted-foreground">
+                                    = {(centsFromCredits(customCredits) / 100).toFixed(2)} EUR
+                                </span>
+                            ) : null}
+                            <Button
+                                className="ml-auto"
+                                disabled={isPurchasing || !isCustomAmountValid}
+                                onClick={() => {
+                                    setSelectedPackage({ credits: customCredits, label: 'Custom amount' })
+                                    requestConsent(customCredits)
+                                }}
+                            >
+                                Buy
+                            </Button>
                         </div>
                     </div>
-                </div>
-            </section>
+                </CardContent>
+            </Card>
 
-            <section className="rounded-3xl border border-border/70 bg-background p-4 sm:p-5">
-                <div className="flex flex-wrap items-start justify-between gap-2">
-                    <div>
-                        <h2 className="text-xl font-semibold text-foreground">Transaction history</h2>
-                        <p className="text-sm text-muted-foreground">
-                            Review credit purchases and balance updates.
-                        </p>
-                    </div>
-                    <Badge className="text-xs uppercase tracking-[0.2em]" variant="outline">
-                        {transactions.length} items
-                    </Badge>
-                </div>
-                <div className="mt-4">
+            <Card>
+                <CardHeader>
+                    <CardTitle className="text-lg">Transaction history</CardTitle>
+                    <CardDescription>Your credit purchases and balance updates.</CardDescription>
+                </CardHeader>
+                <CardContent>
                     {isLoading ? (
                         <div className="space-y-3">
                             {Array.from({ length: 3 }).map((_, index) => (
@@ -354,8 +315,8 @@ export const WalletPage = () => {
                             </div>
                         </Tabs>
                     )}
-                </div>
-            </section>
+                </CardContent>
+            </Card>
 
             <AlertDialog
                 open={isConsentOpen && Boolean(selectedPackage)}

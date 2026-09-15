@@ -32,9 +32,7 @@ const StatCard = ({
         <Card className="transition-shadow hover:shadow-md">
             <CardContent className="flex items-center justify-between gap-4 p-5">
                 <div className="space-y-1">
-                    <p className="text-xs font-semibold uppercase text-muted-foreground tracking-[0.2em]">
-                        {label}
-                    </p>
+                    <p className="text-sm font-medium text-foreground">{label}</p>
                     {isLoading ? <Skeleton className="h-9 w-16" /> : <p className="text-3xl font-semibold text-foreground">{value}</p>}
                     <p className="text-xs text-muted-foreground">{hint}</p>
                 </div>
@@ -135,8 +133,11 @@ export const AnalyticsPage = () => {
                             ))}
                         </div>
                     ) : genderBreakdown.length === 0 ? (
-                        <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
-                            No matches yet — breakdown will show up once you have some.
+                        <div className="space-y-2 rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
+                            <p>No matches yet, so there&apos;s nothing to break down.</p>
+                            <Link className="font-medium text-primary hover:underline" href="/matching">
+                                Start discovering people
+                            </Link>
                         </div>
                     ) : (
                         <div className="space-y-2">

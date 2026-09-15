@@ -25,7 +25,7 @@ const AppSidebar = () => {
 
     const menuGroups = [
         {
-            title: 'Workspace',
+            title: 'Discover',
             items: [
                 {
                     title: 'Dashboard',
@@ -47,6 +47,11 @@ const AppSidebar = () => {
                     icon: BarChart3,
                     url: '/analytics',
                 },
+            ],
+        },
+        {
+            title: 'Connect',
+            items: [
                 {
                     title: 'Messages',
                     icon: MessageCircle,
@@ -57,6 +62,11 @@ const AppSidebar = () => {
                     icon: Gift,
                     url: '/gifts',
                 },
+            ],
+        },
+        {
+            title: 'Account',
+            items: [
                 {
                     title: 'Wallet',
                     icon: Wallet,

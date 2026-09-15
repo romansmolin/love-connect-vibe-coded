@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { Filter, X } from 'lucide-react'
 
 import { Button } from '@/shared/ui/button'
+import { Card } from '@/shared/ui/card'
 import { Input } from '@/shared/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select'
 
@@ -34,7 +35,7 @@ export const MatchFilters = ({
     }
 
     return (
-        <div className="flex flex-wrap items-end gap-3 rounded-xl border border-border/70 bg-background p-3">
+        <Card className="flex flex-row flex-wrap items-end gap-3 p-3">
             <div className="flex items-center gap-2 pb-2 text-sm font-medium text-muted-foreground">
                 <Filter className="h-4 w-4" />
                 Filters
@@ -65,6 +66,6 @@ export const MatchFilters = ({
                     Clear
                 </Button>
             </div>
-        </div>
+        </Card>
     )
 }
