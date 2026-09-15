@@ -80,6 +80,7 @@ const MATCH_ENDPOINT = '/index_api/match'
 const VOTERS_ENDPOINT = '/index_api/guest/get/votes'
 const SET_IGNORE_ENDPOINT = '/ajax_api/setIgnore'
 const IS_SUSPECT_ENDPOINT = '/index_api/user/is_suspect'
+const CAPTCHA_ENDPOINT = '/index_api/captcha'
 
 export const matchRepo = {
     discover(sessionId: string, params: Record<string, unknown>) {
@@ -130,7 +131,7 @@ export const matchRepo = {
             },
         })
     },
-    reportUser(params: { sessionId: string; targetId: number; reason: string; details?: string }) {
+    reportUser(params: { sessionId: string; targetId: number; reason: string; details?: string; code: string }) {
         return fotochatHttpClient.post<ReportUserResponse>(IS_SUSPECT_ENDPOINT, undefined, {
             params: {
                 session_id: params.sessionId,
@@ -138,8 +139,17 @@ export const matchRepo = {
                 id: params.targetId,
                 raison: params.reason,
                 details: params.details,
-                code: 0,
+                code: params.code,
             },
+        })
+    },
+    getCaptcha(sessionId: string) {
+        return fotochatHttpClient.get<ArrayBuffer>(CAPTCHA_ENDPOINT, {
+            params: {
+                session_id: sessionId,
+                api_key: FOTOCHAT_API_KEY,
+            },
+            responseType: 'arraybuffer',
         })
     },
 }

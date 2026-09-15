@@ -1,6 +1,7 @@
 export {
     actionRoute,
     blockRoute,
+    captchaRoute,
     discoverRoute,
     matchesRoute,
     reportRoute,

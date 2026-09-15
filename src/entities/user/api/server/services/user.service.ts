@@ -186,7 +186,7 @@ export const userService = {
 
         const info = uploadResponse.result
 
-        if (!info || info.success !== 1 || !info.id_photo || info.id_photo <= 0) {
+        if (!info || info.success === 0 || !info.id_photo || info.id_photo <= 0) {
             const message =
                 info?.error === -2
                     ? 'Image is too small. Minimum size is 215x215px.'
@@ -206,6 +206,9 @@ export const userService = {
             throw new HttpError('Unauthorized', 401)
         }
 
-        return editResponse.photos?.map(mapPhoto) ?? []
+        const photos = editResponse.photos
+        const photoList = Array.isArray(photos) ? photos : photos ? Object.values(photos) : []
+
+        return photoList.map(mapPhoto)
     },
 }

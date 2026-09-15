@@ -156,7 +156,7 @@ export const matchController = {
             throw new HttpError('Invalid request payload', 400)
         }
 
-        const payload = body as { targetId?: number | string; reason?: string; details?: string }
+        const payload = body as { targetId?: number | string; reason?: string; details?: string; code?: string }
         const targetId = typeof payload.targetId === 'string' ? Number(payload.targetId) : payload.targetId
 
         if (!targetId || !Number.isFinite(targetId) || targetId <= 0) {
@@ -167,6 +167,15 @@ export const matchController = {
             throw new HttpError('Reason is required', 400)
         }
 
-        return matchService.reportUser(sessionId, targetId, payload.reason, payload.details)
+        if (!payload.code || typeof payload.code !== 'string') {
+            throw new HttpError('Security code is required', 400)
+        }
+
+        return matchService.reportUser(sessionId, targetId, payload.reason, payload.code, payload.details)
+    },
+    async getCaptcha(request: NextRequest): Promise<ArrayBuffer> {
+        const sessionId = requireSessionId(request)
+
+        return matchService.getCaptcha(sessionId)
     },
 }

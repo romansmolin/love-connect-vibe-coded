@@ -105,3 +105,21 @@ export const reportRoute = async (request: NextRequest) => {
         return handleError(error)
     }
 }
+
+export const captchaRoute = async (request: NextRequest) => {
+    if (request.method !== 'GET') {
+        return NextResponse.json({ message: 'Method Not Allowed' }, { status: 405 })
+    }
+
+    try {
+        const buffer = await matchController.getCaptcha(request)
+        return new NextResponse(buffer, {
+            headers: {
+                'Content-Type': 'image/gif',
+                'Cache-Control': 'no-store',
+            },
+        })
+    } catch (error) {
+        return handleError(error)
+    }
+}

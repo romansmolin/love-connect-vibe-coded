@@ -124,7 +124,7 @@ export const matchService = {
         const actedIds = appUserId ? new Set(await matchActionRepo.listActedTargetIds(appUserId)) : null
 
         const items = (response.result ?? [])
-            .filter((member) => !actedIds || typeof member.id !== 'number' || !actedIds.has(member.id))
+            .filter((member) => !actedIds || !actedIds.has(Number(member.id)))
             .map((member) => mapMember(member))
 
         return {
@@ -172,9 +172,10 @@ export const matchService = {
             const pageMembers = response.result ?? []
 
             for (const member of pageMembers) {
-                if (typeof member.id !== 'number' || member.id <= 0 || excludedIds.has(member.id)) continue
+                const memberId = Number(member.id)
+                if (!Number.isInteger(memberId) || memberId <= 0 || excludedIds.has(memberId)) continue
                 if (!matchesCity(member)) continue
-                members.set(member.id, member)
+                members.set(memberId, member)
             }
 
             const reachedTarget = normalizedCity ? members.size >= targetSize : false
@@ -284,14 +285,18 @@ export const matchService = {
         sessionId: string,
         targetId: number,
         reason: string,
+        code: string,
         details?: string
     ): Promise<ReportUserResponse> {
-        const response = await matchRepo.reportUser({ sessionId, targetId, reason, details })
+        const response = await matchRepo.reportUser({ sessionId, targetId, reason, details, code })
 
         if (response.result === 0 || response.result === '0') {
             throw new HttpError(response.error || 'Unable to submit report.', 400)
         }
 
         return { success: true }
+    },
+    async getCaptcha(sessionId: string): Promise<ArrayBuffer> {
+        return matchRepo.getCaptcha(sessionId)
     },
 }

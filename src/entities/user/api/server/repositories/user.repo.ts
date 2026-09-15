@@ -93,7 +93,7 @@ export type UploadPhotoResponse = {
 export type ModifyPhotoResponse = {
     connected?: number
     modify?: string
-    photos?: PhotoBlock[]
+    photos?: PhotoBlock[] | Record<string, PhotoBlock>
 }
 
 export type UpdateInformationsParams = {

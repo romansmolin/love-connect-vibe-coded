@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-import { ArrowLeft, Flag, Gift, Heart, ShieldOff, X } from 'lucide-react'
+import { ArrowLeft, Flag, Gift, Heart, RefreshCw, ShieldOff, X } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
@@ -23,6 +23,7 @@ import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
 import { Card, CardContent } from '@/shared/ui/card'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/shared/ui/dialog'
+import { Input } from '@/shared/ui/input'
 import { Skeleton } from '@/shared/ui/skeleton'
 import { Textarea } from '@/shared/ui/textarea'
 
@@ -55,11 +56,13 @@ const ReportDialog = ({
 }: {
     open: boolean
     onOpenChange: (open: boolean) => void
-    onSubmit: (reason: string, details: string) => void
+    onSubmit: (reason: string, details: string, code: string) => void
     isSubmitting: boolean
 }) => {
     const [reason, setReason] = useState<string | null>(null)
     const [details, setDetails] = useState('')
+    const [code, setCode] = useState('')
+    const [captchaNonce, setCaptchaNonce] = useState(0)
 
     return (
         <Dialog
@@ -68,6 +71,7 @@ const ReportDialog = ({
                 if (!next) {
                     setReason(null)
                     setDetails('')
+                    setCode('')
                 }
                 onOpenChange(next)
             }}
@@ -99,11 +103,34 @@ const ReportDialog = ({
                         value={details}
                         onChange={(event) => setDetails(event.target.value)}
                     />
+                    <div className="space-y-2">
+                        <p className="text-sm text-muted-foreground">Enter the security code shown below.</p>
+                        <div className="flex items-center gap-3">
+                            <img
+                                alt="Security code"
+                                className="h-12 rounded border border-border"
+                                src={`/api/match/report/captcha?nonce=${captchaNonce}`}
+                            />
+                            <Button
+                                size="sm"
+                                type="button"
+                                variant="ghost"
+                                onClick={() => setCaptchaNonce((value) => value + 1)}
+                            >
+                                <RefreshCw className="h-4 w-4" />
+                            </Button>
+                        </div>
+                        <Input
+                            placeholder="Security code"
+                            value={code}
+                            onChange={(event) => setCode(event.target.value)}
+                        />
+                    </div>
                 </div>
                 <DialogFooter>
                     <Button
-                        disabled={!reason || isSubmitting}
-                        onClick={() => reason && onSubmit(reason, details)}
+                        disabled={!reason || !code || isSubmitting}
+                        onClick={() => reason && onSubmit(reason, details, code)}
                     >
                         Submit report
                     </Button>
@@ -164,9 +191,9 @@ export const MemberProfilePage = ({ id }: { id: number }) => {
         }
     }
 
-    const handleReport = async (reason: string, details: string) => {
+    const handleReport = async (reason: string, details: string, code: string) => {
         try {
-            await reportUser({ targetId: user.id, reason, details: details.trim() || undefined }).unwrap()
+            await reportUser({ targetId: user.id, reason, code, details: details.trim() || undefined }).unwrap()
             toast.success('Report submitted. Thank you.')
             setIsReportOpen(false)
         } catch (reportError) {

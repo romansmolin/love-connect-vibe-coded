@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+import { SESSION_COOKIE_NAME } from '@/shared/api/fotochat'
+
 const protectedRoutes = [
     '/dashboard',
     '/dashborad',
@@ -20,9 +22,9 @@ export function middleware(request: NextRequest) {
     const isProtected = protectedRoutes.some((route) => pathname.startsWith(route))
 
     if (isProtected) {
-        const token = request.cookies.get('token')
+        const sessionId = request.cookies.get(SESSION_COOKIE_NAME)
 
-        if (!token) {
+        if (!sessionId) {
             return NextResponse.redirect(new URL('/auth', request.url))
         }
     }
