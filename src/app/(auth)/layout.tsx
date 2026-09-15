@@ -28,13 +28,13 @@ export default function RootLayout({
 }>) {
     return (
         <html suppressHydrationWarning lang="en">
-            <body className={`antialiased `}>
+            <body className="antialiased flex h-svh flex-col overflow-hidden">
                 <GoogleAnalytics measurementId="G-37FFNP35CS" />
                 <RtkProvider>
                     <ThemeProvider disableTransitionOnChange enableSystem attribute="class" defaultTheme="system">
                         <Header isAuth />
-                        <main className="min-h-svh  flex flex-col items-center mt-20 justify-center gap-6 bg-background">
-                            {children}
+                        <main className="flex min-h-0 flex-1 flex-col items-center overflow-y-auto bg-background px-4 py-4">
+                            <div className="my-auto w-full max-w-xl">{children}</div>
                         </main>
                         <Toaster richColors />
                     </ThemeProvider>
