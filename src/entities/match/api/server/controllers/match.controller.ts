@@ -93,8 +93,9 @@ export const matchController = {
     },
     async listMatches(request: NextRequest) {
         const sessionId = requireSessionId(request)
+        const appUserId = getAppUserId(request)
 
-        return matchService.listMatches(sessionId)
+        return matchService.listMatches(sessionId, appUserId)
     },
     async action(request: NextRequest): Promise<MatchActionResponse> {
         const sessionId = requireSessionId(request)
@@ -128,8 +129,9 @@ export const matchController = {
         const sessionId = requireSessionId(request)
         const { searchParams } = new URL(request.url)
         const page = toOptionalNumber(searchParams.get('page'))
+        const appUserId = getAppUserId(request)
 
-        return matchService.getVoters(sessionId, page)
+        return matchService.getVoters(sessionId, page, appUserId)
     },
     async blockUser(request: NextRequest): Promise<BlockUserResponse> {
         const sessionId = requireSessionId(request)

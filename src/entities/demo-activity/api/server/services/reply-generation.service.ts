@@ -3,13 +3,21 @@ import OpenAI from 'openai'
 
 import { buildSystemPrompt } from '../../../lib/system-prompt'
 
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+let client: OpenAI | undefined
+
+const getClient = (): OpenAI => {
+	if (!client) {
+		client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+	}
+
+	return client
+}
 
 const FALLBACK_REPLY = "Hey, sorry, got pulled away! What's up?"
 
 export const replyGenerationService = {
 	async generateReply(persona: SimulatedPersona, history: SimulatedMessage[]): Promise<string> {
-		const completion = await client.chat.completions.create({
+		const completion = await getClient().chat.completions.create({
 			model: 'gpt-4o-mini',
 			temperature: 0.8,
 			max_tokens: 200,

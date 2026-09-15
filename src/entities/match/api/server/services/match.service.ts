@@ -1,3 +1,4 @@
+import { personaMatchService } from '@/entities/demo-activity/api/server/services/persona-match.service'
 import { FOTOCHAT_API_KEY } from '@/shared/api/fotochat'
 import { HttpError } from '@/shared/http-client'
 
@@ -197,7 +198,7 @@ export const matchService = {
             total: items.length,
         }
     },
-    async listMatches(sessionId: string): Promise<MatchListResponse> {
+    async listMatches(sessionId: string, appUserId?: string): Promise<MatchListResponse> {
         const response = await matchRepo.listMatches(sessionId)
 
         if (!Array.isArray(response) && response.connected === 0) {
@@ -205,12 +206,13 @@ export const matchService = {
         }
 
         const members = extractMembers(response)
-        const items = members.map((member) => mapMember(member))
+        const realItems = members.map((member) => mapMember(member))
+        const simulatedItems = appUserId ? await personaMatchService.listSimulatedMutualMatches(appUserId) : []
 
-        const total = extractTotal(response) ?? items.length
+        const total = (extractTotal(response) ?? realItems.length) + simulatedItems.length
 
         return {
-            items,
+            items: [...simulatedItems, ...realItems],
             total,
         }
     },
@@ -259,15 +261,18 @@ export const matchService = {
             isMatch,
         }
     },
-    async getVoters(sessionId: string, page?: number): Promise<VotersResponse> {
+    async getVoters(sessionId: string, page?: number, appUserId?: string): Promise<VotersResponse> {
         const response = await matchRepo.getVoters(sessionId, page)
 
         if (response.connected === 0) {
             throw new HttpError('Unauthorized', 401)
         }
 
+        const realItems = response.result?.map(mapVoter) ?? []
+        const simulatedItems = appUserId ? await personaMatchService.listSimulatedLikes(appUserId) : []
+
         return {
-            items: response.result?.map(mapVoter) ?? [],
+            items: [...simulatedItems, ...realItems],
             page,
             totalPages: response.nb_pages,
         }
