@@ -33,7 +33,7 @@ export const chatController = {
         const sessionId = requireSessionId(request)
         const body = (await request.json().catch(() => null)) as Partial<SendMessageRequest> | null
 
-        if (!body || typeof body !== 'object' || !body.contactId) {
+        if (!body || typeof body !== 'object' || !body.contactId || !body.contact) {
             throw new HttpError('Invalid payload', 400)
         }
 

@@ -1,9 +1,11 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { skipToken } from '@reduxjs/toolkit/query/react'
 import { Loader2, RefreshCw, Send, Users } from 'lucide-react'
+import { useSearchParams } from 'next/navigation'
+import { toast } from 'sonner'
 
 import type { ContactPreview } from '@/entities/chat'
 import { useGetContactsQuery, useGetMessagesQuery, useSendMessageMutation } from '@/entities/chat'
@@ -141,9 +143,15 @@ const ChatWindow = ({ contact }: { contact?: ContactPreview }) => {
 
     const handleSend = async () => {
         if (!contact || !message.trim()) return
-        await sendMessage({ contactId: contact.id, contact: contact.username, message }).unwrap()
-        setMessage('')
-        refetch()
+        try {
+            await sendMessage({ contactId: contact.id, contact: contact.username, message }).unwrap()
+            setMessage('')
+            refetch()
+        } catch (error) {
+            const errorMessage =
+                (error as { data?: { message?: string } })?.data?.message ?? 'Unable to send message.'
+            toast.error(errorMessage)
+        }
     }
 
     return (
@@ -248,7 +256,17 @@ const ChatWindow = ({ contact }: { contact?: ContactPreview }) => {
 }
 
 export const ChatPage = () => {
+    const searchParams = useSearchParams()
     const [selected, setSelected] = useState<ContactPreview | undefined>(undefined)
+
+    useEffect(() => {
+        const contactId = Number(searchParams.get('contactId'))
+        const contact = searchParams.get('contact')
+        if (contact && Number.isFinite(contactId) && contactId > 0) {
+            setSelected({ id: contactId, username: contact })
+        }
+        // Only react to the initial deep-link, not to later selections.
+    }, [])
 
     const selectedId = selected?.id
 

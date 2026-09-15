@@ -1,5 +1,26 @@
 import { FOTOCHAT_API_KEY, fotochatHttpClient } from '@/shared/api/fotochat'
 
+export type EclairBlock = {
+    id?: number
+    date?: string
+    // Upstream's real payload uses "message" for the text; "msg" is kept for
+    // whatever shape the swagger spec describes, in case that's ever what
+    // comes back instead.
+    message?: string
+    msg?: string
+    exp?: string
+    exp_id?: number
+    exp_prenom?: string
+    dest?: string
+    dest_id?: number
+    etat?: string
+    typo?: string
+    id_extra?: string
+    p_extra?: string
+    album_share?: string
+    state?: string
+}
+
 export type ContactBlock = {
     m_id?: number
     pseudo?: string
@@ -7,21 +28,11 @@ export type ContactBlock = {
     nb_new?: number
     online?: string
     is_friend?: number
-    tab_last_msg?: string | string[] | null
+    tab_last_msg?: string | string[] | EclairBlock[] | null
 }
 
 export type LoadContactsResponse = {
     contacts?: ContactBlock[]
-}
-
-export type EclairBlock = {
-    id?: number
-    exp?: number
-    date?: string
-    msg?: string
-    p_extra?: string
-    album_share?: string
-    state?: string
 }
 
 export type LoadMessagesResponse = {
@@ -61,13 +72,11 @@ export const chatRepo = {
             },
         })
     },
-    sendMessage(sessionId: string, payload: { contactId: number; contact?: string; message: string }) {
+    sendMessage(sessionId: string, payload: { contact: string; message: string }) {
         return fotochatHttpClient.get<SendMessageResponse>(SEND_MESSAGE_ENDPOINT, {
             params: {
-                'api-key': FOTOCHAT_API_KEY,
                 session_id: sessionId,
-                contact_id: payload.contactId,
-                contact: payload.contact,
+                dest: payload.contact,
                 msg: payload.message,
             },
         })

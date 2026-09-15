@@ -26,11 +26,16 @@ export interface MessagesResponse {
 
 export interface SendMessageRequest {
     contactId: number
-    contact?: string
+    contact: string
+    contactAvatarUrl?: string
     message: string
 }
 
 export interface SendMessageResponse {
     message?: string
     date?: string
+}
+
+export interface SendLocalMessageResponse {
+    message: ChatMessage
 }

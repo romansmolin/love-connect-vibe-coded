@@ -17,6 +17,14 @@ const mapOnline = (online?: string): 'online' | 'recent' | 'offline' | undefined
     return 'offline'
 }
 
+const getLastMessagePreview = (value: ContactBlock['tab_last_msg']): string | undefined => {
+    if (!value) return undefined
+    const last = Array.isArray(value) ? value[0] : value
+    if (typeof last === 'string') return last
+    if (typeof last === 'object') return last.message ?? last.msg
+    return undefined
+}
+
 const mapContact = (contact: ContactBlock) => ({
     id: contact.m_id ?? 0,
     username: contact.pseudo ?? 'Member',
@@ -24,15 +32,13 @@ const mapContact = (contact: ContactBlock) => ({
     unreadCount: contact.nb_new,
     onlineStatus: mapOnline(contact.online),
     isFriend: contact.is_friend === 1,
-    lastMessagePreview: Array.isArray(contact.tab_last_msg)
-        ? contact.tab_last_msg[0]
-        : contact.tab_last_msg ?? undefined,
+    lastMessagePreview: getLastMessagePreview(contact.tab_last_msg),
 })
 
 const mapMessage = (message: EclairBlock): ChatMessage => ({
     id: message.id ?? `${message.exp ?? 'msg'}-${message.date ?? Date.now()}`,
-    senderId: message.exp,
-    text: message.msg,
+    senderId: message.exp_id,
+    text: message.message ?? message.msg,
     sentAt: message.date,
     extra: message.p_extra ?? message.album_share,
 })
@@ -56,6 +62,23 @@ export const chatService = {
             throw new HttpError('Message cannot be empty', 400)
         }
 
-        return chatRepo.sendMessage(sessionId, payload)
+        if (!payload.contact?.trim()) {
+            throw new HttpError('Recipient username is required', 400)
+        }
+
+        const response = await chatRepo.sendMessage(sessionId, {
+            contact: payload.contact,
+            message: payload.message,
+        })
+
+        if (response.notification) {
+            const message =
+                response.notification === 'alert1'
+                    ? 'You need an active subscription to send messages.'
+                    : response.notification
+            throw new HttpError(message, 402)
+        }
+
+        return { message: response.msg, date: response.date }
     },
 }

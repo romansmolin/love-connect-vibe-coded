@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-import { ArrowLeft, Flag, Gift, Heart, RefreshCw, ShieldOff, X } from 'lucide-react'
+import { ArrowLeft, Flag, Gift, Heart, MessageCircle, RefreshCw, ShieldOff, X } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
@@ -30,18 +30,18 @@ import { Textarea } from '@/shared/ui/textarea'
 const REPORT_REASONS = ['Fake profile', 'Inappropriate photos', 'Harassment', 'Spam', 'Underage user', 'Other']
 
 const LoadingState = () => (
-    <div className="mx-auto flex w-full max-w-2xl flex-col gap-6">
-        <Skeleton className="h-72 w-full rounded-2xl" />
+    <div className="mx-auto flex w-full max-w-md flex-col gap-4">
+        <Skeleton className="aspect-[3/4] w-full rounded-2xl" />
         <Skeleton className="h-4 w-1/2" />
         <Skeleton className="h-3 w-1/3" />
     </div>
 )
 
 const ErrorState = ({ message }: { message: string }) => (
-    <div className="mx-auto w-full max-w-2xl">
-        <Card className="p-6 text-center">
+    <div className="mx-auto w-full max-w-md">
+        <Card className="p-5 text-center">
             <p className="text-sm text-destructive">{message}</p>
-            <Button asChild className="mt-4" variant="outline">
+            <Button asChild className="mt-3" size="sm" variant="outline">
                 <Link href="/matching">Back to Discover</Link>
             </Button>
         </Card>
@@ -204,14 +204,14 @@ export const MemberProfilePage = ({ id }: { id: number }) => {
     }
 
     return (
-        <div className="mx-auto flex w-full max-w-2xl flex-col gap-6">
+        <div className="mx-auto flex w-full max-w-md flex-col gap-4">
             <Button className="w-fit" size="sm" variant="ghost" onClick={() => router.back()}>
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back
             </Button>
 
-            <Card className="overflow-hidden">
-                <div className="relative aspect-[4/5] w-full bg-muted/40">
+            <Card className="gap-0 overflow-hidden p-0">
+                <div className="relative aspect-[3/4] w-full bg-muted/40">
                     {mainPhoto ? (
                         <img alt={user.username} className="h-full w-full object-cover" src={mainPhoto} />
                     ) : (
@@ -220,12 +220,12 @@ export const MemberProfilePage = ({ id }: { id: number }) => {
                         </div>
                     )}
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-transparent" />
-                    <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+                    <div className="absolute inset-x-0 bottom-0 p-4 text-white">
                         <div className="flex items-center gap-2">
-                            <span className="text-2xl font-semibold">{user.username}</span>
-                            {user.age ? <span className="text-lg">{user.age}</span> : null}
+                            <span className="text-xl font-semibold">{user.username}</span>
+                            {user.age ? <span className="text-base">{user.age}</span> : null}
                         </div>
-                        <div className="mt-2 flex flex-wrap gap-2">
+                        <div className="mt-1.5 flex flex-wrap gap-1.5">
                             {user.location ? <Badge variant="secondary">{user.location}</Badge> : null}
                             {user.gender ? (
                                 <Badge className="uppercase" variant="secondary">
@@ -237,7 +237,7 @@ export const MemberProfilePage = ({ id }: { id: number }) => {
                 </div>
 
                 {user.photos && user.photos.length > 1 ? (
-                    <div className="grid grid-cols-4 gap-2 p-4">
+                    <div className="grid grid-cols-4 gap-1.5 p-3">
                         {user.photos.slice(1, 5).map((photo, index) => {
                             const src = photo.urlMedium ?? photo.urlSmall ?? photo.urlLarge
                             if (!src) return null
@@ -253,10 +253,10 @@ export const MemberProfilePage = ({ id }: { id: number }) => {
                     </div>
                 ) : null}
 
-                <CardContent className="space-y-4 p-6">
+                <CardContent className="space-y-3 p-4">
                     {user.description ? <p className="text-sm text-foreground">{user.description}</p> : null}
 
-                    <div className="flex gap-3">
+                    <div className="flex gap-2">
                         <Button className="flex-1" disabled={isActing} variant="outline" onClick={() => performAction('dislike')}>
                             <X className="mr-2 h-4 w-4" />
                             Nope
@@ -266,14 +266,22 @@ export const MemberProfilePage = ({ id }: { id: number }) => {
                             Like
                         </Button>
                     </div>
-                    <Button asChild className="w-full" variant="outline">
-                        <Link href="/gifts">
-                            <Gift className="mr-2 h-4 w-4" />
-                            Send a gift
-                        </Link>
-                    </Button>
+                    <div className="flex gap-2">
+                        <Button asChild className="flex-1" size="sm" variant="outline">
+                            <Link href={`/chat?contactId=${user.id}&contact=${encodeURIComponent(user.username)}`}>
+                                <MessageCircle className="mr-2 h-4 w-4" />
+                                Message
+                            </Link>
+                        </Button>
+                        <Button asChild className="flex-1" size="sm" variant="outline">
+                            <Link href="/gifts">
+                                <Gift className="mr-2 h-4 w-4" />
+                                Send a gift
+                            </Link>
+                        </Button>
+                    </div>
 
-                    <div className="flex gap-3 border-t border-border/60 pt-4">
+                    <div className="flex gap-2 border-t border-border/60 pt-3">
                         <Button
                             className="flex-1 text-muted-foreground"
                             size="sm"
