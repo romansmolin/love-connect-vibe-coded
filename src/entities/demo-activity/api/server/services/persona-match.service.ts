@@ -55,9 +55,16 @@ export const personaMatchService = {
         await simulatedMatchRepo.create(appUserId, personaId, 'MUTUAL_MATCH')
         await simulatedMatchRepo.deleteLinks(appUserId, personaId, 'LIKE')
     },
-    /** Drop every local link to a persona so it stops showing up for this user. Never goes upstream. */
+    /**
+     * Tombstone every local link to a persona (kind -> DISMISSED) so it stops showing up in Who
+     * Liked You / Matches / Chat contacts for this user. Never goes upstream.
+     *
+     * This must NOT delete the `SimulatedMatch` row: `findLinkedPersona` has to keep resolving this
+     * id as "a persona for this user" even after dismissal, or a stale UI card could route a
+     * subsequent like/report to the real fotochat member sharing this id.
+     */
     async unlinkPersona(appUserId: string, personaId: string): Promise<void> {
-        await simulatedMatchRepo.deleteLinks(appUserId, personaId)
+        await simulatedMatchRepo.dismissLinks(appUserId, personaId)
     },
     async listSimulatedMessages(appUserId: string, personaId: string): Promise<ChatMessage[]> {
         // Lazy reply generation is best-effort: it must never stop the stored history from loading.

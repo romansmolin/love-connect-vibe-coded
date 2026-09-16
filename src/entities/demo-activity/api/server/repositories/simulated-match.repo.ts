@@ -19,6 +19,20 @@ export const simulatedMatchRepo = {
         })
         return result.count
     },
+    /**
+     * Tombstone every non-dismissed link for this (appUserId, personaId) pair instead of deleting
+     * it. A deleted row would let `findLink` return null and the persona id would revert to being
+     * treated as an ordinary real fotochat member — the exact thing the safety guard exists to
+     * prevent. `kind: { not: DISMISSED }` keeps this idempotent and avoids colliding with an
+     * already-dismissed row under the `@@unique([appUserId, personaId, kind])` constraint.
+     */
+    async dismissLinks(appUserId: string, personaId: string): Promise<number> {
+        const result = await prisma.simulatedMatch.updateMany({
+            where: { appUserId, personaId, kind: { not: 'DISMISSED' } },
+            data: { kind: 'DISMISSED' },
+        })
+        return result.count
+    },
     async listWithPersonas(
         appUserId: string,
         kind: SimulatedMatchKind
