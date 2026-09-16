@@ -24,7 +24,7 @@ export const chatController = {
             await appUserRepo.touch(appUserId)
         }
 
-        return chatService.listContacts(sessionId)
+        return chatService.listContacts(sessionId, appUserId)
     },
     async messages(request: NextRequest) {
         const sessionId = requireSessionId(request)
@@ -36,7 +36,9 @@ export const chatController = {
             throw new HttpError('contactId is required', 400)
         }
 
-        return chatService.listMessages(sessionId, contactId, contact)
+        const appUserId = getAppUserId(request)
+
+        return chatService.listMessages(sessionId, contactId, contact, appUserId)
     },
     async send(request: NextRequest) {
         const sessionId = requireSessionId(request)
@@ -46,10 +48,16 @@ export const chatController = {
             throw new HttpError('Invalid payload', 400)
         }
 
-        return chatService.sendMessage(sessionId, {
-            contactId: Number(body.contactId),
-            contact: body.contact,
-            message: body.message ?? '',
-        })
+        const appUserId = getAppUserId(request)
+
+        return chatService.sendMessage(
+            sessionId,
+            {
+                contactId: Number(body.contactId),
+                contact: body.contact,
+                message: body.message ?? '',
+            },
+            appUserId
+        )
     },
 }

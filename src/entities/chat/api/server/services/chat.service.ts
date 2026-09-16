@@ -1,3 +1,4 @@
+import { personaMatchService } from '@/entities/demo-activity/api/server/services/persona-match.service'
 import { HttpError } from '@/shared/http-client'
 
 import type {
@@ -44,22 +45,48 @@ const mapMessage = (message: EclairBlock): ChatMessage => ({
 })
 
 export const chatService = {
-    async listContacts(sessionId: string): Promise<ContactsResponse> {
+    async listContacts(sessionId: string, appUserId?: string): Promise<ContactsResponse> {
         const response = await chatRepo.loadContacts(sessionId)
 
-        const contacts = response.contacts ?? []
-        return { contacts: contacts.map(mapContact) }
-    },
-    async listMessages(sessionId: string, contactId: number, contact?: string): Promise<MessagesResponse> {
-        const response = await chatRepo.loadMessages(sessionId, contactId, contact)
+        const realContacts = (response.contacts ?? []).map(mapContact)
+        const simulatedContacts = appUserId ? await personaMatchService.listSimulatedContacts(appUserId) : []
+        const realIds = new Set(realContacts.map((contact) => contact.id))
+        const extraSimulated = simulatedContacts.filter((contact) => !realIds.has(contact.id))
 
+        return { contacts: [...extraSimulated, ...realContacts] }
+    },
+    async listMessages(
+        sessionId: string,
+        contactId: number,
+        contact?: string,
+        appUserId?: string
+    ): Promise<MessagesResponse> {
+        if (appUserId) {
+            const persona = await personaMatchService.findPersonaByFotochatId(contactId)
+            if (persona) {
+                return { messages: await personaMatchService.listSimulatedMessages(appUserId, persona.id) }
+            }
+        }
+
+        const response = await chatRepo.loadMessages(sessionId, contactId, contact)
         const messages = response.eclairs ?? []
 
         return { messages: messages.map(mapMessage) }
     },
-    async sendMessage(sessionId: string, payload: SendMessageRequest): Promise<SendMessageResponse> {
+    async sendMessage(
+        sessionId: string,
+        payload: SendMessageRequest,
+        appUserId?: string
+    ): Promise<SendMessageResponse> {
         if (!payload.message.trim()) {
             throw new HttpError('Message cannot be empty', 400)
+        }
+
+        if (appUserId) {
+            const persona = await personaMatchService.findPersonaByFotochatId(payload.contactId)
+            if (persona) {
+                return personaMatchService.sendSimulatedMessage(appUserId, persona.id, payload.message)
+            }
         }
 
         if (!payload.contact?.trim()) {
