@@ -48,3 +48,15 @@ export const sendRoute = async (request: NextRequest) => {
         return handleError(error)
     }
 }
+
+export const giftRoute = async (request: NextRequest) => {
+    if (request.method !== 'POST') {
+        return NextResponse.json({ message: 'Method Not Allowed' }, { status: 405 })
+    }
+    try {
+        const response = await chatController.gift(request)
+        return NextResponse.json(response)
+    } catch (error) {
+        return handleError(error)
+    }
+}

@@ -1,3 +1,5 @@
+import crypto from 'node:crypto'
+
 import { prisma } from '@/shared/lib/prisma'
 
 import type { GiftStatus, GiftTransactionStatus } from '../../model/types'
@@ -99,6 +101,126 @@ export const giftRepo = {
         return prisma.giftTransaction.findUnique({
             where: { id },
             include: { gift: true, paymentToken: true },
+        })
+    },
+    findChatTransactionByIdempotencyKey(senderId: string, idempotencyKey: string) {
+        return prisma.giftTransaction.findUnique({
+            where: { senderId_idempotencyKey: { senderId, idempotencyKey } },
+            include: { gift: true },
+        })
+    },
+    listDeliveredForConversation(appUserId: string, peerId: string) {
+        return prisma.giftTransaction.findMany({
+            where: {
+                status: 'DELIVERED',
+                OR: [
+                    { senderId: appUserId, recipientId: peerId },
+                    { senderId: peerId, recipientId: appUserId },
+                ],
+            },
+            include: { gift: true },
+            orderBy: { deliveredAt: 'asc' },
+        })
+    },
+    listDeliveredForUser(appUserId: string) {
+        return prisma.giftTransaction.findMany({
+            where: {
+                status: 'DELIVERED',
+                OR: [{ senderId: appUserId }, { recipientId: appUserId }],
+            },
+            include: { gift: true },
+            orderBy: { deliveredAt: 'desc' },
+        })
+    },
+    async buyAndDeliverWithCredits(params: {
+        senderId: string
+        recipientId: string
+        giftId: string
+        giftName: string
+        amountCents: number
+        currency: string
+        credits: number
+        idempotencyKey: string
+    }) {
+        return prisma.$transaction(async (tx) => {
+            const existing = await tx.giftTransaction.findUnique({
+                where: {
+                    senderId_idempotencyKey: {
+                        senderId: params.senderId,
+                        idempotencyKey: params.idempotencyKey,
+                    },
+                },
+                include: { gift: true },
+            })
+
+            if (existing) {
+                const wallet = await tx.creditWallet.findUnique({ where: { userId: params.senderId } })
+                return { status: 'success' as const, transaction: existing, walletBalance: wallet?.balance ?? 0 }
+            }
+
+            const wallet = await tx.creditWallet.upsert({
+                where: { userId: params.senderId },
+                create: { userId: params.senderId },
+                update: {},
+            })
+            const deduction = await tx.creditWallet.updateMany({
+                where: { id: wallet.id, balance: { gte: params.credits } },
+                data: { balance: { decrement: params.credits } },
+            })
+
+            if (deduction.count !== 1) {
+                return { status: 'insufficient-credits' as const }
+            }
+
+            const paymentToken = await tx.paymentToken.create({
+                data: {
+                    token: `pt_credit_${crypto.randomUUID().replace(/-/g, '')}`,
+                    userId: params.senderId,
+                    itemType: 'ORDER',
+                    amountCents: params.amountCents,
+                    currency: params.currency,
+                    description: `Gift sent in chat: ${params.giftName}`,
+                    status: 'SUCCESSFUL',
+                    testMode: process.env.NEXT_PUBLIC_SECURE_PROCESSOR_TEST_MODE === 'true',
+                    rawPayload: { source: 'credits', channel: 'chat' },
+                },
+            })
+
+            await tx.creditTransaction.create({
+                data: {
+                    walletId: wallet.id,
+                    userId: params.senderId,
+                    type: 'SPEND',
+                    status: 'SUCCESSFUL',
+                    credits: params.credits,
+                    amountCents: params.amountCents,
+                    currency: params.currency,
+                    description: `Gift sent in chat: ${params.giftName}`,
+                },
+            })
+
+            const transaction = await tx.giftTransaction.create({
+                data: {
+                    giftId: params.giftId,
+                    paymentTokenId: paymentToken.id,
+                    senderId: params.senderId,
+                    recipientId: params.recipientId,
+                    matchId: `${params.senderId}-${params.recipientId}`,
+                    idempotencyKey: params.idempotencyKey,
+                    status: 'DELIVERED',
+                    amountCents: params.amountCents,
+                    currency: params.currency,
+                    deliveredAt: new Date(),
+                },
+                include: { gift: true },
+            })
+            const updatedWallet = await tx.creditWallet.findUniqueOrThrow({ where: { id: wallet.id } })
+
+            return {
+                status: 'success' as const,
+                transaction,
+                walletBalance: updatedWallet.balance,
+            }
         })
     },
     findTransactionByPaymentTokenId(paymentTokenId: string) {

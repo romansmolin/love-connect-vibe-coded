@@ -82,62 +82,66 @@ model User {
 }
 
 model PaymentToken {
-  id          String              @id @default(cuid())
-  token       String              @unique
+  id          String             @id @default(cuid())
+  token       String             @unique
   userId      String
   itemType    String
   description String?
   amountCents Int
-  currency    String              @default("EUR")
-  status      PaymentTokenStatus  @default(CREATED)
-  testMode    Boolean             @default(true)
-  gatewayUid  String?
+  currency    String             @default("EUR")
+  status      PaymentTokenStatus @default(CREATED)
+  testMode    Boolean            @default(true)
+  gatewayUid  String?            @unique
   rawPayload  Json?
-  createdAt   DateTime            @default(now())
-  updatedAt   DateTime            @updatedAt
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
 
-  giftTransactions GiftTransaction[]
+  giftTransactions   GiftTransaction[]
   creditTransactions CreditTransaction[]
 
   @@index([userId])
 }
 
 model Gift {
-  id          String     @id @default(cuid())
-  name        String
-  emoji       String
-  imageUrl    String     @default("")
-  priceCents  Int
-  currency    String     @default("EUR")
-  status      GiftStatus @default(ACTIVE)
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  id         String     @id @default(cuid())
+  name       String
+  emoji      String
+  imageUrl   String     @default("")
+  priceCents Int
+  currency   String     @default("EUR")
+  status     GiftStatus @default(ACTIVE)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 
   transactions GiftTransaction[]
+  chatMessages ChatMessageRecord[]
 }
 
 model GiftTransaction {
-  id             String                  @id @default(cuid())
+  id             String                @id @default(cuid())
   giftId         String
-  paymentTokenId String
+  paymentTokenId String                @unique
   senderId       String
   recipientId    String?
   matchId        String?
-  status         GiftTransactionStatus   @default(CREATED)
+  idempotencyKey String?
+  status         GiftTransactionStatus @default(CREATED)
   amountCents    Int
-  currency       String                  @default("EUR")
+  currency       String                @default("EUR")
   gatewayUid     String?
   rawPayload     Json?
-  createdAt      DateTime                @default(now())
+  createdAt      DateTime              @default(now())
   deliveredAt    DateTime?
 
-  gift           Gift                    @relation(fields: [giftId], references: [id])
-  paymentToken   PaymentToken            @relation(fields: [paymentTokenId], references: [id])
+  gift                Gift               @relation(fields: [giftId], references: [id])
+  paymentToken        PaymentToken       @relation(fields: [paymentTokenId], references: [id])
+  simulatedMessage    SimulatedMessage?
+  conversationMessage ChatMessageRecord?
 
+  @@unique([senderId, idempotencyKey])
   @@index([senderId])
   @@index([recipientId])
   @@index([matchId])
-  @@index([paymentTokenId])
 }
 
 model CreditWallet {
@@ -157,7 +161,7 @@ model CreditTransaction {
   id             String                  @id @default(cuid())
   walletId       String
   userId         String
-  paymentTokenId String?
+  paymentTokenId String?                 @unique
   type           CreditTransactionType
   status         CreditTransactionStatus @default(CREATED)
   credits        Int
@@ -172,27 +176,26 @@ model CreditTransaction {
   paymentToken PaymentToken? @relation(fields: [paymentTokenId], references: [id])
 
   @@index([userId])
-  @@index([paymentTokenId])
 }
 
 model EmailContact {
-  id             String     @id @default(cuid())
-  externalUserId String     @unique
+  id             String    @id @default(cuid())
+  externalUserId String    @unique
   email          String
   verifiedAt     DateTime?
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   verificationTokens EmailVerificationToken[]
 }
 
 model EmailVerificationToken {
-  id             String     @id @default(cuid())
+  id             String    @id @default(cuid())
   emailContactId String
-  tokenHash      String     @unique
+  tokenHash      String    @unique
   expiresAt      DateTime
   usedAt         DateTime?
-  createdAt      DateTime   @default(now())
+  createdAt      DateTime  @default(now())
 
   emailContact EmailContact @relation(fields: [emailContactId], references: [id])
 
@@ -218,6 +221,44 @@ model AppUser {
   username   String?
   lastSeenAt DateTime @default(now()) @updatedAt
   createdAt  DateTime @default(now())
+}
+
+model ChatConversation {
+  id            String    @id @default(cuid())
+  userId        String
+  peerDatingId  Int
+  lastMessageAt DateTime?
+  lastReadAt    DateTime?
+  unlockedAt    DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  messages ChatMessageRecord[]
+
+  @@unique([userId, peerDatingId])
+  @@index([userId, lastMessageAt(sort: Desc)])
+}
+
+model ChatMessageRecord {
+  id                String    @id @default(cuid())
+  conversationId    String
+  senderDatingId    Int
+  body              String
+  idempotencyKey    String?
+  isAiGenerated     Boolean   @default(false)
+  giftId            String?
+  giftTransactionId String?
+  createdAt         DateTime  @default(now())
+  deliveredAt       DateTime?
+  readAt            DateTime?
+
+  conversation    ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  gift            Gift?            @relation(fields: [giftId], references: [id])
+  giftTransaction GiftTransaction? @relation(fields: [giftTransactionId], references: [id])
+
+  @@unique([conversationId, idempotencyKey])
+  @@unique([giftTransactionId])
+  @@index([conversationId, createdAt])
 }
 
 model SimulatedPersona {
@@ -250,15 +291,20 @@ model SimulatedMatch {
 }
 
 model SimulatedMessage {
-  id               String    @id @default(cuid())
-  appUserId        String
-  personaId        String
-  senderIsPersona  Boolean
-  text             String
-  sentAt           DateTime  @default(now())
-  scheduledReplyAt DateTime?
-  repliedAt        DateTime?
+  id                String    @id @default(cuid())
+  appUserId         String
+  personaId         String
+  senderIsPersona   Boolean
+  text              String
+  idempotencyKey    String?
+  giftTransactionId String?   @unique
+  sentAt            DateTime  @default(now())
+  scheduledReplyAt  DateTime?
+  repliedAt         DateTime?
 
+  giftTransaction GiftTransaction? @relation(fields: [giftTransactionId], references: [id])
+
+  @@unique([appUserId, personaId, idempotencyKey])
   @@index([appUserId, personaId, sentAt])
   @@index([senderIsPersona, scheduledReplyAt, repliedAt])
 }

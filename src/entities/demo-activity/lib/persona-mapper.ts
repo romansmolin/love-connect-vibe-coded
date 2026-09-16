@@ -33,13 +33,19 @@ export const mapPersonaToMatchCandidate = (persona: PersonaLike): MatchCandidate
     photoUrl: persona.photoUrl ?? undefined,
 })
 
-export const mapPersonaToContactPreview = (persona: PersonaLike, lastMessagePreview?: string): ContactPreview => ({
+export const mapPersonaToContactPreview = (
+    persona: PersonaLike,
+    lastMessagePreview?: string,
+    lastMessageAt?: string
+): ContactPreview => ({
     id: persona.fotochatUserId,
     username: persona.username,
     avatarUrl: persona.photoUrl ?? undefined,
+    source: 'ai',
     onlineStatus: 'online',
     isFriend: true,
     lastMessagePreview,
+    lastMessageAt,
 })
 
 export const mapCandidateToPersonaInput = (candidate: MatchCandidate): PersonaUpsertInput => ({

@@ -16,27 +16,27 @@ The server sends a BeGateway v2 style payload under `checkout`:
 
 ```json
 {
-  "checkout": {
-    "version": 2.1,
-    "transaction_type": "payment",
-    "test": true,
-    "settings": {
-      "return_url": "https://<backend-or-frontend>/api/payments/secure-processor/return?token=pt_..."
-    },
-    "order": {
-      "amount": 200,
-      "currency": "EUR",
-      "description": "Credit purchase: 100 credits"
-    },
-    "customer": {
-      "id": "user_123"
-    },
-    "metadata": {
-      "payment_token_id": "paytok_123",
-      "user_id": "user_123",
-      "reference_id": "credits:100"
+    "checkout": {
+        "version": 2.1,
+        "transaction_type": "payment",
+        "test": true,
+        "settings": {
+            "return_url": "https://<backend-or-frontend>/api/payments/secure-processor/return?token=pt_..."
+        },
+        "order": {
+            "amount": 200,
+            "currency": "EUR",
+            "description": "Credit purchase: 100 credits"
+        },
+        "customer": {
+            "id": "user_123"
+        },
+        "metadata": {
+            "payment_token_id": "paytok_123",
+            "user_id": "user_123",
+            "reference_id": "credits:100"
+        }
     }
-  }
 }
 ```
 
@@ -72,13 +72,13 @@ The return handler expects these **query parameters**:
 
 ```json
 {
-  "status": "successful",
-  "uid": "gateway_uid",
-  "payment_token_id": "paytok_123",
-  "metadata": {
+    "metadata": {
+        "payment_token_id": "paytok_123",
+        "user_id": "user_123"
+    },
     "payment_token_id": "paytok_123",
-    "user_id": "user_123"
-  }
+    "status": "successful",
+    "uid": "gateway_uid"
 }
 ```
 
@@ -98,9 +98,9 @@ Recommendation: **C (both)** — this matches existing code and gives redundant 
 
 Based on current code:
 
-- **Credits → cents**: `1 credit = 2 cents` (see `CENTS_PER_CREDIT = 2`).
+- **Credits → cents**: `1 credit = 10 cents / €0.10` (see `CENTS_PER_CREDIT = 10`).
 - **Currency**: `EUR`.
-- **Allowed purchase sizes**: any integer ≥ 1 (server validates `credits` as integer and > 0).
+- **Allowed purchase sizes**: 100, 250, or 500 credits (server validates the supported packages).
 
 If you want different defaults (e.g., USD or fixed packs), we should update the conversion and validation logic.
 

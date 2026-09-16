@@ -1,5 +1,5 @@
-import { FOTOCHAT_API_KEY, fotochatHttpClient } from '@/shared/api/fotochat'
 import type { PhotoBlock, PhotoBlockV2 } from '@/entities/user/api/server/repositories/user.repo'
+import { FOTOCHAT_API_KEY, fotochatHttpClient } from '@/shared/api/fotochat'
 
 export type WallAddPhotoBlock = {
     user_id?: number
@@ -56,7 +56,7 @@ export type MembreBlock = {
     age?: number
     zone_name?: string
     moyenne?: number
-    photo?: number
+    photo?: number | string
     photos?: PhotoBlock[]
     photos_v2?: PhotoBlockV2[]
 }
@@ -94,6 +94,7 @@ export const dashboardRepo = {
                 sex: params.sex,
                 age_range: params.ageRange,
                 page: params.page,
+                get_picture_430: 1,
             },
         })
     },
@@ -103,6 +104,7 @@ export const dashboardRepo = {
                 session_id: sessionId,
                 api_key: FOTOCHAT_API_KEY,
                 page: params.page,
+                get_picture_430: 1,
             },
         })
     },

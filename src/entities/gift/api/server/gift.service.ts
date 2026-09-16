@@ -1,6 +1,7 @@
 import crypto from 'node:crypto'
 
 import { creditService } from '@/entities/credit/api/server/credit.service'
+import { personaMatchService } from '@/entities/demo-activity/api/server/services/persona-match.service'
 import { matchService } from '@/entities/match/api/server/services/match.service'
 import { paymentService } from '@/entities/payment/api/server/payment.service'
 import { HttpError } from '@/shared/http-client'
@@ -224,6 +225,97 @@ export const giftService = {
         }
     },
 
+    listConversationGifts(appUserId: string, peerId: string) {
+        return giftRepo.listDeliveredForConversation(appUserId, peerId)
+    },
+
+    listDeliveredGiftsForUser(appUserId: string) {
+        return giftRepo.listDeliveredForUser(appUserId)
+    },
+
+    async sendGiftInChat(params: {
+        sessionId: string
+        senderId: string
+        recipientId: string
+        giftId: string
+        idempotencyKey: string
+    }) {
+        const existing = await giftRepo.findChatTransactionByIdempotencyKey(params.senderId, params.idempotencyKey)
+        if (existing) {
+            const wallet = await creditService.getWallet(params.senderId)
+            return {
+                transaction: existing,
+                creditsSpent: creditsFromCents(existing.amountCents),
+                walletBalance: wallet.wallet.balance,
+            }
+        }
+
+        const gift = await giftRepo.findGiftById(params.giftId)
+        if (!gift || gift.status !== 'ACTIVE') {
+            throw new HttpError('Gift not available', 404)
+        }
+
+        await ensureMatch(params.sessionId, params.recipientId, params.senderId)
+
+        const credits = creditsFromCents(gift.priceCents)
+        const result = await giftRepo.buyAndDeliverWithCredits({
+            senderId: params.senderId,
+            recipientId: params.recipientId,
+            giftId: gift.id,
+            giftName: gift.name,
+            amountCents: gift.priceCents,
+            currency: gift.currency,
+            credits,
+            idempotencyKey: params.idempotencyKey,
+        })
+
+        if (result.status === 'insufficient-credits') {
+            throw new HttpError('Insufficient credits.', 402)
+        }
+
+        return {
+            transaction: result.transaction,
+            creditsSpent: credits,
+            walletBalance: result.walletBalance,
+        }
+    },
+
+    async sendGiftInConversation(params: {
+        senderId: string
+        recipientId: string
+        giftId: string
+        idempotencyKey: string
+    }) {
+        const existing = await giftRepo.findChatTransactionByIdempotencyKey(params.senderId, params.idempotencyKey)
+        if (existing) {
+            const wallet = await creditService.getWallet(params.senderId)
+            return {
+                transaction: existing,
+                creditsSpent: creditsFromCents(existing.amountCents),
+                walletBalance: wallet.wallet.balance,
+            }
+        }
+
+        const gift = await giftRepo.findGiftById(params.giftId)
+        if (!gift || gift.status !== 'ACTIVE') throw new HttpError('Gift not available', 404)
+
+        const credits = creditsFromCents(gift.priceCents)
+        const result = await giftRepo.buyAndDeliverWithCredits({
+            senderId: params.senderId,
+            recipientId: params.recipientId,
+            giftId: gift.id,
+            giftName: gift.name,
+            amountCents: gift.priceCents,
+            currency: gift.currency,
+            credits,
+            idempotencyKey: params.idempotencyKey,
+        })
+        if (result.status === 'insufficient-credits') {
+            throw new HttpError('Insufficient credits.', 402)
+        }
+        return { transaction: result.transaction, creditsSpent: credits, walletBalance: result.walletBalance }
+    },
+
     async sendGift(params: { sessionId: string; senderId: string; transactionId: string; recipientId: string }) {
         const transaction = await giftRepo.findTransactionById(params.transactionId)
         if (!transaction) {
@@ -240,11 +332,30 @@ export const giftService = {
 
         const matchId = `${params.senderId}-${params.recipientId}`
 
-        return giftRepo.updateTransactionStatus(transaction.id, 'DELIVERED', {
+        const delivered = await giftRepo.updateTransactionStatus(transaction.id, 'DELIVERED', {
             recipientId: params.recipientId,
             matchId,
             deliveredAt: new Date(),
         })
+
+        try {
+            const persona = await personaMatchService.findLinkedPersona(
+                params.senderId,
+                Number(params.recipientId)
+            )
+            if (persona) {
+                await personaMatchService.ensureSimulatedGiftMessage({
+                    appUserId: params.senderId,
+                    personaId: persona.id,
+                    transactionId: delivered.id,
+                    giftName: transaction.gift.name,
+                })
+            }
+        } catch (error) {
+            console.error('[gift-send] failed to schedule simulated gift reply', error)
+        }
+
+        return delivered
     },
 
     async fulfillPaymentToken(

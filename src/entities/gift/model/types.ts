@@ -26,6 +26,7 @@ export interface GiftTransaction {
     senderId: string
     recipientId?: string | null
     matchId?: string | null
+    idempotencyKey?: string | null
     paymentTokenId: string
     status: GiftTransactionStatus
     amountCents: number

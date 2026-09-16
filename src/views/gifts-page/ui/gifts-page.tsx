@@ -171,10 +171,6 @@ export const GiftsPage = () => {
             </div>
 
             <Card>
-                <CardHeader>
-                    <CardTitle className="text-lg">Gift shop</CardTitle>
-                    <CardDescription>Pick something and complete payment to add it to your gifts.</CardDescription>
-                </CardHeader>
                 <CardContent>
                     {isCatalogLoading ? (
                         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

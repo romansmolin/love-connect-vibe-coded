@@ -29,7 +29,7 @@ export const personaMatchService = {
         return Promise.all(
             rows.map(async ({ persona }) => {
                 const recent = await simulatedMessageRepo.listByConversation(appUserId, persona.id, 1)
-                return mapPersonaToContactPreview(persona, recent[0]?.text)
+                return mapPersonaToContactPreview(persona, recent[0]?.text, recent[0]?.sentAt.toISOString())
             })
         )
     },
@@ -77,21 +77,65 @@ export const personaMatchService = {
         const persona = await simulatedPersonaRepo.findById(personaId)
         const rows = await simulatedMessageRepo.listByConversation(appUserId, personaId, 50)
 
-        return rows.map((row) => ({
-            id: row.id,
-            senderId: row.senderIsPersona ? persona?.fotochatUserId : undefined,
-            text: row.text,
-            sentAt: row.sentAt.toISOString(),
-        }))
+        return rows.map((row) => {
+            const giftTransaction = row.giftTransaction
+            return {
+                id: giftTransaction ? `gift:${giftTransaction.id}` : row.id,
+                senderId: row.senderIsPersona ? persona?.fotochatUserId : Number(appUserId),
+                text: row.text,
+                sentAt: row.sentAt.toISOString(),
+                gift: giftTransaction
+                    ? {
+                          transactionId: giftTransaction.id,
+                          giftId: giftTransaction.gift.id,
+                          name: giftTransaction.gift.name,
+                          emoji: giftTransaction.gift.emoji,
+                          imageUrl: giftTransaction.gift.imageUrl,
+                      }
+                    : undefined,
+            }
+        })
     },
-    async sendSimulatedMessage(appUserId: string, personaId: string, text: string): Promise<SendMessageResponse> {
+    async sendSimulatedMessage(
+        appUserId: string,
+        personaId: string,
+        text: string,
+        idempotencyKey?: string
+    ): Promise<SendMessageResponse> {
         if (!text.trim()) {
             throw new HttpError('Message cannot be empty', 400)
         }
 
+        if (idempotencyKey) {
+            const existing = await simulatedMessageRepo.findByIdempotencyKey(appUserId, personaId, idempotencyKey)
+            if (existing) {
+                return { message: existing.text, date: existing.sentAt.toISOString() }
+            }
+        }
+
         const scheduledReplyAt = new Date(Date.now() + randomReplyDelayMs())
-        const message = await simulatedMessageRepo.insertInbound(appUserId, personaId, text, scheduledReplyAt)
+        const message = await simulatedMessageRepo.insertInbound(
+            appUserId,
+            personaId,
+            text,
+            scheduledReplyAt,
+            idempotencyKey
+        )
 
         return { message: message.text, date: message.sentAt.toISOString() }
+    },
+    async ensureSimulatedGiftMessage(params: {
+        appUserId: string
+        personaId: string
+        transactionId: string
+        giftName: string
+    }) {
+        return simulatedMessageRepo.ensureGiftMessage({
+            appUserId: params.appUserId,
+            personaId: params.personaId,
+            giftTransactionId: params.transactionId,
+            text: `🎁 ${params.giftName}`,
+            scheduledReplyAt: new Date(Date.now() + randomReplyDelayMs()),
+        })
     },
 }

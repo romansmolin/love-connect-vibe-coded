@@ -17,6 +17,10 @@ const FALLBACK_REPLY = "Hey, sorry, got pulled away! What's up?"
 
 export const replyGenerationService = {
     async generateReply(persona: SimulatedPersona, history: SimulatedMessage[]): Promise<string> {
+        // Keep the simulated conversation usable in local/dev environments where OpenAI is not
+        // configured. Production/demo deployments use the model whenever the key is available.
+        if (!process.env.OPENAI_API_KEY) return FALLBACK_REPLY
+
         const completion = await getClient().chat.completions.create({
             model: 'gpt-4o-mini',
             temperature: 0.8,

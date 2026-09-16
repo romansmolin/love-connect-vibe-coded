@@ -1,1 +1,1 @@
-export { contactsRoute, messagesRoute, sendRoute } from '../server/routes/chat.route'
+export { contactsRoute, giftRoute, messagesRoute, sendRoute } from '../server/routes/chat.route'

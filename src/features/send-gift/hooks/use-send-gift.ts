@@ -2,8 +2,10 @@
 
 import { useCallback } from 'react'
 
+import { useDispatch } from 'react-redux'
 import { toast } from 'sonner'
 
+import { chatApi } from '@/entities/chat'
 import { useSendGiftMutation } from '@/entities/gift'
 
 const resolveErrorMessage = (error: unknown) => {
@@ -17,6 +19,7 @@ const resolveErrorMessage = (error: unknown) => {
 
 export const useSendGift = () => {
     const [sendGiftMutation, { isLoading }] = useSendGiftMutation()
+    const dispatch = useDispatch()
 
     const sendGift = useCallback(
         async (params: { transactionId: string; recipientId: string | number; giftName?: string }) => {
@@ -25,6 +28,9 @@ export const useSendGift = () => {
                     transactionId: params.transactionId,
                     recipientId: params.recipientId,
                 }).unwrap()
+                dispatch(
+                    chatApi.util.invalidateTags([{ type: 'Messages', id: Number(params.recipientId) }, 'Contacts'])
+                )
                 const name = params.giftName ? ` ${params.giftName}` : ''
                 toast.success(`Gift${name} sent successfully.`)
                 return response
@@ -34,7 +40,7 @@ export const useSendGift = () => {
                 throw error
             }
         },
-        [sendGiftMutation]
+        [dispatch, sendGiftMutation]
     )
 
     return {

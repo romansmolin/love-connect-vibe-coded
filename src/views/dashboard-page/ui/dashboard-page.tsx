@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from 'react'
 
-import { HeartPulse, RefreshCw, Sparkles } from 'lucide-react'
+import { HeartPulse, MessageCircle, RefreshCw, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 
 import type { CommunityActivityResponse, RecentVisitorsResponse, TopMembersResponse } from '@/entities/dashboard'
@@ -191,6 +191,16 @@ const ActivityCard = () => {
                                 {item.location ? `${item.location} · ` : ''}
                                 {formatDate(item.timestamp)}
                             </div>
+                            {typeof item.id === 'number' && item.id > 0 ? (
+                                <Button asChild size="icon" variant="ghost">
+                                    <Link
+                                        href={`/chat?contactId=${item.id}&contact=${encodeURIComponent(item.username)}`}
+                                        title={`Message ${item.username}`}
+                                    >
+                                        <MessageCircle className="h-4 w-4" />
+                                    </Link>
+                                </Button>
+                            ) : null}
                         </div>
                     ))}
                 </div>
@@ -304,21 +314,23 @@ const RecentVisitorsCard = () => {
             ) : (
                 <div className="grid gap-3 sm:grid-cols-2">
                     {visitors.map((visitor) => (
-                        <Link
+                        <div
                             key={visitor.id}
-                            className="flex items-center justify-between rounded-2xl border border-border/70 bg-background p-4 transition-colors hover:bg-muted/40"
-                            href={`/profile/${visitor.id}`}
+                            className="flex items-center justify-between gap-2 rounded-2xl border border-border/70 bg-background p-4 transition-colors hover:bg-muted/40"
                         >
-                            <div className="flex items-center gap-3">
+                            <Link
+                                className="flex min-w-0 flex-1 items-center gap-3"
+                                href={`/profile/${visitor.id}`}
+                            >
                                 <Avatar className="h-11 w-11">
                                     {visitor.photoUrl ? (
                                         <AvatarImage alt={visitor.username} src={visitor.photoUrl} />
                                     ) : null}
                                     <AvatarFallback>{initials(visitor.username)}</AvatarFallback>
                                 </Avatar>
-                                <div className="space-y-1">
+                                <div className="min-w-0 space-y-1">
                                     <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                                        <span>{visitor.username}</span>
+                                        <span className="truncate">{visitor.username}</span>
                                         {visitor.gender ? (
                                             <Badge className="uppercase" variant="outline">
                                                 {visitor.gender}
@@ -330,11 +342,25 @@ const RecentVisitorsCard = () => {
                                         {visitor.location ? ` · ${visitor.location}` : ''}
                                     </div>
                                 </div>
+                            </Link>
+                            <div className="flex items-center gap-2">
+                                <Badge className="rounded-full" variant="outline">
+                                    {visitor.visitedAt ? formatDate(visitor.visitedAt) : 'Recently'}
+                                </Badge>
+                                <Button asChild size="icon" variant="ghost">
+                                    <Link
+                                        href={`/chat?contactId=${visitor.id}&contact=${encodeURIComponent(visitor.username)}${
+                                            visitor.photoUrl
+                                                ? `&avatarUrl=${encodeURIComponent(visitor.photoUrl)}`
+                                                : ''
+                                        }`}
+                                        title={`Message ${visitor.username}`}
+                                    >
+                                        <MessageCircle className="h-4 w-4" />
+                                    </Link>
+                                </Button>
                             </div>
-                            <Badge className="rounded-full" variant="outline">
-                                {visitor.visitedAt ? formatDate(visitor.visitedAt) : 'Recently'}
-                            </Badge>
-                        </Link>
+                        </div>
                     ))}
                 </div>
             )}

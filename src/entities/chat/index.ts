@@ -1,9 +1,31 @@
-export { chatApi, useGetContactsQuery, useGetMessagesQuery, useSendMessageMutation } from './api/client/chat.api'
+export {
+    chatApi,
+    useGetContactsQuery,
+    useGetConversationMessagesQuery,
+    useGetConversationsQuery,
+    useGetMessagesQuery,
+    useMarkConversationReadMutation,
+    useSendConversationGiftMutation,
+    useSendConversationMessageMutation,
+    useSendGiftInChatMutation,
+    useSendMessageMutation,
+    useUnlockConversationMutation,
+} from './api/client/chat.api'
 export type {
+    ChatMessageGift,
     ChatMessage,
     ContactPreview,
     ContactsResponse,
+    ConversationMessage,
+    ConversationMessagesResponse,
+    ConversationsResponse,
+    ConversationSummary,
     MessagesResponse,
+    SendGiftInChatRequest,
+    SendGiftInChatResponse,
+    SendConversationMessageRequest,
+    SendConversationMessageResponse,
     SendMessageRequest,
     SendMessageResponse,
+    UnlockConversationResponse,
 } from './model/types'

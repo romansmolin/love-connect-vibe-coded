@@ -35,11 +35,12 @@ export const useBuyCredits = () => {
                         await openSecureProcessorWidget({
                             checkoutToken: response.checkoutToken,
                             onClose: (status) => {
+                                // Widget status is a hint only — wallet updates are
+                                // confirmed by the webhook, never the client callback.
+                                dispatch(creditApi.util.invalidateTags(['CreditWallet']))
                                 if (status === 'successful') {
-                                    dispatch(creditApi.util.invalidateTags(['CreditWallet']))
-                                    toast.success('Payment confirmed. Credits added to your wallet.')
-                                }
-                                if (status === 'failed' || status === 'error') {
+                                    toast('Payment processing. Your balance will update shortly.')
+                                } else if (status === 'failed' || status === 'error') {
                                     toast.error('Payment failed. Please try again.')
                                 }
                             },

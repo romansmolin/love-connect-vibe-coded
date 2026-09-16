@@ -1,48 +1,18 @@
+import { mapContact, mapDeliveredGiftToMessage, mapMessage } from '@/entities/chat/lib/chat-mapper'
 import { personaMatchService } from '@/entities/demo-activity/api/server/services/persona-match.service'
+import { giftService } from '@/entities/gift/api/server/gift.service'
 import { HttpError } from '@/shared/http-client'
 
 import type {
     ChatMessage,
     ContactsResponse,
     MessagesResponse,
+    SendGiftInChatRequest,
+    SendGiftInChatResponse,
     SendMessageRequest,
     SendMessageResponse,
 } from '../../../model/types'
 import { chatRepo } from '../repositories/chat.repo'
-import type { ContactBlock, EclairBlock } from '../repositories/chat.repo'
-
-const mapOnline = (online?: string): 'online' | 'recent' | 'offline' | undefined => {
-    if (!online) return undefined
-    if (online === 'green') return 'online'
-    if (online === 'yellow') return 'recent'
-    return 'offline'
-}
-
-const getLastMessagePreview = (value: ContactBlock['tab_last_msg']): string | undefined => {
-    if (!value) return undefined
-    const last = Array.isArray(value) ? value[0] : value
-    if (typeof last === 'string') return last
-    if (typeof last === 'object') return last.message ?? last.msg
-    return undefined
-}
-
-const mapContact = (contact: ContactBlock) => ({
-    id: contact.m_id ?? 0,
-    username: contact.pseudo ?? 'Member',
-    avatarUrl: contact.photo ?? undefined,
-    unreadCount: contact.nb_new,
-    onlineStatus: mapOnline(contact.online),
-    isFriend: contact.is_friend === 1,
-    lastMessagePreview: getLastMessagePreview(contact.tab_last_msg),
-})
-
-const mapMessage = (message: EclairBlock): ChatMessage => ({
-    id: message.id ?? `${message.exp ?? 'msg'}-${message.date ?? Date.now()}`,
-    senderId: message.exp_id,
-    text: message.message ?? message.msg,
-    sentAt: message.date,
-    extra: message.p_extra ?? message.album_share,
-})
 
 /**
  * Demo-activity is strictly additive: a failure in the simulated path must never take down the
@@ -56,6 +26,18 @@ const withoutSimulated = async <T>(label: string, load: () => Promise<T>, fallba
         return fallback
     }
 }
+
+const sortMessagesChronologically = (messages: ChatMessage[]): ChatMessage[] =>
+    messages
+        .map((message, index) => ({ message, index, timestamp: Date.parse(message.sentAt ?? '') }))
+        .sort((left, right) => {
+            const leftValid = Number.isFinite(left.timestamp)
+            const rightValid = Number.isFinite(right.timestamp)
+            if (leftValid && rightValid) return left.timestamp - right.timestamp
+            if (leftValid !== rightValid) return leftValid ? 1 : -1
+            return left.index - right.index
+        })
+        .map(({ message }) => message)
 
 export const chatService = {
     async listContacts(sessionId: string, appUserId?: string): Promise<ContactsResponse> {
@@ -71,8 +53,41 @@ export const chatService = {
             : []
         const realIds = new Set(realContacts.map((contact) => contact.id))
         const extraSimulated = simulatedContacts.filter((contact) => !realIds.has(contact.id))
+        const contacts = [...extraSimulated, ...realContacts]
 
-        return { contacts: [...extraSimulated, ...realContacts] }
+        if (!appUserId) return { contacts }
+
+        const deliveredGifts = await withoutSimulated(
+            'listDeliveredGiftsForUser',
+            () => giftService.listDeliveredGiftsForUser(appUserId),
+            []
+        )
+        const latestGiftByPeer = new Map<number, (typeof deliveredGifts)[number]>()
+        for (const transaction of deliveredGifts) {
+            const peerId = Number(
+                transaction.senderId === appUserId ? transaction.recipientId : transaction.senderId
+            )
+            if (Number.isInteger(peerId) && peerId > 0 && !latestGiftByPeer.has(peerId)) {
+                latestGiftByPeer.set(peerId, transaction)
+            }
+        }
+
+        const withGiftPreviews = contacts.map((contact) => {
+            const gift = latestGiftByPeer.get(contact.id)
+            if (!gift) return contact
+
+            const giftAt = gift.deliveredAt ?? gift.createdAt
+            const messageAt = Date.parse(contact.lastMessageAt ?? '')
+            if (Number.isFinite(messageAt) && messageAt > giftAt.getTime()) return contact
+
+            return {
+                ...contact,
+                lastMessagePreview: `🎁 ${gift.gift.name}`,
+                lastMessageAt: giftAt.toISOString(),
+            }
+        })
+
+        return { contacts: withGiftPreviews }
     },
     async listMessages(
         sessionId: string,
@@ -85,19 +100,41 @@ export const chatService = {
         if (appUserId) {
             const persona = await personaMatchService.findLinkedPersona(appUserId, contactId)
             if (persona) {
-                const messages = await withoutSimulated(
+                const simulatedMessages = await withoutSimulated(
                     'listSimulatedMessages',
                     () => personaMatchService.listSimulatedMessages(appUserId, persona.id),
                     [] as ChatMessage[]
                 )
-                return { messages }
+                const giftMessages = await withoutSimulated(
+                    'listConversationGifts',
+                    async () =>
+                        (await giftService.listConversationGifts(appUserId, String(contactId))).map(
+                            mapDeliveredGiftToMessage
+                        ),
+                    [] as ChatMessage[]
+                )
+                const messagesById = new Map<string, ChatMessage>()
+                for (const message of [...simulatedMessages, ...giftMessages]) {
+                    messagesById.set(String(message.id), message)
+                }
+                return { messages: sortMessagesChronologically([...messagesById.values()]) }
             }
         }
 
         const response = await chatRepo.loadMessages(sessionId, contactId, contact)
-        const messages = response.eclairs ?? []
+        const messages = (response.eclairs ?? []).map(mapMessage)
+        const giftMessages = appUserId
+            ? await withoutSimulated(
+                  'listConversationGifts',
+                  async () =>
+                      (await giftService.listConversationGifts(appUserId, String(contactId))).map(
+                          mapDeliveredGiftToMessage
+                      ),
+                  [] as ChatMessage[]
+              )
+            : []
 
-        return { messages: messages.map(mapMessage) }
+        return { messages: sortMessagesChronologically([...messages, ...giftMessages]) }
     },
     async sendMessage(
         sessionId: string,
@@ -107,11 +144,19 @@ export const chatService = {
         if (!payload.message.trim()) {
             throw new HttpError('Message cannot be empty', 400)
         }
+        if (payload.message.trim().length > 5000) {
+            throw new HttpError('Message is too long', 400)
+        }
 
         if (appUserId) {
             const persona = await personaMatchService.findLinkedPersona(appUserId, payload.contactId)
             if (persona) {
-                return personaMatchService.sendSimulatedMessage(appUserId, persona.id, payload.message)
+                return personaMatchService.sendSimulatedMessage(
+                    appUserId,
+                    persona.id,
+                    payload.message.trim(),
+                    payload.idempotencyKey
+                )
             }
         }
 
@@ -133,5 +178,39 @@ export const chatService = {
         }
 
         return { message: response.msg, date: response.date }
+    },
+    async sendGiftInChat(
+        sessionId: string,
+        appUserId: string,
+        payload: SendGiftInChatRequest
+    ): Promise<SendGiftInChatResponse> {
+        const persona = await personaMatchService.findLinkedPersona(appUserId, payload.contactId)
+        const result = await giftService.sendGiftInChat({
+            sessionId,
+            senderId: appUserId,
+            recipientId: String(payload.contactId),
+            giftId: payload.giftId,
+            idempotencyKey: payload.idempotencyKey,
+        })
+
+        if (persona) {
+            try {
+                await personaMatchService.ensureSimulatedGiftMessage({
+                    appUserId,
+                    personaId: persona.id,
+                    transactionId: result.transaction.id,
+                    giftName: result.transaction.gift.name,
+                })
+            } catch (error) {
+                console.error('[chat-gift] failed to schedule simulated gift reply', error)
+            }
+        }
+
+        return {
+            message: mapDeliveredGiftToMessage(result.transaction),
+            transactionId: result.transaction.id,
+            creditsSpent: result.creditsSpent,
+            walletBalance: result.walletBalance,
+        }
     },
 }

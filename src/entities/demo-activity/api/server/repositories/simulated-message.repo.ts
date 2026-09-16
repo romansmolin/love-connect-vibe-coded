@@ -1,11 +1,20 @@
-import type { SimulatedMessage } from '@prisma/client'
+import type { Prisma, SimulatedMessage } from '@prisma/client'
 
 import { prisma } from '@/shared/lib/prisma'
 
+export type SimulatedMessageWithGift = Prisma.SimulatedMessageGetPayload<{
+    include: { giftTransaction: { include: { gift: true } } }
+}>
+
 export const simulatedMessageRepo = {
-    async listByConversation(appUserId: string, personaId: string, limit: number): Promise<SimulatedMessage[]> {
+    async listByConversation(
+        appUserId: string,
+        personaId: string,
+        limit: number
+    ): Promise<SimulatedMessageWithGift[]> {
         const rows = await prisma.simulatedMessage.findMany({
             where: { appUserId, personaId },
+            include: { giftTransaction: { include: { gift: true } } },
             orderBy: { sentAt: 'desc' },
             take: limit,
         })
@@ -15,10 +24,37 @@ export const simulatedMessageRepo = {
         appUserId: string,
         personaId: string,
         text: string,
-        scheduledReplyAt: Date
+        scheduledReplyAt: Date,
+        idempotencyKey?: string
     ): Promise<SimulatedMessage> {
         return prisma.simulatedMessage.create({
-            data: { appUserId, personaId, senderIsPersona: false, text, scheduledReplyAt },
+            data: { appUserId, personaId, senderIsPersona: false, text, scheduledReplyAt, idempotencyKey },
+        })
+    },
+    findByIdempotencyKey(appUserId: string, personaId: string, idempotencyKey: string) {
+        return prisma.simulatedMessage.findUnique({
+            where: { appUserId_personaId_idempotencyKey: { appUserId, personaId, idempotencyKey } },
+        })
+    },
+    async ensureGiftMessage(params: {
+        appUserId: string
+        personaId: string
+        giftTransactionId: string
+        text: string
+        scheduledReplyAt: Date
+    }): Promise<SimulatedMessageWithGift> {
+        return prisma.simulatedMessage.upsert({
+            where: { giftTransactionId: params.giftTransactionId },
+            create: {
+                appUserId: params.appUserId,
+                personaId: params.personaId,
+                senderIsPersona: false,
+                text: params.text,
+                giftTransactionId: params.giftTransactionId,
+                scheduledReplyAt: params.scheduledReplyAt,
+            },
+            update: {},
+            include: { giftTransaction: { include: { gift: true } } },
         })
     },
     insertPersonaReply(appUserId: string, personaId: string, text: string): Promise<SimulatedMessage> {

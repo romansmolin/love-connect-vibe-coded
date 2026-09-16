@@ -13,6 +13,18 @@ const LIKE_RATE = 0.4
 const MUTUAL_MATCH_RATE = 0.15
 /** A periodic seed tick harvests a few pages, not the whole pool — this runs inside a cron timeout. */
 const SEED_MAX_PAGES = 4
+const RANDOM_POOL_SIZE = 200
+
+const shuffle = <T>(items: T[]): T[] => {
+    const result = [...items]
+
+    for (let index = result.length - 1; index > 0; index -= 1) {
+        const randomIndex = Math.floor(Math.random() * (index + 1))
+        ;[result[index], result[randomIndex]] = [result[randomIndex], result[index]]
+    }
+
+    return result
+}
 
 const discoverProfiles = async (excludedIds: Set<number>) => {
     const session = await serviceSessionService.getSession()
@@ -57,7 +69,8 @@ export const seedActivityService = {
         await simulatedPersonaRepo.deleteByFotochatIds([...excludedIds])
 
         const discovered = await discoverProfiles(excludedIds)
-        const personaInputs = discovered.items
+        const personaInputs = shuffle(discovered.items)
+            .slice(0, RANDOM_POOL_SIZE)
             .filter((candidate) => !excludedIds.has(candidate.id))
             .map(mapCandidateToPersonaInput)
         await simulatedPersonaRepo.upsertMany(personaInputs)

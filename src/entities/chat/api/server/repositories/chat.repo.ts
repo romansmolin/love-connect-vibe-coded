@@ -8,7 +8,7 @@ export type EclairBlock = {
     // comes back instead.
     message?: string
     msg?: string
-    exp?: string
+    exp?: string | number
     exp_id?: number
     exp_prenom?: string
     dest?: string
@@ -24,7 +24,7 @@ export type EclairBlock = {
 export type ContactBlock = {
     m_id?: number
     pseudo?: string
-    photo?: string
+    photo?: string | null
     nb_new?: number
     online?: string
     is_friend?: number

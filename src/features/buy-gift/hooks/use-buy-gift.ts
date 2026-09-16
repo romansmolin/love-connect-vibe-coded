@@ -42,11 +42,12 @@ export const useBuyGift = () => {
                         await openSecureProcessorWidget({
                             checkoutToken: response.checkoutToken,
                             onClose: (status) => {
+                                // Widget status is a hint only — fulfillment is
+                                // confirmed by the webhook, never the client callback.
+                                dispatch(giftApi.util.invalidateTags(['GiftInventory']))
                                 if (status === 'successful') {
-                                    dispatch(giftApi.util.invalidateTags(['GiftInventory']))
-                                    toast.success('Payment confirmed. Your gift is now available to send.')
-                                }
-                                if (status === 'failed' || status === 'error') {
+                                    toast('Payment processing. Your gift will unlock once confirmed.')
+                                } else if (status === 'failed' || status === 'error') {
                                     toast.error('Payment failed. Please try again.')
                                 }
                             },

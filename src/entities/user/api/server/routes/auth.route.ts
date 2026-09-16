@@ -1,8 +1,8 @@
 import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
 
-import { HttpError } from '@/shared/http-client'
 import { emailService } from '@/entities/email/api/server/services/email.service'
+import { HttpError } from '@/shared/http-client'
 
 import type { SignInRequest, SignUpRequest } from '../../../model/types'
 import { LANG_COOKIE_NAME, SESSION_COOKIE_NAME, USER_COOKIE_NAME } from '../config'
