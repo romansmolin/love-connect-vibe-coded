@@ -235,6 +235,7 @@ model SimulatedPersona {
 enum SimulatedMatchKind {
   LIKE
   MUTUAL_MATCH
+  DISMISSED
 }
 
 model SimulatedMatch {
