@@ -14,11 +14,36 @@ import { giftRepo } from './gift.repo'
 
 const defaultCatalog = [
     { name: 'Gift 11', emoji: '🎁', imageUrl: '/gifts/11.png', priceCredits: GIFT_PRICE_CREDITS[0] },
-    { name: 'Eternal Rose', emoji: '🌹', imageUrl: '/gifts/Eternal%20Rose.png', priceCredits: GIFT_PRICE_CREDITS[1] },
-    { name: 'Ginger Cookie', emoji: '🍪', imageUrl: '/gifts/Ginger%20Cookie.png', priceCredits: GIFT_PRICE_CREDITS[2] },
-    { name: 'Ionic Dryer', emoji: '💨', imageUrl: '/gifts/Ionic%20Dryer.png', priceCredits: GIFT_PRICE_CREDITS[3] },
-    { name: 'Neko Helmet', emoji: '🐱', imageUrl: '/gifts/Neko%20Helmet.png', priceCredits: GIFT_PRICE_CREDITS[4] },
-    { name: 'Sharp Tongue', emoji: '👅', imageUrl: '/gifts/Sharp%20Tongue.png', priceCredits: GIFT_PRICE_CREDITS[5] },
+    {
+        name: 'Eternal Rose',
+        emoji: '🌹',
+        imageUrl: '/gifts/Eternal%20Rose.png',
+        priceCredits: GIFT_PRICE_CREDITS[1],
+    },
+    {
+        name: 'Ginger Cookie',
+        emoji: '🍪',
+        imageUrl: '/gifts/Ginger%20Cookie.png',
+        priceCredits: GIFT_PRICE_CREDITS[2],
+    },
+    {
+        name: 'Ionic Dryer',
+        emoji: '💨',
+        imageUrl: '/gifts/Ionic%20Dryer.png',
+        priceCredits: GIFT_PRICE_CREDITS[3],
+    },
+    {
+        name: 'Neko Helmet',
+        emoji: '🐱',
+        imageUrl: '/gifts/Neko%20Helmet.png',
+        priceCredits: GIFT_PRICE_CREDITS[4],
+    },
+    {
+        name: 'Sharp Tongue',
+        emoji: '👅',
+        imageUrl: '/gifts/Sharp%20Tongue.png',
+        priceCredits: GIFT_PRICE_CREDITS[5],
+    },
     { name: 'Snoop Dogg', emoji: '🐶', imageUrl: '/gifts/Snoop%20Dogg.png', priceCredits: GIFT_PRICE_CREDITS[6] },
     { name: 'Toy Bear', emoji: '🧸', imageUrl: '/gifts/Toy%20Bear.png', priceCredits: GIFT_PRICE_CREDITS[7] },
 ]
@@ -51,8 +76,10 @@ const seedCatalogIfEmpty = async () => {
     return giftRepo.listActiveGifts()
 }
 
-const ensureMatch = async (sessionId: string, recipientId: string | number) => {
-    const matches = await matchService.listMatches(sessionId)
+const ensureMatch = async (sessionId: string, recipientId: string | number, appUserId?: string) => {
+    // appUserId makes simulated mutual matches visible here too, so a demo persona can receive a
+    // gift. Delivery itself is local-only (a GiftTransaction row), never an upstream mutation.
+    const matches = await matchService.listMatches(sessionId, appUserId)
     const recipientNumeric = Number(recipientId)
     const found = matches.items.find((item) => Number(item.id) === recipientNumeric)
     if (!found) {
@@ -209,7 +236,7 @@ export const giftService = {
             throw new HttpError('Gift is not available to send yet.', 400)
         }
 
-        await ensureMatch(params.sessionId, params.recipientId)
+        await ensureMatch(params.sessionId, params.recipientId, params.senderId)
 
         const matchId = `${params.senderId}-${params.recipientId}`
 

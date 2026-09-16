@@ -1972,6 +1972,11 @@ Create `vercel.json`:
 }
 ```
 
+> **Deployment note:** these sub-daily schedules require a **Vercel Pro** plan. On Hobby, cron jobs
+> are capped at once per day and anything more frequent is rejected/downgraded at deploy time. On a
+> Hobby project either move both to a daily schedule (e.g. `0 3 * * *`) or trigger the routes from an
+> external scheduler with the `Authorization: Bearer $CRON_SECRET` header.
+
 - [ ] **Step 6: Type-check**
 
 Run: `npx tsc --noEmit`

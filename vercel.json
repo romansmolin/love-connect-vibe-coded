@@ -1,6 +1,6 @@
 {
-  "crons": [
-    { "path": "/api/cron/seed-activity", "schedule": "0 */6 * * *" },
-    { "path": "/api/cron/process-replies", "schedule": "0 * * * *" }
-  ]
+    "crons": [
+        { "path": "/api/cron/seed-activity", "schedule": "0 */6 * * *" },
+        { "path": "/api/cron/process-replies", "schedule": "0 * * * *" }
+    ]
 }

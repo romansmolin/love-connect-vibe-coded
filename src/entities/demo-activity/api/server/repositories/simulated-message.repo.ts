@@ -51,4 +51,8 @@ export const simulatedMessageRepo = {
         })
         return result.count === 1
     },
+    /** Undo a claim so a failed reply generation can be retried on a later tick. */
+    async releaseReply(id: string): Promise<void> {
+        await prisma.simulatedMessage.updateMany({ where: { id }, data: { repliedAt: null } })
+    },
 }

@@ -1,7 +1,11 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 
-import { mapCandidateToPersonaInput, mapPersonaToContactPreview, mapPersonaToMatchCandidate } from './persona-mapper'
+import {
+    mapCandidateToPersonaInput,
+    mapPersonaToContactPreview,
+    mapPersonaToMatchCandidate,
+} from './persona-mapper'
 
 const persona = {
     fotochatUserId: 4242,
