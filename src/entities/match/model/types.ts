@@ -1,5 +1,54 @@
 export type MatchGender = 'man' | 'woman' | 'couple'
 
+export const CITY_OPTIONS = [
+    'Amsterdam',
+    'Berlin',
+    'London',
+    'Madrid',
+    'New York',
+    'Paris',
+    'Prague',
+    'Riga',
+    'Rome',
+    'Warsaw',
+] as const
+
+const normalizeCityInput = (value: string) => value.trim().toLocaleLowerCase().replaceAll(/\s+/g, ' ')
+
+export const normalizeCity = (value: string): (typeof CITY_OPTIONS)[number] | null => {
+    const normalized = normalizeCityInput(value)
+    if (!normalized) return null
+
+    return CITY_OPTIONS.find((city) => normalizeCityInput(city) === normalized) ?? null
+}
+
+const PROFILE_CITY_STORAGE_PREFIX = 'lovebond:profile-city:v1:'
+
+export const assignProfileCity = <T extends { id: number; location?: string }>(profile: T): T => {
+    if (typeof window === 'undefined') {
+        const hash = Math.abs(profile.id * 2654435761) % CITY_OPTIONS.length
+        return { ...profile, location: CITY_OPTIONS[hash] }
+    }
+
+    try {
+        const storageKey = `${PROFILE_CITY_STORAGE_PREFIX}${profile.id}`
+        const storedCity = window.localStorage.getItem(storageKey)
+        const normalizedStoredCity = storedCity ? normalizeCity(storedCity) : null
+
+        if (normalizedStoredCity) {
+            return { ...profile, location: normalizedStoredCity }
+        }
+
+        const hash = Math.abs(profile.id * 2654435761) % CITY_OPTIONS.length
+        const assignedCity = CITY_OPTIONS[hash]
+        window.localStorage.setItem(storageKey, assignedCity)
+        return { ...profile, location: assignedCity }
+    } catch {
+        const hash = Math.abs(profile.id * 2654435761) % CITY_OPTIONS.length
+        return { ...profile, location: CITY_OPTIONS[hash] }
+    }
+}
+
 export interface MatchCandidate {
     id: number
     username: string

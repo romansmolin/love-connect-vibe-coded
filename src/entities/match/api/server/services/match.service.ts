@@ -1,10 +1,12 @@
 import { personaMatchService } from '@/entities/demo-activity/api/server/services/persona-match.service'
+import { userService } from '@/entities/user/api/server/services/user.service'
 import { FOTOCHAT_API_KEY } from '@/shared/api/fotochat'
 import { HttpError } from '@/shared/http-client'
 
 import type {
     BlockUserResponse,
     DiscoverMatchesResponse,
+    MatchActionHistoryResponse,
     MatchActionResponse,
     MatchCandidate,
     MatchGender,
@@ -63,6 +65,35 @@ const mapMember = (member: MembreBlock): MatchCandidate => ({
     photoCount: member.photo,
     photoUrl: pickPhotoUrl(member),
 })
+
+const mapPendingLike = async (
+    sessionId: string,
+    row: Awaited<ReturnType<typeof matchActionRepo.listPendingLikes>>[number]
+): Promise<MatchActionHistoryResponse['items'][number]> => {
+    try {
+        const profile = await userService.getMemberProfile({ sessionId, userId: row.targetUserId })
+
+        return {
+            id: row.id,
+            targetUserId: row.targetUserId,
+            username: profile.username,
+            photoUrl: profile.avatarUrl,
+            age: profile.age,
+            location: profile.location,
+            action: 'like',
+            isMatch: false,
+            createdAt: row.createdAt.toISOString(),
+        }
+    } catch {
+        return {
+            id: row.id,
+            targetUserId: row.targetUserId,
+            action: 'like',
+            isMatch: false,
+            createdAt: row.createdAt.toISOString(),
+        }
+    }
+}
 
 const extractMembers = (payload: Awaited<ReturnType<typeof matchRepo.listMatches>>): MembreBlock[] => {
     if (Array.isArray(payload)) {
@@ -177,24 +208,21 @@ export const matchService = {
     ): Promise<DiscoverMatchesResponse> {
         const members = new Map<number, MembreBlock>()
         const perPage = 100
-        const targetSize = 200
         let totalPages: number | undefined
         const normalizedCity = cityFilter?.trim().toLowerCase()
+        const targetSize = normalizedCity ? 5000 : 200
 
         if (appUserId) {
             const actedIds = await matchActionRepo.listActedTargetIds(appUserId)
             for (const id of actedIds) excludedIds.add(id)
         }
 
-        const matchesCity = (member: MembreBlock) =>
-            !normalizedCity || (member.zone_name ?? '').toLowerCase().includes(normalizedCity)
-
         for (let page = 0; page < maxPages; page += 1) {
             const response = await matchRepo.discover(sessionId, {
                 ...params,
                 page,
                 pas: perPage,
-                searchAction: 'Last',
+                searchAction: params.searchAction,
             })
 
             if (response.connected === 0) {
@@ -207,7 +235,6 @@ export const matchService = {
             for (const member of pageMembers) {
                 const memberId = Number(member.id)
                 if (!Number.isInteger(memberId) || memberId <= 0 || excludedIds.has(memberId)) continue
-                if (!matchesCity(member)) continue
                 members.set(memberId, member)
             }
 
@@ -252,6 +279,22 @@ export const matchService = {
         return {
             items: [...simulatedItems, ...realItems],
             total,
+        }
+    },
+    async listPendingLikes(sessionId: string, appUserId?: string): Promise<MatchActionHistoryResponse> {
+        if (!appUserId) {
+            return { items: [], total: 0, page: 1, perPage: 0, totalPages: 0 }
+        }
+
+        const rows = await matchActionRepo.listPendingLikes(appUserId)
+        const items = await Promise.all(rows.map((row) => mapPendingLike(sessionId, row)))
+
+        return {
+            items,
+            total: items.length,
+            page: 1,
+            perPage: items.length,
+            totalPages: items.length > 0 ? 1 : 0,
         }
     },
     async like(sessionId: string, userId: number, appUserId?: string): Promise<MatchActionResponse> {

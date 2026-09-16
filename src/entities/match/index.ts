@@ -3,6 +3,7 @@ export {
     useBlockUserMutation,
     useDiscoverMatchesQuery,
     useGetMatchesQuery,
+    useGetPendingLikesQuery,
     useGetVotersQuery,
     useMatchActionMutation,
     useReportUserMutation,
@@ -12,6 +13,7 @@ export type {
     BlockUserResponse,
     DiscoverMatchesResponse,
     MatchAction,
+    MatchActionHistoryResponse,
     MatchActionRequest,
     MatchActionResponse,
     MatchCandidate,
@@ -21,3 +23,4 @@ export type {
     ReportUserResponse,
     VotersResponse,
 } from './model/types'
+export { assignProfileCity } from './model/types'

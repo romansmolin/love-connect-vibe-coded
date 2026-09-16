@@ -6,6 +6,7 @@ import type {
     BlockUserRequest,
     BlockUserResponse,
     DiscoverMatchesResponse,
+    MatchActionHistoryResponse,
     MatchActionRequest,
     MatchActionResponse,
     MatchListResponse,
@@ -28,6 +29,12 @@ export const matchApi = createApi({
         getMatches: builder.query<MatchListResponse, void>({
             query: () => ({
                 url: 'match/list',
+                method: 'GET',
+            }),
+        }),
+        getPendingLikes: builder.query<MatchActionHistoryResponse, void>({
+            query: () => ({
+                url: 'match/pending-likes',
                 method: 'GET',
             }),
         }),
@@ -65,6 +72,7 @@ export const matchApi = createApi({
 export const {
     useDiscoverMatchesQuery,
     useGetMatchesQuery,
+    useGetPendingLikesQuery,
     useMatchActionMutation,
     useGetVotersQuery,
     useBlockUserMutation,

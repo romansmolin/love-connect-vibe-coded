@@ -4,9 +4,9 @@ import { useState } from 'react'
 
 import { Filter, X } from 'lucide-react'
 
+import { CITY_OPTIONS } from '@/entities/match/model/types'
 import { Button } from '@/shared/ui/button'
 import { Card } from '@/shared/ui/card'
-import { Input } from '@/shared/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select'
 
 export type MatchGender = 'men' | 'women' | 'couple'
@@ -40,12 +40,19 @@ export const MatchFilters = ({
                 <Filter className="h-4 w-4" />
                 Filters
             </div>
-            <Input
-                className="w-36"
-                placeholder="City, e.g. Paris"
-                value={city}
-                onChange={(event) => setCity(event.target.value)}
-            />
+            <Select value={city || 'all'} onValueChange={(value) => setCity(value === 'all' ? '' : value)}>
+                <SelectTrigger aria-label="City" className="w-36">
+                    <SelectValue placeholder="All cities" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="all">All cities</SelectItem>
+                    {CITY_OPTIONS.map((option) => (
+                        <SelectItem key={option} value={option}>
+                            {option}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
             <Select value={gender} onValueChange={setGender}>
                 <SelectTrigger className="w-36">
                     <SelectValue placeholder="Everyone" />

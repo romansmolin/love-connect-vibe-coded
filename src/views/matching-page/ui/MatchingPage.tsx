@@ -7,7 +7,7 @@ import { type MatchGender, MatchFilters, MatchingPanel } from '@/features/matchi
 export const MatchingPage = () => {
     const [city, setCity] = useState<string | undefined>()
     const [gender, setGender] = useState<MatchGender | undefined>()
-    const [poolEnabled, setPoolEnabled] = useState(false)
+    const [poolEnabled, setPoolEnabled] = useState(true)
 
     return (
         <div className="mx-auto flex w-full max-w-md flex-col gap-4">
@@ -15,12 +15,12 @@ export const MatchingPage = () => {
                 onApply={(filters) => {
                     setCity(filters.city)
                     setGender(filters.gender)
-                    setPoolEnabled(Boolean(filters.city))
+                    setPoolEnabled(true)
                 }}
                 onClear={() => {
                     setCity(undefined)
                     setGender(undefined)
-                    setPoolEnabled(false)
+                    setPoolEnabled(true)
                 }}
             />
             <MatchingPanel city={city} gender={gender} pool={poolEnabled} />

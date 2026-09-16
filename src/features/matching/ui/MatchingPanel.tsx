@@ -11,6 +11,7 @@ import { Card, CardContent } from '@/shared/ui/card'
 import { Skeleton } from '@/shared/ui/skeleton'
 
 import { useMatchFlow } from '../hooks/use-match-flow'
+
 import type { MatchGender } from './MatchFilters'
 
 const LoadingState = () => (
@@ -44,15 +45,7 @@ const ErrorState = ({ message, onRetry }: { message: string; onRetry: () => void
     </Card>
 )
 
-export const MatchingPanel = ({
-    city,
-    gender,
-    pool,
-}: {
-    city?: string
-    gender?: MatchGender
-    pool?: boolean
-}) => {
+export const MatchingPanel = ({ city, gender, pool }: { city?: string; gender?: MatchGender; pool?: boolean }) => {
     const { current, isLoading, isActing, error, like, dislike, refetch, remaining } = useMatchFlow({
         city,
         gender,
@@ -102,9 +95,6 @@ export const MatchingPanel = ({
                 </div>
             </Link>
             <CardContent className="space-y-3 p-4">
-                <div className="text-xs text-muted-foreground">
-                    {remaining > 0 ? `${remaining} profiles in this batch` : 'No more profiles in this batch'}
-                </div>
                 <div className="flex gap-2">
                     <Button className="flex-1" disabled={isActing} variant="outline" onClick={dislike}>
                         <X className="mr-2 h-4 w-4" />

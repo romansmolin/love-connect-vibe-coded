@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { toast } from 'sonner'
 
-import type { MatchAction, MatchCandidate } from '@/entities/match'
+import { assignProfileCity, type MatchAction, type MatchCandidate } from '@/entities/match'
 import { useDiscoverMatchesQuery, useMatchActionMutation } from '@/entities/match'
 
 import { getExcludedProfileIds, rememberProcessedProfile } from '../lib/demo-city'
@@ -64,8 +64,13 @@ export const useMatchFlow = (filters: MatchFlowFilters = {}) => {
     const { data, isLoading, isFetching, error, refetch } = useDiscoverMatchesQuery(queryParams)
 
     const items = useMemo(() => {
-        return (data?.items ?? []).filter((candidate) => !processedProfileIds.includes(candidate.id))
-    }, [data?.items, processedProfileIds])
+        const candidates = (data?.items ?? []).map(assignProfileCity)
+        const cityCandidates = filters.city
+            ? candidates.filter((candidate) => candidate.location === filters.city)
+            : candidates
+
+        return cityCandidates.filter((candidate) => !processedProfileIds.includes(candidate.id))
+    }, [data?.items, filters.city, processedProfileIds])
     const current = items[index] ?? null
 
     useEffect(() => {

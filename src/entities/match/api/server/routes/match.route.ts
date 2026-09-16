@@ -67,6 +67,19 @@ export const matchesRoute = async (request: NextRequest) => {
     }
 }
 
+export const pendingLikesRoute = async (request: NextRequest) => {
+    if (request.method !== 'GET') {
+        return NextResponse.json({ message: 'Method Not Allowed' }, { status: 405 })
+    }
+
+    try {
+        const response = await matchController.listPendingLikes(request)
+        return NextResponse.json(response)
+    } catch (error) {
+        return handleError(error)
+    }
+}
+
 export const votersRoute = async (request: NextRequest) => {
     if (request.method !== 'GET') {
         return NextResponse.json({ message: 'Method Not Allowed' }, { status: 405 })

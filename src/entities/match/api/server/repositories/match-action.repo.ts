@@ -17,4 +17,10 @@ export const matchActionRepo = {
         })
         return rows.map((row) => row.targetUserId)
     },
+    listPendingLikes(userId: string) {
+        return prisma.matchAction.findMany({
+            where: { userId, action: 'LIKE', isMatch: false },
+            orderBy: { createdAt: 'desc' },
+        })
+    },
 }

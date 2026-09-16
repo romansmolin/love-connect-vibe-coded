@@ -70,14 +70,15 @@ const MatchesSkeleton = () => (
 )
 
 export const MatchesOverview = () => {
-    const { users, total, isLoading, error, refetch } = useMatchesList()
+    const { users, pendingUsers, likedUsers, total, pendingTotal, likedTotal, isLoading, error, refetch } = useMatchesList(true)
+    const connectedUsers = [...likedUsers, ...users]
 
     return (
         <div className="space-y-6">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <StatCard
                     className="sm:col-span-2 lg:col-span-3 bg-primary/5"
-                    hint="All mutual likes."
+                    hint={`${likedTotal} liked you · ${pendingTotal} awaiting a reply`}
                     icon={Users}
                     isLoading={isLoading}
                     label="Total matches"
@@ -99,11 +100,26 @@ export const MatchesOverview = () => {
                 />*/}
             </div>
 
+            {pendingUsers.length > 0 ? (
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-xl">Pending likes</CardTitle>
+                        <CardDescription>People you liked who have not replied yet.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                            {pendingUsers.map((user) => (
+                                <UserPreviewCard key={user.id} status="pending" user={user} />
+                            ))}
+                        </div>
+                    </CardContent>
+                </Card>
+            ) : null}
+
             <Card className="bg-primary/5">
                 <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <CardTitle className="text-xl">Matches</CardTitle>
-                        <CardDescription>People who liked you back.</CardDescription>
+                        <CardTitle className="text-xl">Likes &amp; matches</CardTitle>
                     </div>
                     <Button size="sm" variant="outline" onClick={refetch}>
                         <RefreshCw className="mr-2 h-4 w-4" />
@@ -117,14 +133,18 @@ export const MatchesOverview = () => {
                         <div className="rounded-lg border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
                             {resolveErrorMessage(error)}
                         </div>
-                    ) : users.length === 0 ? (
+                    ) : connectedUsers.length === 0 ? (
                         <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
-                            No matches yet. Try discovering more profiles.
+                            No likes or matches yet. Try discovering more profiles.
                         </div>
                     ) : (
                         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                            {users.map((user) => (
-                                <UserPreviewCard key={user.id} user={user} />
+                            {connectedUsers.map((user) => (
+                                <UserPreviewCard
+                                    key={user.id}
+                                    status={users.some((match) => match.id === user.id) ? 'matched' : 'liked'}
+                                    user={user}
+                                />
                             ))}
                         </div>
                     )}

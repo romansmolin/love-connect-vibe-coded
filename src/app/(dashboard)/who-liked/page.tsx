@@ -1,5 +1,5 @@
-import { WhoLikedPage } from '@/views/who-liked-page'
+import { redirect } from 'next/navigation'
 
 export default function WhoLiked() {
-    return <WhoLikedPage />
+    redirect('/matches')
 }

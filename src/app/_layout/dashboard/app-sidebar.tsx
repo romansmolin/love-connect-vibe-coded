@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import { BarChart3, Eye, Gift, Heart, LayoutDashboard, MessageCircle, Settings, UserRound, Wallet } from 'lucide-react'
+import { BarChart3, Gift, Heart, LayoutDashboard, MessageCircle, Settings, UserRound, Wallet } from 'lucide-react'
 
 import { UserCard } from '@/entities/user'
 import { cn } from '@/shared/lib/utils'
@@ -36,11 +36,6 @@ const AppSidebar = () => {
                     title: 'Matches',
                     icon: Heart,
                     url: '/matches',
-                },
-                {
-                    title: 'Who Liked You',
-                    icon: Eye,
-                    url: '/who-liked',
                 },
                 {
                     title: 'Analytics',

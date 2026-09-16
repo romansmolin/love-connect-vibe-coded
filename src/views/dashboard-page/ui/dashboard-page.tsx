@@ -5,7 +5,7 @@ import React, { useMemo, useState } from 'react'
 import { HeartPulse, MessageCircle, RefreshCw, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 
-import type { CommunityActivityResponse, RecentVisitorsResponse, TopMembersResponse } from '@/entities/dashboard'
+import type { RecentVisitorsResponse, TopMembersResponse } from '@/entities/dashboard'
 import { useApiFetch as useDashboardFetch } from '@/shared/lib/react/use-api-fetch'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar'
 import { Badge } from '@/shared/ui/badge'
@@ -21,27 +21,6 @@ const initials = (value: string) =>
         .join('')
         .slice(0, 2)
         .toUpperCase()
-
-const formatAction = (action?: string) => {
-    switch (action) {
-        case 'con':
-            return 'just signed in'
-        case 'visite':
-            return 'visited a profile'
-        case 'vote':
-            return 'rated a profile'
-        case 'modif':
-            return 'updated their profile'
-        case 'add_tof':
-            return 'added new photos'
-        case 'birthday':
-            return 'is celebrating today 🎉'
-        case 'friends':
-            return 'became friends'
-        default:
-            return 'did something new'
-    }
-}
 
 const formatDate = (value?: string) => {
     if (!value) return 'just now'
@@ -66,20 +45,6 @@ const ErrorState = ({ message, onRetry }: { message: string; onRetry: () => void
             <RefreshCw className="mr-2 h-4 w-4" />
             Retry
         </Button>
-    </div>
-)
-
-const ActivitySkeleton = () => (
-    <div className="space-y-3">
-        {Array.from({ length: 4 }).map((_, index) => (
-            <div key={index} className="flex items-center gap-3">
-                <Skeleton className="h-10 w-10 rounded-full" />
-                <div className="flex-1 space-y-2">
-                    <Skeleton className="h-3 w-1/2" />
-                    <Skeleton className="h-3 w-1/3" />
-                </div>
-            </div>
-        ))}
     </div>
 )
 
@@ -147,67 +112,6 @@ const DashboardHero = () => (
         </div>
     </Card>
 )
-
-const ActivityCard = () => {
-    const { data, loading, error, refetch } =
-        useDashboardFetch<CommunityActivityResponse>('/api/dashboard/activity')
-
-    return (
-        <SectionShell
-            subtitle="Everything shifting right now."
-            title="Community activity"
-            action={
-                <Button className="rounded-full" size="sm" variant="outline" onClick={refetch}>
-                    <RefreshCw className="mr-2 h-4 w-4" />
-                    Refresh
-                </Button>
-            }
-        >
-            {loading ? (
-                <ActivitySkeleton />
-            ) : error ? (
-                <ErrorState message={error} onRetry={refetch} />
-            ) : !data || data.items.length === 0 ? (
-                <EmptyState message="No activity to show yet. Check back soon." />
-            ) : (
-                <div className="divide-y divide-border rounded-2xl border border-border/70">
-                    {data.items.map((item) => (
-                        <div key={item.id} className="flex flex-wrap items-center gap-4 px-4 py-4">
-                            <Avatar className="h-10 w-10">
-                                <AvatarFallback>{initials(item.username)}</AvatarFallback>
-                            </Avatar>
-                            <div className="min-w-[180px] flex-1">
-                                <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                                    <span>{item.username}</span>
-                                    {item.gender ? (
-                                        <Badge className="rounded-full" variant="outline">
-                                            {item.gender}
-                                        </Badge>
-                                    ) : null}
-                                </div>
-                                <p className="text-sm text-muted-foreground">{formatAction(item.action)}</p>
-                            </div>
-                            <div className="text-xs text-muted-foreground">
-                                {item.location ? `${item.location} · ` : ''}
-                                {formatDate(item.timestamp)}
-                            </div>
-                            {typeof item.id === 'number' && item.id > 0 ? (
-                                <Button asChild size="icon" variant="ghost">
-                                    <Link
-                                        href={`/chat?contactId=${item.id}&contact=${encodeURIComponent(item.username)}`}
-                                        title={`Message ${item.username}`}
-                                    >
-                                        <MessageCircle className="h-4 w-4" />
-                                    </Link>
-                                </Button>
-                            ) : null}
-                        </div>
-                    ))}
-                </div>
-            )}
-        </SectionShell>
-    )
-}
 
 const TopMembersCard = () => {
     const [tab, setTab] = useState<'men' | 'women'>('men')
@@ -372,7 +276,6 @@ export const DashboardPage = () => {
     return (
         <div className="space-y-6">
             <DashboardHero />
-            <ActivityCard />
             <TopMembersCard />
             <RecentVisitorsCard />
         </div>

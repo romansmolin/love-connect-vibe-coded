@@ -1,6 +1,7 @@
 import type { NextRequest } from 'next/server'
 
 import { appUserRepo } from '@/entities/demo-activity/api/server/repositories/app-user.repo'
+import { normalizeCity } from '@/entities/match/model/types'
 import { SESSION_COOKIE_NAME, USER_COOKIE_NAME } from '@/shared/api/fotochat'
 import { HttpError } from '@/shared/http-client'
 
@@ -61,7 +62,12 @@ export const matchController = {
         const ageFrom = toOptionalNumber(searchParams.get('ageFrom'))
         const ageTo = toOptionalNumber(searchParams.get('ageTo'))
         const genderParam = searchParams.get('gender')
-        const cityParam = searchParams.get('city')?.trim() || undefined
+        const cityInput = searchParams.get('city')?.trim() || undefined
+        const cityParam = cityInput ? normalizeCity(cityInput) : undefined
+
+        if (cityInput && !cityParam) {
+            throw new HttpError('Invalid city filter', 400)
+        }
         const isPoolRequest = searchParams.get('pool') === '1'
         const excludedIds = new Set(
             (searchParams.get('excludeIds') ?? '')
@@ -69,7 +75,7 @@ export const matchController = {
                 .map((value) => Number(value))
                 .filter((value) => Number.isInteger(value) && value > 0)
         )
-        const hasExplicitFilters = Boolean(genderParam || ageFrom || ageTo)
+        const hasExplicitFilters = Boolean(genderParam || ageFrom || ageTo || cityParam)
 
         const params = cleanParams({
             page,
@@ -88,7 +94,7 @@ export const matchController = {
         }
 
         return isPoolRequest
-            ? matchService.discoverPool(sessionId, params, excludedIds, cityParam, appUserId)
+            ? matchService.discoverPool(sessionId, params, excludedIds, cityParam ?? undefined, appUserId)
             : matchService.discover(sessionId, params, appUserId)
     },
     async listMatches(request: NextRequest) {
@@ -96,6 +102,12 @@ export const matchController = {
         const appUserId = getAppUserId(request)
 
         return matchService.listMatches(sessionId, appUserId)
+    },
+    async listPendingLikes(request: NextRequest) {
+        const sessionId = requireSessionId(request)
+        const appUserId = getAppUserId(request)
+
+        return matchService.listPendingLikes(sessionId, appUserId)
     },
     async action(request: NextRequest): Promise<MatchActionResponse> {
         const sessionId = requireSessionId(request)

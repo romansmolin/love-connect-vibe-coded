@@ -104,7 +104,7 @@ export const AnalyticsPage = () => {
                 />
                 <StatCard
                     hint="Voted for your photos"
-                    href="/who-liked"
+                    href="/matches"
                     icon={Users}
                     isLoading={isVotersLoading}
                     label="Who liked you"
