@@ -153,7 +153,7 @@ export const matchController = {
             throw new HttpError('Invalid action', 400)
         }
 
-        return matchService.blockUser(sessionId, targetId, action)
+        return matchService.blockUser(sessionId, targetId, action, getAppUserId(request))
     },
     async reportUser(request: NextRequest): Promise<ReportUserResponse> {
         const sessionId = requireSessionId(request)
@@ -178,7 +178,14 @@ export const matchController = {
             throw new HttpError('Security code is required', 400)
         }
 
-        return matchService.reportUser(sessionId, targetId, payload.reason, payload.code, payload.details)
+        return matchService.reportUser(
+            sessionId,
+            targetId,
+            payload.reason,
+            payload.code,
+            payload.details,
+            getAppUserId(request)
+        )
     },
     async getCaptcha(request: NextRequest): Promise<ArrayBuffer> {
         const sessionId = requireSessionId(request)

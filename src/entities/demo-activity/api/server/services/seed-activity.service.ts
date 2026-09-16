@@ -6,20 +6,37 @@ import { rollProbability } from '../../../lib/seed-roll'
 import { appUserRepo } from '../repositories/app-user.repo'
 import { simulatedMatchRepo } from '../repositories/simulated-match.repo'
 import { simulatedPersonaRepo } from '../repositories/simulated-persona.repo'
+
 import { serviceSessionService } from './service-session.service'
 
 const LIKE_RATE = 0.4
 const MUTUAL_MATCH_RATE = 0.15
+/** A periodic seed tick harvests a few pages, not the whole pool — this runs inside a cron timeout. */
+const SEED_MAX_PAGES = 4
 
-const discoverProfiles = async () => {
-    const sessionId = await serviceSessionService.getSessionId()
+const discoverProfiles = async (excludedIds: Set<number>) => {
+    const session = await serviceSessionService.getSession()
 
     try {
-        return await matchService.discoverPool(sessionId, {}, new Set())
+        return await matchService.discoverPool(
+            session.sessionId,
+            {},
+            excludedIds,
+            undefined,
+            undefined,
+            SEED_MAX_PAGES
+        )
     } catch (error) {
         if (error instanceof HttpError && error.status === 401) {
-            const freshSessionId = await serviceSessionService.getSessionId(true)
-            return matchService.discoverPool(freshSessionId, {}, new Set())
+            const fresh = await serviceSessionService.getSession(true)
+            return matchService.discoverPool(
+                fresh.sessionId,
+                {},
+                excludedIds,
+                undefined,
+                undefined,
+                SEED_MAX_PAGES
+            )
         }
         throw error
     }
@@ -27,11 +44,24 @@ const discoverProfiles = async () => {
 
 export const seedActivityService = {
     async run(): Promise<{ personas: number; likes: number; mutualMatches: number }> {
-        const discovered = await discoverProfiles()
-        const personaInputs = discovered.items.map(mapCandidateToPersonaInput)
+        const appUsers = await appUserRepo.listAll()
+
+        // A real love-bond account must never become anyone's "persona": its fotochat id would then
+        // hijack real likes, blocks and conversations. Same for the cron service account itself.
+        const session = await serviceSessionService.getSession()
+        const excludedIds = new Set<number>()
+        for (const id of [session.userId, ...appUsers.map((appUser) => Number(appUser.id))]) {
+            if (Number.isInteger(id) && id > 0) excludedIds.add(id)
+        }
+
+        await simulatedPersonaRepo.deleteByFotochatIds([...excludedIds])
+
+        const discovered = await discoverProfiles(excludedIds)
+        const personaInputs = discovered.items
+            .filter((candidate) => !excludedIds.has(candidate.id))
+            .map(mapCandidateToPersonaInput)
         await simulatedPersonaRepo.upsertMany(personaInputs)
 
-        const appUsers = await appUserRepo.listAll()
         let likes = 0
         let mutualMatches = 0
 

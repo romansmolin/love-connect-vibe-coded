@@ -119,6 +119,29 @@ const mapVoter = (member: MembreVoteBlock): MatchCandidate & { vote?: number } =
     vote: member.vote,
 })
 
+/**
+ * Demo-activity is strictly additive: a failure in the simulated path must never take down the
+ * real fotochat response it is merged into.
+ */
+const withoutSimulated = async <T>(label: string, load: () => Promise<T>, fallback: T): Promise<T> => {
+    try {
+        return await load()
+    } catch (error) {
+        console.error(`[demo-activity] ${label} failed, serving real data only`, error)
+        return fallback
+    }
+}
+
+/**
+ * Simulated personas carry REAL fotochat ids. Any mutation aimed at one must stop here and never
+ * reach `matchRepo` — otherwise the demo would like/dislike/block/report a real stranger's account.
+ */
+const findLinkedPersona = async (appUserId: string | undefined, targetId: number) => {
+    if (!appUserId) return null
+
+    return personaMatchService.findLinkedPersona(appUserId, targetId)
+}
+
 export const matchService = {
     async discover(
         sessionId: string,
@@ -149,10 +172,10 @@ export const matchService = {
         params: Record<string, unknown>,
         excludedIds: Set<number>,
         cityFilter?: string,
-        appUserId?: string
+        appUserId?: string,
+        maxPages = 50
     ): Promise<DiscoverMatchesResponse> {
         const members = new Map<number, MembreBlock>()
-        const maxPages = 50
         const perPage = 100
         const targetSize = 200
         let totalPages: number | undefined
@@ -216,7 +239,13 @@ export const matchService = {
 
         const members = extractMembers(response)
         const realItems = members.map((member) => mapMember(member))
-        const simulatedItems = appUserId ? await personaMatchService.listSimulatedMutualMatches(appUserId) : []
+        const simulatedItems = appUserId
+            ? await withoutSimulated(
+                  'listSimulatedMutualMatches',
+                  () => personaMatchService.listSimulatedMutualMatches(appUserId),
+                  [] as MatchCandidate[]
+              )
+            : []
 
         const total = (extractTotal(response) ?? realItems.length) + simulatedItems.length
 
@@ -226,6 +255,13 @@ export const matchService = {
         }
     },
     async like(sessionId: string, userId: number, appUserId?: string): Promise<MatchActionResponse> {
+        const persona = await findLinkedPersona(appUserId, userId)
+
+        if (persona && appUserId) {
+            await personaMatchService.likeBackPersona(appUserId, persona.id)
+            return { result: 'match', isMatch: true }
+        }
+
         const response = await matchRepo.sendAction({
             sessionId,
             apiKey: FOTOCHAT_API_KEY,
@@ -237,7 +273,12 @@ export const matchService = {
         const isMatch = result === 'match'
 
         if (appUserId) {
-            await matchActionRepo.recordAction({ userId: appUserId, targetUserId: userId, action: 'LIKE', isMatch })
+            await matchActionRepo.recordAction({
+                userId: appUserId,
+                targetUserId: userId,
+                action: 'LIKE',
+                isMatch,
+            })
         }
 
         return {
@@ -246,6 +287,13 @@ export const matchService = {
         }
     },
     async dislike(sessionId: string, userId: number, appUserId?: string): Promise<MatchActionResponse> {
+        const persona = await findLinkedPersona(appUserId, userId)
+
+        if (persona && appUserId) {
+            await personaMatchService.unlinkPersona(appUserId, persona.id)
+            return { result: 'ok', isMatch: false }
+        }
+
         const response = await matchRepo.sendAction({
             sessionId,
             apiKey: FOTOCHAT_API_KEY,
@@ -278,7 +326,16 @@ export const matchService = {
         }
 
         const realItems = response.result?.map(mapVoter) ?? []
-        const simulatedItems = appUserId ? await personaMatchService.listSimulatedLikes(appUserId) : []
+        // Simulated likes are a fixed, unpaginated set — merging them into every page would repeat
+        // them, so they only ride along with the first (implicit) page.
+        const simulatedItems =
+            appUserId && !page
+                ? await withoutSimulated(
+                      'listSimulatedLikes',
+                      () => personaMatchService.listSimulatedLikes(appUserId),
+                      [] as (MatchCandidate & { vote?: number })[]
+                  )
+                : []
 
         return {
             items: [...simulatedItems, ...realItems],
@@ -286,7 +343,21 @@ export const matchService = {
             totalPages: response.nb_pages,
         }
     },
-    async blockUser(sessionId: string, targetId: number, action: 'add' | 'del'): Promise<BlockUserResponse> {
+    async blockUser(
+        sessionId: string,
+        targetId: number,
+        action: 'add' | 'del',
+        appUserId?: string
+    ): Promise<BlockUserResponse> {
+        const persona = await findLinkedPersona(appUserId, targetId)
+
+        if (persona && appUserId) {
+            if (action === 'add') {
+                await personaMatchService.unlinkPersona(appUserId, persona.id)
+            }
+            return { success: true }
+        }
+
         const response = await matchRepo.setIgnore({ sessionId, targetId, action })
 
         if (response.result === 0 || response.result === '0') {
@@ -300,8 +371,15 @@ export const matchService = {
         targetId: number,
         reason: string,
         code: string,
-        details?: string
+        details?: string,
+        appUserId?: string
     ): Promise<ReportUserResponse> {
+        const persona = await findLinkedPersona(appUserId, targetId)
+
+        if (persona) {
+            return { success: true }
+        }
+
         const response = await matchRepo.reportUser({ sessionId, targetId, reason, details, code })
 
         if (response.result === 0 || response.result === '0') {

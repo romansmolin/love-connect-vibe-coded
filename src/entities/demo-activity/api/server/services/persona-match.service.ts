@@ -1,3 +1,5 @@
+import type { SimulatedPersona } from '@prisma/client'
+
 import type { ChatMessage, ContactPreview, SendMessageResponse } from '@/entities/chat/model/types'
 import type { MatchCandidate } from '@/entities/match/model/types'
 import { HttpError } from '@/shared/http-client'
@@ -7,6 +9,7 @@ import { randomReplyDelayMs } from '../../../lib/reply-timing'
 import { simulatedMatchRepo } from '../repositories/simulated-match.repo'
 import { simulatedMessageRepo } from '../repositories/simulated-message.repo'
 import { simulatedPersonaRepo } from '../repositories/simulated-persona.repo'
+
 import { replySchedulerService } from './reply-scheduler.service'
 
 const LIKE_VOTE_VALUE = 5
@@ -30,11 +33,39 @@ export const personaMatchService = {
             })
         )
     },
-    findPersonaByFotochatId(fotochatUserId: number) {
-        return simulatedPersonaRepo.findByFotochatId(fotochatUserId)
+    /**
+     * The single "is this id a simulated persona *for this user*" check.
+     *
+     * A `SimulatedPersona` row is harvested from the live fotochat pool, so its `fotochatUserId`
+     * can collide with a real member this user actually talks to. Matching on the persona row
+     * alone would hijack that real relationship, so a persona only counts as simulated here when
+     * this specific `appUserId` has a `SimulatedMatch` link to it. Every merge point and every
+     * mutation guard must go through this, never through a bare id lookup.
+     */
+    async findLinkedPersona(appUserId: string, fotochatUserId: number): Promise<SimulatedPersona | null> {
+        const persona = await simulatedPersonaRepo.findByFotochatId(fotochatUserId)
+        if (!persona) return null
+
+        const link = await simulatedMatchRepo.findLink(appUserId, persona.id)
+
+        return link ? persona : null
+    },
+    /** Like-back on a simulated persona: promote the local link to a mutual match. Never goes upstream. */
+    async likeBackPersona(appUserId: string, personaId: string): Promise<void> {
+        await simulatedMatchRepo.create(appUserId, personaId, 'MUTUAL_MATCH')
+        await simulatedMatchRepo.deleteLinks(appUserId, personaId, 'LIKE')
+    },
+    /** Drop every local link to a persona so it stops showing up for this user. Never goes upstream. */
+    async unlinkPersona(appUserId: string, personaId: string): Promise<void> {
+        await simulatedMatchRepo.deleteLinks(appUserId, personaId)
     },
     async listSimulatedMessages(appUserId: string, personaId: string): Promise<ChatMessage[]> {
-        await replySchedulerService.processDueForConversation(appUserId, personaId)
+        // Lazy reply generation is best-effort: it must never stop the stored history from loading.
+        try {
+            await replySchedulerService.processDueForConversation(appUserId, personaId)
+        } catch (error) {
+            console.error('[demo-activity] lazy reply processing failed', error)
+        }
 
         const persona = await simulatedPersonaRepo.findById(personaId)
         const rows = await simulatedMessageRepo.listByConversation(appUserId, personaId, 50)

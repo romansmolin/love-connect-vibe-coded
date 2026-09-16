@@ -10,6 +10,15 @@ export const simulatedMatchRepo = {
             create: { appUserId, personaId, kind },
         })
     },
+    findLink(appUserId: string, personaId: string, kind?: SimulatedMatchKind): Promise<SimulatedMatch | null> {
+        return prisma.simulatedMatch.findFirst({ where: { appUserId, personaId, ...(kind ? { kind } : {}) } })
+    },
+    async deleteLinks(appUserId: string, personaId: string, kind?: SimulatedMatchKind): Promise<number> {
+        const result = await prisma.simulatedMatch.deleteMany({
+            where: { appUserId, personaId, ...(kind ? { kind } : {}) },
+        })
+        return result.count
+    },
     async listWithPersonas(
         appUserId: string,
         kind: SimulatedMatchKind

@@ -4,25 +4,56 @@ import { prisma } from '@/shared/lib/prisma'
 
 import type { PersonaUpsertInput } from '../../../lib/persona-mapper'
 
+/** One giant transaction blows past Prisma's default transaction timeout as the pool grows. */
+const UPSERT_CHUNK_SIZE = 100
+
 export const simulatedPersonaRepo = {
     async upsertMany(personas: PersonaUpsertInput[]): Promise<void> {
         if (personas.length === 0) return
 
-        await prisma.$transaction(
-            personas.map((persona) =>
-                prisma.simulatedPersona.upsert({
-                    where: { fotochatUserId: persona.fotochatUserId },
-                    update: {
-                        username: persona.username,
-                        age: persona.age,
-                        location: persona.location,
-                        gender: persona.gender,
-                        photoUrl: persona.photoUrl,
-                    },
-                    create: persona,
-                })
+        for (let start = 0; start < personas.length; start += UPSERT_CHUNK_SIZE) {
+            const chunk = personas.slice(start, start + UPSERT_CHUNK_SIZE)
+
+            await prisma.$transaction(
+                chunk.map((persona) =>
+                    prisma.simulatedPersona.upsert({
+                        where: { fotochatUserId: persona.fotochatUserId },
+                        update: {
+                            username: persona.username,
+                            age: persona.age,
+                            location: persona.location,
+                            gender: persona.gender,
+                            photoUrl: persona.photoUrl,
+                        },
+                        create: persona,
+                    })
+                )
             )
-        )
+        }
+    },
+    /**
+     * Removes personas (and everything hanging off them) whose fotochat id belongs to a real
+     * account — cleans up rows harvested before ids were excluded at seed time.
+     */
+    async deleteByFotochatIds(fotochatUserIds: number[]): Promise<number> {
+        if (fotochatUserIds.length === 0) return 0
+
+        const personas = await prisma.simulatedPersona.findMany({
+            where: { fotochatUserId: { in: fotochatUserIds } },
+            select: { id: true },
+        })
+
+        if (personas.length === 0) return 0
+
+        const personaIds = personas.map((persona) => persona.id)
+
+        await prisma.$transaction([
+            prisma.simulatedMessage.deleteMany({ where: { personaId: { in: personaIds } } }),
+            prisma.simulatedMatch.deleteMany({ where: { personaId: { in: personaIds } } }),
+            prisma.simulatedPersona.deleteMany({ where: { id: { in: personaIds } } }),
+        ])
+
+        return personaIds.length
     },
     findByFotochatId(fotochatUserId: number): Promise<SimulatedPersona | null> {
         return prisma.simulatedPersona.findUnique({ where: { fotochatUserId } })

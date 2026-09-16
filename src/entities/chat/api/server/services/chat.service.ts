@@ -44,12 +44,31 @@ const mapMessage = (message: EclairBlock): ChatMessage => ({
     extra: message.p_extra ?? message.album_share,
 })
 
+/**
+ * Demo-activity is strictly additive: a failure in the simulated path must never take down the
+ * real fotochat response it is merged into.
+ */
+const withoutSimulated = async <T>(label: string, load: () => Promise<T>, fallback: T): Promise<T> => {
+    try {
+        return await load()
+    } catch (error) {
+        console.error(`[demo-activity] ${label} failed, serving real data only`, error)
+        return fallback
+    }
+}
+
 export const chatService = {
     async listContacts(sessionId: string, appUserId?: string): Promise<ContactsResponse> {
         const response = await chatRepo.loadContacts(sessionId)
 
         const realContacts = (response.contacts ?? []).map(mapContact)
-        const simulatedContacts = appUserId ? await personaMatchService.listSimulatedContacts(appUserId) : []
+        const simulatedContacts = appUserId
+            ? await withoutSimulated(
+                  'listSimulatedContacts',
+                  () => personaMatchService.listSimulatedContacts(appUserId),
+                  []
+              )
+            : []
         const realIds = new Set(realContacts.map((contact) => contact.id))
         const extraSimulated = simulatedContacts.filter((contact) => !realIds.has(contact.id))
 
@@ -61,10 +80,17 @@ export const chatService = {
         contact?: string,
         appUserId?: string
     ): Promise<MessagesResponse> {
+        // Detection deliberately fails closed: if we cannot tell whether this contact is a persona
+        // linked to this user, we must not guess, because guessing "real" would hit a real account.
         if (appUserId) {
-            const persona = await personaMatchService.findPersonaByFotochatId(contactId)
+            const persona = await personaMatchService.findLinkedPersona(appUserId, contactId)
             if (persona) {
-                return { messages: await personaMatchService.listSimulatedMessages(appUserId, persona.id) }
+                const messages = await withoutSimulated(
+                    'listSimulatedMessages',
+                    () => personaMatchService.listSimulatedMessages(appUserId, persona.id),
+                    [] as ChatMessage[]
+                )
+                return { messages }
             }
         }
 
@@ -83,7 +109,7 @@ export const chatService = {
         }
 
         if (appUserId) {
-            const persona = await personaMatchService.findPersonaByFotochatId(payload.contactId)
+            const persona = await personaMatchService.findLinkedPersona(appUserId, payload.contactId)
             if (persona) {
                 return personaMatchService.sendSimulatedMessage(appUserId, persona.id, payload.message)
             }

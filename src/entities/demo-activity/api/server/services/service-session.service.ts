@@ -13,11 +13,11 @@ const requireEnv = (name: string): string => {
 }
 
 export const serviceSessionService = {
-    async getSessionId(forceRefresh = false): Promise<string> {
+    async getSession(forceRefresh = false): Promise<{ sessionId: string; userId: number }> {
         const isFresh = cachedSession !== null && Date.now() - cachedSession.obtainedAt < SESSION_TTL_MS
 
         if (!forceRefresh && isFresh && cachedSession) {
-            return cachedSession.sessionId
+            return { sessionId: cachedSession.sessionId, userId: cachedSession.userId }
         }
 
         const username = requireEnv('CRON_SERVICE_USERNAME')
@@ -25,8 +25,9 @@ export const serviceSessionService = {
 
         const result = await authService.signIn({ username, password })
 
-        cachedSession = { sessionId: result.sessionId, userId: result.userId, obtainedAt: Date.now() }
+        // fotochat returns user_id as a string despite the typed number — coerce it once here.
+        cachedSession = { sessionId: result.sessionId, userId: Number(result.userId), obtainedAt: Date.now() }
 
-        return cachedSession.sessionId
+        return { sessionId: cachedSession.sessionId, userId: cachedSession.userId }
     },
 }
