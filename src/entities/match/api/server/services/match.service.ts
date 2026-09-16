@@ -29,6 +29,15 @@ const mapGender = (value?: number): MatchGender | undefined => {
     }
 }
 
+const toNumber = (value: unknown): number | undefined => {
+    if (typeof value === 'number') return Number.isFinite(value) ? value : undefined
+    if (typeof value === 'string' && value.trim() !== '') {
+        const parsed = Number(value)
+        return Number.isFinite(parsed) ? parsed : undefined
+    }
+    return undefined
+}
+
 const pickPhotoUrl = (member: MembreBlock) => {
     const v2 = member.photos_v2?.[0]
     const legacy = member.photos?.[0]
@@ -45,9 +54,9 @@ const pickPhotoUrl = (member: MembreBlock) => {
 }
 
 const mapMember = (member: MembreBlock): MatchCandidate => ({
-    id: member.id ?? 0,
+    id: toNumber(member.id) ?? 0,
     username: member.pseudo ?? member.prenom ?? 'Member',
-    age: member.age,
+    age: toNumber(member.age),
     gender: mapGender(member.sexe1),
     location: member.zone_name,
     rating: member.moyenne,
@@ -99,9 +108,9 @@ const extractTotal = (payload: Awaited<ReturnType<typeof matchRepo.listMatches>>
 }
 
 const mapVoter = (member: MembreVoteBlock): MatchCandidate & { vote?: number } => ({
-    id: member.id ?? 0,
+    id: toNumber(member.id) ?? 0,
     username: member.pseudo ?? member.prenom ?? 'Member',
-    age: member.age,
+    age: toNumber(member.age),
     gender: mapGender(member.sexe1),
     location: member.zone_name,
     rating: member.moyenne,
