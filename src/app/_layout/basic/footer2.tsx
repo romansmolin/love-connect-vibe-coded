@@ -99,10 +99,10 @@ const Footer2 = ({
                         <div>
                             <h3 className="mb-4 text-base font-bold text-foreground">Company Info</h3>
                             <ul className="space-y-3 text-sm text-muted-foreground">
-                                <li className="font-medium">NewEcoPay s.r.o.</li>
-                                <li className="font-medium">Registration No. 222 32 354</li>
-                                <li className="font-medium">Vlkova 532/8, Žižkov</li>
-                                <li className="font-medium">130 00 Praha 3, Czech Republic</li>
+                                <li className="font-medium">Rix RB s.r.o.</li>
+                                <li className="font-medium">IČO: 23715189</li>
+                                <li className="font-medium">Sinkulova 160/16, Praha 4–Podolí</li>
+                                <li className="font-medium">147 00, Czech Republic</li>
                             </ul>
                         </div>
                     </div>

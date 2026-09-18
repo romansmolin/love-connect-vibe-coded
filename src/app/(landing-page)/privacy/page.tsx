@@ -14,7 +14,7 @@ const PrivacyPolicy = () => {
                     <div className="space-y-8">
                         <section>
                             <p className="mb-6">
-                                Your privacy is important to us at LoveBond. NewEcoPay s.r.o. is the data
+                                Your privacy is important to us at LoveBond. Rix RB s.r.o. is the data
                                 controller responsible for the personal data processed through the LoveBond website
                                 and service. This Privacy Policy explains what information we collect from you as a
                                 user of the LoveBond Service, how we use and share that information, and your
@@ -24,8 +24,8 @@ const PrivacyPolicy = () => {
                             </p>
                             <div className="rounded-lg bg-muted p-4 text-sm">
                                 <p className="font-medium">Data controller</p>
-                                <p>NewEcoPay s.r.o., Registration No. 222 32 354</p>
-                                <p>Vlkova 532/8, Žižkov, 130 00 Praha 3, Czech Republic</p>
+                                <p>Rix RB s.r.o., IČO: 23715189</p>
+                                <p>Sinkulova 160/16, Praha 4–Podolí, 147 00, Czech Republic</p>
                             </div>
                         </section>
 
@@ -566,10 +566,10 @@ const PrivacyPolicy = () => {
                             <div className="bg-muted p-4 rounded-lg">
                                 <p className="font-medium">LoveBond Privacy Team</p>
                                 <p>Email: privacy@love-bond.com</p>
-                                <p>NewEcoPay s.r.o.</p>
-                                <p>Registration No. 222 32 354</p>
-                                <p>Vlkova 532/8, Žižkov</p>
-                                <p>130 00 Praha 3, Czech Republic</p>
+                                <p>Rix RB s.r.o.</p>
+                                <p>IČO: 23715189</p>
+                                <p>Sinkulova 160/16, Praha 4–Podolí</p>
+                                <p>147 00, Czech Republic</p>
                                 <p className="mt-2 text-sm text-muted-foreground">
                                     We will be happy to answer your questions and address any issues to the best of
                                     our ability. Your trust is important to us, and we are committed to

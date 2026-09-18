@@ -529,10 +529,10 @@ const TermsAndConditions = () => {
                             <div className="bg-muted p-4 rounded-lg mt-4">
                                 <p className="font-medium">LoveBond Support</p>
                                 <p>Email: support@love-bond.com</p>
-                                <p>NewEcoPay s.r.o.</p>
-                                <p>Registration No. 222 32 354</p>
-                                <p>Vlkova 532/8, Žižkov</p>
-                                <p>130 00 Praha 3, Czech Republic</p>
+                                <p>Rix RB s.r.o.</p>
+                                <p>IČO: 23715189</p>
+                                <p>Sinkulova 160/16, Praha 4–Podolí</p>
+                                <p>147 00, Czech Republic</p>
                                 <p>
                                     Website:{' '}
                                     <Link className="text-blue-600 hover:underline" href="/">

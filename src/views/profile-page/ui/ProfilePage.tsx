@@ -144,7 +144,6 @@ const PhotoUploadButton = ({ onUploaded }: { onUploaded: () => void }) => {
             />
             <Button
                 disabled={isLoading}
-                variant="outline"
                 onClick={() => inputRef.current?.click()}
             >
                 {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
@@ -611,16 +610,19 @@ export const ProfilePage = () => {
                                 )}
                             </div>
                         </div>
-                        <EditProfileDialog
-                            profile={profile}
-                            trigger={
-                                <Button variant="outline">
-                                    Edit Profile
-                                    <ArrowUpRight className="ml-2 h-4 w-4" />
-                                </Button>
-                            }
-                            onUpdated={refetch}
-                        />
+                        <div className="flex flex-wrap gap-2">
+                            <PhotoUploadButton onUploaded={refetch} />
+                            <EditProfileDialog
+                                profile={profile}
+                                trigger={
+                                    <Button variant="outline">
+                                        Edit Profile
+                                        <ArrowUpRight className="ml-2 h-4 w-4" />
+                                    </Button>
+                                }
+                                onUpdated={refetch}
+                            />
+                        </div>
                     </CardContent>
                 </Card>
 
