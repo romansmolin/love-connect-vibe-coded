@@ -1,16 +1,14 @@
 import { matchService } from '@/entities/match/api/server/services/match.service'
 import { HttpError } from '@/shared/http-client'
 
+import { planSeedActivity } from '../../../lib/activity-plan'
 import { mapCandidateToPersonaInput } from '../../../lib/persona-mapper'
-import { rollProbability } from '../../../lib/seed-roll'
 import { appUserRepo } from '../repositories/app-user.repo'
 import { simulatedMatchRepo } from '../repositories/simulated-match.repo'
 import { simulatedPersonaRepo } from '../repositories/simulated-persona.repo'
 
 import { serviceSessionService } from './service-session.service'
 
-const LIKE_RATE = 0.4
-const MUTUAL_MATCH_RATE = 0.15
 /** A periodic seed tick harvests a few pages, not the whole pool — this runs inside a cron timeout. */
 const SEED_MAX_PAGES = 4
 const RANDOM_POOL_SIZE = 200
@@ -81,7 +79,9 @@ export const seedActivityService = {
         let mutualMatches = 0
 
         for (const appUser of appUsers) {
-            if (rollProbability(LIKE_RATE)) {
+            const activityPlan = planSeedActivity(await simulatedMatchRepo.hasVisibleActivity(appUser.id))
+
+            if (activityPlan.createLike) {
                 const persona = await simulatedPersonaRepo.pickRandomUnlinked(appUser.id, 'LIKE')
                 if (persona) {
                     await simulatedMatchRepo.create(appUser.id, persona.id, 'LIKE')
@@ -89,7 +89,7 @@ export const seedActivityService = {
                 }
             }
 
-            if (rollProbability(MUTUAL_MATCH_RATE)) {
+            if (activityPlan.createMutualMatch) {
                 const persona = await simulatedPersonaRepo.pickRandomUnlinked(appUser.id, 'MUTUAL_MATCH')
                 if (persona) {
                     await simulatedMatchRepo.create(appUser.id, persona.id, 'MUTUAL_MATCH')

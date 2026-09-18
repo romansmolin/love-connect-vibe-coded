@@ -56,4 +56,14 @@ export const simulatedMatchRepo = {
             })
             .filter((row): row is { match: SimulatedMatch; persona: SimulatedPersona } => row !== null)
     },
+    async hasVisibleActivity(appUserId: string): Promise<boolean> {
+        const count = await prisma.simulatedMatch.count({
+            where: {
+                appUserId,
+                kind: { in: ['LIKE', 'MUTUAL_MATCH'] },
+            },
+        })
+
+        return count > 0
+    },
 }

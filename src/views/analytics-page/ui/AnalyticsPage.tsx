@@ -50,14 +50,26 @@ const GENDER_LABELS: Record<string, string> = {
     couple: 'Couples',
 }
 
+const ANALYTICS_REFRESH_OPTIONS = {
+    pollingInterval: 60_000,
+    refetchOnFocus: true,
+    refetchOnReconnect: true,
+}
+
 export const AnalyticsPage = () => {
-    const { data: matchesData, isLoading: isMatchesLoading, refetch: refetchMatches } = useGetMatchesQuery()
-    const { data: votersData, isLoading: isVotersLoading, refetch: refetchVoters } = useGetVotersQuery({})
+    const { data: matchesData, isLoading: isMatchesLoading, refetch: refetchMatches } = useGetMatchesQuery(
+        undefined,
+        ANALYTICS_REFRESH_OPTIONS
+    )
+    const { data: votersData, isLoading: isVotersLoading, refetch: refetchVoters } = useGetVotersQuery(
+        {},
+        ANALYTICS_REFRESH_OPTIONS
+    )
     const {
         data: visitorsData,
         loading: isVisitorsLoading,
         refetch: refetchVisitors,
-    } = useApiFetch<RecentVisitorsResponse>('/api/dashboard/recent-visitors')
+    } = useApiFetch<RecentVisitorsResponse>('/api/dashboard/recent-visitors', ANALYTICS_REFRESH_OPTIONS)
 
     const matches = matchesData?.items ?? []
     const voters = votersData?.items ?? []
