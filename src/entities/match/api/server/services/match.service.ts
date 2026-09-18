@@ -150,6 +150,10 @@ const mapVoter = (member: MembreVoteBlock): MatchCandidate & { vote?: number } =
     vote: member.vote,
 })
 
+const DISCOVERY_POOL_PAGE_SIZE = 100
+const DISCOVERY_POOL_TARGET_SIZE = 100
+const MAX_DISCOVERY_POOL_PAGES = 2
+
 /**
  * Demo-activity is strictly additive: a failure in the simulated path must never take down the
  * real fotochat response it is merged into.
@@ -204,13 +208,12 @@ export const matchService = {
         excludedIds: Set<number>,
         cityFilter?: string,
         appUserId?: string,
-        maxPages = 50
+        maxPages = MAX_DISCOVERY_POOL_PAGES,
+        targetSize = DISCOVERY_POOL_TARGET_SIZE
     ): Promise<DiscoverMatchesResponse> {
         const members = new Map<number, MembreBlock>()
-        const perPage = 100
         let totalPages: number | undefined
-        const normalizedCity = cityFilter?.trim().toLowerCase()
-        const targetSize = normalizedCity ? 5000 : 200
+        void cityFilter
 
         if (appUserId) {
             const actedIds = await matchActionRepo.listActedTargetIds(appUserId)
@@ -221,7 +224,7 @@ export const matchService = {
             const response = await matchRepo.discover(sessionId, {
                 ...params,
                 page,
-                pas: perPage,
+                pas: DISCOVERY_POOL_PAGE_SIZE,
                 searchAction: params.searchAction,
             })
 
@@ -238,7 +241,7 @@ export const matchService = {
                 members.set(memberId, member)
             }
 
-            const reachedTarget = normalizedCity ? members.size >= targetSize : false
+            const reachedTarget = members.size >= targetSize
 
             if (
                 pageMembers.length === 0 ||
@@ -248,7 +251,7 @@ export const matchService = {
                 break
         }
 
-        const items = [...members.values()].slice(0, maxPages * perPage).map((member) => mapMember(member))
+        const items = [...members.values()].slice(0, targetSize).map((member) => mapMember(member))
 
         return {
             items,

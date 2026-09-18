@@ -9,7 +9,7 @@
         "start": "next start",
         "lint": "eslint --fix",
         "prettier": "prettier --write .",
-        "test": "TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\"}' node --require ts-node/register --test \"src/**/*.test.ts\"",
+        "test": "TS_NODE_BASEURL=. TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\"}' node --require ts-node/register --require tsconfig-paths/register --test \"src/**/*.test.ts\"",
         "postinstall": "prisma generate --no-engine"
     },
     "dependencies": {
@@ -93,6 +93,7 @@
         "prettier-plugin-sort-json": "^4.1.1",
         "tailwindcss": "^4.0.14",
         "ts-node": "^10.9.2",
+        "tsconfig-paths": "^3.15.0",
         "typescript": "^5",
         "zod": "^4.1.8"
     },

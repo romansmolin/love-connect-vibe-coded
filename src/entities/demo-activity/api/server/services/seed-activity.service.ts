@@ -36,7 +36,8 @@ const discoverProfiles = async (excludedIds: Set<number>) => {
             excludedIds,
             undefined,
             undefined,
-            SEED_MAX_PAGES
+            SEED_MAX_PAGES,
+            RANDOM_POOL_SIZE
         )
     } catch (error) {
         if (error instanceof HttpError && error.status === 401) {
@@ -47,7 +48,8 @@ const discoverProfiles = async (excludedIds: Set<number>) => {
                 excludedIds,
                 undefined,
                 undefined,
-                SEED_MAX_PAGES
+                SEED_MAX_PAGES,
+                RANDOM_POOL_SIZE
             )
         }
         throw error
