@@ -3,6 +3,7 @@ export {
     useGetUserInfoQuery,
     useGetUserProfileQuery,
     useGetMemberProfileQuery,
+    usePrefetchMemberProfile,
     useDeleteAccountMutation,
     useLogoutMutation,
     useRequestPasswordResetMutation,

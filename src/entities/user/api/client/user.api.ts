@@ -106,3 +106,5 @@ export const {
     useLogoutMutation,
     useDeleteAccountMutation,
 } = userApi
+
+export const usePrefetchMemberProfile = () => userApi.usePrefetch('getMemberProfile')

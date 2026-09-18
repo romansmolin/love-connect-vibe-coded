@@ -6,6 +6,7 @@ import { HeartPulse, MessageCircle, RefreshCw, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 
 import type { RecentVisitorsResponse, TopMembersResponse } from '@/entities/dashboard'
+import { usePrefetchMemberProfile } from '@/entities/user'
 import { useApiFetch as useDashboardFetch } from '@/shared/lib/react/use-api-fetch'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar'
 import { Badge } from '@/shared/ui/badge'
@@ -192,6 +193,7 @@ const RecentVisitorsCard = () => {
     const { data, loading, error, refetch } = useDashboardFetch<RecentVisitorsResponse>(
         '/api/dashboard/recent-visitors'
     )
+    const prefetchMemberProfile = usePrefetchMemberProfile()
     const visitors = data?.items ?? []
 
     return (
@@ -225,6 +227,9 @@ const RecentVisitorsCard = () => {
                             <Link
                                 className="flex min-w-0 flex-1 items-center gap-3"
                                 href={`/profile/${visitor.id}`}
+                                onFocus={() => prefetchMemberProfile(visitor.id)}
+                                onMouseEnter={() => prefetchMemberProfile(visitor.id)}
+                                onPointerDown={() => prefetchMemberProfile(visitor.id)}
                             >
                                 <Avatar className="h-11 w-11">
                                     {visitor.photoUrl ? (
@@ -253,12 +258,12 @@ const RecentVisitorsCard = () => {
                                 </Badge>
                                 <Button asChild size="icon" variant="ghost">
                                     <Link
+                                        title={`Message ${visitor.username}`}
                                         href={`/chat?contactId=${visitor.id}&contact=${encodeURIComponent(visitor.username)}${
                                             visitor.photoUrl
                                                 ? `&avatarUrl=${encodeURIComponent(visitor.photoUrl)}`
                                                 : ''
                                         }`}
-                                        title={`Message ${visitor.username}`}
                                     >
                                         <MessageCircle className="h-4 w-4" />
                                     </Link>

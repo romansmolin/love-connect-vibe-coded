@@ -1,4 +1,3 @@
-import { userRepo } from '@/entities/user/api/server/repositories/user.repo'
 import type { PhotoBlock, PhotoBlockV2 } from '@/entities/user/api/server/repositories/user.repo'
 import { HttpError } from '@/shared/http-client'
 
@@ -144,41 +143,7 @@ export const dashboardService = {
 
         ensureConnected(response)
 
-        const items = await Promise.all(
-            (response.result ?? []).map(async (member) => {
-                const summary = mapMember(member)
-
-                if (!member.id || member.id <= 0) {
-                    return summary
-                }
-
-                try {
-                    const profileResponse = await userRepo.getProfile({
-                        sessionId,
-                        userId: member.id,
-                        withPhotos: true,
-                    })
-
-                    const profile = profileResponse.result
-
-                    return profile
-                        ? {
-                              ...summary,
-                              username: profile.pseudo ?? profile.prenom ?? summary.username,
-                              gender: mapGender(profile.sexe1) ?? summary.gender,
-                              age: profile.age ?? summary.age,
-                              location: profile.zone_name ?? summary.location,
-                              photoUrl:
-                                  getPhotoFromV2(profile.photos_v2?.[0]) ??
-                                  getPhotoFromLegacy(profile.photos?.[0]) ??
-                                  summary.photoUrl,
-                          }
-                        : summary
-                } catch {
-                    return summary
-                }
-            })
-        )
+        const items = (response.result ?? []).map(mapMember)
 
         return {
             items,
