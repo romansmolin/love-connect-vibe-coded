@@ -66,6 +66,7 @@ const Footer2 = ({
     ],
     copyright = '© 2026 LoveBond. All rights reserved.',
     bottomLinks = [
+        { text: 'Content Moderation Policy', url: '/content-moderation-policy' },
         { text: 'Terms and Conditions', url: '/terms-of-conditions' },
         { text: 'Privacy Policy', url: '/privacy' },
     ],
