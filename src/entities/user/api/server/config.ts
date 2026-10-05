@@ -5,4 +5,4 @@ export {
     LANG_COOKIE_NAME,
     SESSION_COOKIE_NAME,
     USER_COOKIE_NAME,
-} from '@/shared/api/fotochat'
+} from '@/shared/api/fotochat-server'

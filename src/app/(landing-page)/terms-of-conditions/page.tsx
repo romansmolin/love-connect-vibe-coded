@@ -84,16 +84,12 @@ const TermsAndConditions = () => {
                         <section>
                             <h2 className="text-2xl font-semibold mb-4">3. Use of the Service</h2>
 
-                            <h3 className="text-xl font-medium mb-3">Posting and Scheduling</h3>
+                            <h3 className="text-xl font-medium mb-3">Profiles and User Content</h3>
                             <p className="mb-4">
-                                LoveBond allows you to create, schedule, and publish content (&quot;User
-                                Content&quot;) to your connected social media accounts. You retain ownership of all
-                                User Content you post through our Service. By using LoveBond to publish or schedule
-                                content, you grant us a limited license to access, process, and transmit your
-                                content as necessary to provide the Service (for example, to format and send your
-                                posts to the selected social media platforms). This license is solely for the
-                                purpose of operating or improving the Service, and we do not claim any ownership
-                                over your content.
+                                You may create a profile, upload photos, and communicate with other members through
+                                LoveBond. You retain ownership of the content you submit. You grant LoveBond a
+                                limited license to host, display, and transmit that content as needed to operate,
+                                maintain, and improve the Service.
                             </p>
 
                             <h3 className="text-xl font-medium mb-3">User Responsibilities</h3>
@@ -126,15 +122,13 @@ const TermsAndConditions = () => {
                                 </li>
                                 <li>
                                     <strong>Spam and Unsolicited Messaging:</strong> Send unsolicited or bulk
-                                    messages, spam, or engage in tactics that violate the anti-spam policies of any
-                                    platform or applicable spam laws.
+                                    messages, spam, or engage in tactics that violate applicable anti-spam laws.
                                 </li>
                                 <li>
                                     <strong>Malware and Hacking:</strong> Upload or transmit any viruses, worms,
                                     malware, or any other code that is malicious or technologically harmful.
                                     Attempt to probe, scan, or test the vulnerability of any system or network, or
-                                    breach any security or authentication measures of the Service or third-party
-                                    services.
+                                    breach any security or authentication measures of the Service.
                                 </li>
                                 <li>
                                     <strong>Circumventing Limits:</strong> Use the Service in a manner that exceeds
@@ -152,32 +146,15 @@ const TermsAndConditions = () => {
 
                             <h3 className="text-xl font-medium mb-3">Media Upload Guidelines</h3>
                             <p className="mb-4">
-                                To keep the Service fair for every workspace and to protect the social platforms we
-                                integrate with, every upload must respect the following technical guardrails. These
-                                limits apply anywhere you use the LoveBond composer or media uploader, unless a
-                                specific workflow (for example, YouTube long-form uploads) states otherwise.
+                                To protect members and keep the Service reliable, uploaded photos must follow these
+                                guidelines:
                             </p>
                             <ul className="list-disc pl-6 space-y-2 mb-4">
                                 <li>
-                                    <strong>Supported image formats:</strong> PNG, JPG, JPEG, and WebP. Animated
-                                    GIFs should be converted to video before uploading to ensure reliability.
+                                    <strong>Supported formats:</strong> PNG, JPG, JPEG, and WebP.
                                 </li>
                                 <li>
-                                    <strong>Supported video formats:</strong> MP4, MOV, WEBM, or any file that
-                                    conforms to the standard <code>video/*</code> MIME types accepted by the
-                                    LoveBond uploader. We recommend H.264 video with AAC audio for best
-                                    compatibility.
-                                </li>
-                                <li>
-                                    <strong>Maximum file size:</strong> 50&nbsp;MB per individual file. Uploads
-                                    that exceed this limit are rejected automatically to prevent failed posts
-                                    downstream.
-                                </li>
-                                <li>
-                                    <strong>Quantity per post:</strong> Up to ten (10) images or a single video may
-                                    be attached to one scheduled post. Some platforms might enforce stricter limits
-                                    (for example, Pinterest boards or TikTok videos), and those platform rules
-                                    continue to apply.
+                                    <strong>Maximum file size:</strong> 50&nbsp;MB per photo.
                                 </li>
                                 <li>
                                     <strong>Ownership and safety:</strong> You must have the right to distribute
@@ -185,175 +162,10 @@ const TermsAndConditions = () => {
                                     any material that violates the Acceptable Use rules described above.
                                 </li>
                             </ul>
-                            <p className="mb-4">
-                                Platform-level caps (such as YouTube&apos;s 256&nbsp;GB ceiling or TikTok&apos;s
-                                length requirements) still govern what ultimately publishes. If you need to work
-                                with larger assets, contact support so we can guide you through the appropriate
-                                workflow.
-                            </p>
-
-                            <h3 className="text-xl font-medium mb-3">Third-Party Social Network Rules</h3>
-                            <p className="mb-4">
-                                Because LoveBond connects to external social media platforms, you agree to comply
-                                with each social platform&apos;s own terms and policies when using our Service.
-                                This means that all content you post and actions you take through LoveBond must
-                                also adhere to the rules of the platform to which you are posting.
-                            </p>
-
-                            <div className="bg-muted p-4 rounded-lg mb-4">
-                                <p className="font-medium mb-2">
-                                    For your reference, we have provided links to the primary terms for each
-                                    integrated platform:
-                                </p>
-                                <ul className="list-disc pl-6 space-y-1 text-sm">
-                                    <li>
-                                        <strong>Facebook:</strong>{' '}
-                                        <Link
-                                            className="text-blue-600 hover:underline"
-                                            href="https://facebook.com/legal/terms"
-                                            rel="noopener noreferrer"
-                                            target="_blank"
-                                        >
-                                            Facebook Terms of Service
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <strong>Instagram:</strong>{' '}
-                                        <Link
-                                            className="text-blue-600 hover:underline"
-                                            href="https://help.instagram.com/581066165581870"
-                                            rel="noopener noreferrer"
-                                            target="_blank"
-                                        >
-                                            Instagram Terms of Use
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <strong>Threads:</strong>{' '}
-                                        <Link
-                                            className="text-blue-600 hover:underline"
-                                            href="https://help.instagram.com/769983657850450"
-                                            rel="noopener noreferrer"
-                                            target="_blank"
-                                        >
-                                            Threads Terms of Use
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <strong>LinkedIn:</strong>{' '}
-                                        <Link
-                                            className="text-blue-600 hover:underline"
-                                            href="https://linkedin.com/legal/user-agreement"
-                                            rel="noopener noreferrer"
-                                            target="_blank"
-                                        >
-                                            LinkedIn User Agreement
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <strong>Bluesky:</strong>{' '}
-                                        <Link
-                                            className="text-blue-600 hover:underline"
-                                            href="https://bsky.social/about/support/tos"
-                                            rel="noopener noreferrer"
-                                            target="_blank"
-                                        >
-                                            Bluesky Social Terms of Service
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <strong>Pinterest:</strong>{' '}
-                                        <Link
-                                            className="text-blue-600 hover:underline"
-                                            href="https://policy.pinterest.com/en/terms-of-service"
-                                            rel="noopener noreferrer"
-                                            target="_blank"
-                                        >
-                                            Pinterest Terms of Service
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <strong>TikTok:</strong>{' '}
-                                        <Link
-                                            className="text-blue-600 hover:underline"
-                                            href="https://tiktok.com/legal/terms-of-service"
-                                            rel="noopener noreferrer"
-                                            target="_blank"
-                                        >
-                                            TikTok Terms of Service
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <strong>YouTube:</strong>{' '}
-                                        <Link
-                                            className="text-blue-600 hover:underline"
-                                            href="https://youtube.com/t/terms"
-                                            rel="noopener noreferrer"
-                                            target="_blank"
-                                        >
-                                            YouTube Terms of Service
-                                        </Link>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <p className="mb-4">
-                                <strong>Note:</strong> These third-party terms are incorporated by reference. You
-                                are responsible for reviewing the terms and policies of any social platform you
-                                connect to LoveBond. If you violate a social platform&apos;s terms, that platform
-                                may take action against your account independently of LoveBond, and LoveBond is not
-                                responsible for your violations on third-party services.
-                            </p>
-
-                            <h3 className="text-xl font-medium mb-3">No Affiliation</h3>
-                            <p>
-                                LoveBond is an independent service. We are not affiliated with, endorsed, or
-                                certified by YouTube, Meta (Facebook/Instagram/Threads), LinkedIn, Bluesky,
-                                Pinterest, TikTok, or any other social media company. All trademarks, logos, and
-                                brand names of social media platforms are the property of their respective owners.
-                                Use of such marks in LoveBond is for identification purposes only and does not
-                                imply any sponsorship or endorsement.
-                            </p>
                         </section>
 
                         <section>
-                            <h2 className="text-2xl font-semibold mb-4">
-                                4. Third-Party Services and Integrations
-                            </h2>
-
-                            <h3 className="text-xl font-medium mb-3">OAuth and Permissions</h3>
-                            <p className="mb-4">
-                                To enable LoveBond to post on your behalf, you will connect your social media
-                                accounts via OAuth 2.0 authentication. When you connect an account, you grant
-                                LoveBond permission to access certain information and perform actions (for example,
-                                publishing posts) as allowed by that platform&apos;s API. You can revoke our access
-                                at any time via the settings of the respective social media platform. LoveBond does
-                                not collect your social media login passwords; authentication is handled securely
-                                by the platforms (we receive tokens, not credentials).
-                            </p>
-
-                            <h3 className="text-xl font-medium mb-3">Data from Social Platforms</h3>
-                            <p className="mb-4">
-                                Any data fetched from your connected social accounts will be used strictly to
-                                provide the Service. This may include, for example, your profile name, account ID,
-                                profile photo, and the content of posts you create or schedule. We only collect the
-                                minimum data required to perform the requested functions (publishing your content
-                                and showing your account info). We will not download or store data from your social
-                                accounts beyond what is necessary for these purposes, in accordance with our
-                                Privacy Policy.
-                            </p>
-
-                            <h3 className="text-xl font-medium mb-3">Third-Party Links and Content</h3>
-                            <p>
-                                The Service may present links or content that lead to third-party websites or
-                                services (including the social platforms themselves). We are not responsible for
-                                any third-party content or services, which are subject to their own terms and
-                                privacy policies.
-                            </p>
-                        </section>
-
-                        <section>
-                            <h2 className="text-2xl font-semibold mb-4">5. Intellectual Property</h2>
+                            <h2 className="text-2xl font-semibold mb-4">4. Intellectual Property</h2>
 
                             <h3 className="text-xl font-medium mb-3">Our Intellectual Property</h3>
                             <p className="mb-4">
@@ -370,59 +182,39 @@ const TermsAndConditions = () => {
                             <p>
                                 You retain all rights to the content you create and upload to LoveBond (your
                                 &quot;User Content&quot;). LoveBond does not claim ownership of your User Content.
-                                By submitting or scheduling content through our Service, you grant LoveBond the
-                                right to store, transmit, display, and otherwise use your content solely as needed
-                                to provide the Service (for example, to post it on the social networks at your
-                                direction or to generate previews). This license is worldwide, non-exclusive, and
-                                royalty-free, and it ends when you delete the content from our systems or when you
-                                terminate your LoveBond account. Please ensure you have the necessary rights to any
-                                content you post (including permissions for any copyrighted material) – you should
-                                not upload content to LoveBond that you do not have the right to use or share.
+                                By submitting content through our Service, you grant LoveBond the right to store,
+                                transmit, and display it solely as needed to provide the Service. This license is
+                                worldwide, non-exclusive, and royalty-free, and it ends when you delete the content
+                                from our systems or terminate your LoveBond account. Please ensure you have the
+                                necessary rights to any content you upload, including permissions for copyrighted
+                                material.
                             </p>
                         </section>
 
                         <section>
-                            <h2 className="text-2xl font-semibold mb-4">6. Privacy</h2>
+                            <h2 className="text-2xl font-semibold mb-4">5. Privacy</h2>
                             <p>
                                 Your privacy is very important to us. Our collection and use of personal
                                 information through LoveBond is explained in our Privacy Policy. By using the
                                 Service, you agree that we can collect and use your information in accordance with
-                                the Privacy Policy. In particular, by connecting LoveBond to your social media
-                                accounts, you consent to our access of certain data from those accounts as
-                                described in these Terms and in the Privacy Policy. We strive to follow best
-                                practices and platform policies regarding user data (for example, we do not sell
-                                personal data, and we honor deletion requests). For details, please review the
-                                Privacy Policy section of this document.
+                                the Privacy Policy. We strive to follow applicable privacy requirements, including
+                                honoring valid requests to access or delete personal data. For details, please
+                                review our Privacy Policy.
                             </p>
                         </section>
 
                         <section>
                             <h2 className="text-2xl font-semibold mb-4">
-                                7. Disclaimers and Limitations of Liability
+                                6. Disclaimers and Limitations of Liability
                             </h2>
 
                             <h3 className="text-xl font-medium mb-3">Service &quot;As Is&quot;</h3>
                             <p className="mb-4">
                                 LoveBond is provided on an &quot;as is&quot; and &quot;as available&quot; basis.
                                 While we aim for high reliability and accuracy, we do not guarantee that the
-                                Service will be uninterrupted, error-free, or meet all of your expectations.
-                                Scheduled posts are sent in real-time, but delivery on the target platform can
-                                depend on the platform&apos;s API availability and performance, which are outside
-                                LoveBond&apos;s control. We disclaim all warranties, express or implied, including
-                                any implied warranties of merchantability, fitness for a particular purpose, and
-                                non-infringement.
-                            </p>
-
-                            <h3 className="text-xl font-medium mb-3">Third-Party Platforms</h3>
-                            <p className="mb-4">
-                                LoveBond primarily acts as an intermediary between you and the social media
-                                platforms&apos; APIs. We are not responsible for any issues attributable to the
-                                social media platforms, such as downtime of their APIs, changes in their
-                                functionality or rules, or actions taken by those platforms against your account
-                                (e.g., content removal or account suspension due to your activities). You
-                                acknowledge that the social media companies may enforce their own terms and
-                                policies against you, and you use LoveBond at your own risk with respect to
-                                third-party services.
+                                Service will be uninterrupted, error-free, or meet all of your expectations. We
+                                disclaim all warranties, express or implied, including any implied warranties of
+                                merchantability, fitness for a particular purpose, and non-infringement.
                             </p>
 
                             <h3 className="text-xl font-medium mb-3">Limitation of Liability</h3>
@@ -432,36 +224,36 @@ const TermsAndConditions = () => {
                                 incidental, special, consequential, or punitive damages, or any loss of profits or
                                 revenues, whether incurred directly or indirectly, or any loss of data, use,
                                 goodwill, or other intangible losses, resulting from (a) your access to or use of
-                                or inability to access or use the Service; (b) any conduct or content of any third
-                                party on or via the Service (including illegal conduct of other users or third
-                                parties); (c) any content obtained from the Service; or (d) unauthorized access,
-                                use, or alteration of your transmissions or content. In no case shall the aggregate
-                                liability of LoveBond to you exceed the amount that you paid us (if any) for the
-                                Service in the six months immediately preceding the event giving rise to the claim.
-                                Some jurisdictions do not allow the exclusion or limitation of certain damages, so
-                                some of these limitations may not apply to you.
+                                or inability to access or use the Service; (b) any conduct or content of another
+                                user on or via the Service, including illegal conduct; (c) any content obtained
+                                from the Service; or (d) unauthorized access, use, or alteration of your
+                                transmissions or content. In no case shall the aggregate liability of LoveBond to
+                                you exceed the amount that you paid us (if any) for the Service in the six months
+                                immediately preceding the event giving rise to the claim. Some jurisdictions do not
+                                allow the exclusion or limitation of certain damages, so some of these limitations
+                                may not apply to you.
                             </p>
                         </section>
 
                         <section>
-                            <h2 className="text-2xl font-semibold mb-4">8. Indemnification</h2>
+                            <h2 className="text-2xl font-semibold mb-4">7. Indemnification</h2>
                             <p>
                                 You agree to indemnify, defend, and hold harmless LoveBond and its affiliates, and
                                 each of their respective officers, directors, agents, and employees, from any and
                                 all claims, liabilities, damages, losses, and expenses (including reasonable
                                 attorneys&apos; fees and costs) arising out of or in any way connected with: (a)
                                 your access to or use of the Service, including your User Content; (b) your
-                                violation of any of these Terms; (c) your violation of any third-party right,
-                                including any intellectual property, confidentiality, or privacy right; or (d) your
-                                violation of any laws, rules, regulations, or platform policies in connection with
-                                your use of LoveBond. We reserve the right to assume the exclusive defense and
-                                control of any matter otherwise subject to indemnification by you (at your
-                                expense), and you agree to cooperate with our defense of such claim.
+                                violation of any of these Terms; (c) your violation of another person&apos;s
+                                rights, including intellectual property, confidentiality, or privacy rights; or (d)
+                                your violation of any laws, rules, or regulations in connection with your use of
+                                LoveBond. We reserve the right to assume the exclusive defense and control of any
+                                matter otherwise subject to indemnification by you (at your expense), and you agree
+                                to cooperate with our defense of such claim.
                             </p>
                         </section>
 
                         <section>
-                            <h2 className="text-2xl font-semibold mb-4">9. Termination</h2>
+                            <h2 className="text-2xl font-semibold mb-4">8. Termination</h2>
 
                             <h3 className="text-xl font-medium mb-3">By You</h3>
                             <p className="mb-4">
@@ -477,17 +269,17 @@ const TermsAndConditions = () => {
                             <p>
                                 We reserve the right to suspend or terminate your access to LoveBond at any time,
                                 with or without notice, for any of the following reasons: (i) if you breach these
-                                Terms or our Privacy Policy; (ii) if you engage in prohibited conduct or violate
-                                the Social Network TOS listed above; (iii) if required by law enforcement or
-                                government request; or (iv) for any other reason in our sole discretion (for
-                                example, if continued service to you is no longer commercially viable). In most
-                                cases of minor violations, we will attempt to provide a warning or an opportunity
-                                to remedy the issue before termination, but we are not obligated to do so.
+                                Terms or our Privacy Policy; (ii) if you engage in prohibited conduct; (iii) if
+                                required by law enforcement or government request; or (iv) for any other reason in
+                                our sole discretion (for example, if continued service to you is no longer
+                                commercially viable). In most cases of minor violations, we will attempt to provide
+                                a warning or an opportunity to remedy the issue before termination, but we are not
+                                obligated to do so.
                             </p>
                         </section>
 
                         <section>
-                            <h2 className="text-2xl font-semibold mb-4">10. Changes to These Terms</h2>
+                            <h2 className="text-2xl font-semibold mb-4">9. Changes to These Terms</h2>
                             <p>
                                 We may update or modify these Terms from time to time. If a revision is material,
                                 we will provide at least 30 days&apos; notice via email or by posting a notice on
@@ -500,7 +292,7 @@ const TermsAndConditions = () => {
                         </section>
 
                         <section>
-                            <h2 className="text-2xl font-semibold mb-4">11. Governing Law and Disputes</h2>
+                            <h2 className="text-2xl font-semibold mb-4">10. Governing Law and Disputes</h2>
                             <p className="mb-4">
                                 These Terms are governed by the laws of the Czech Republic, without regard to its
                                 conflict-of-law rules. This choice of law does not deprive consumers in the

@@ -1,4 +1,4 @@
-import { FOTOCHAT_API_KEY, fotochatHttpClient } from '@/shared/api/fotochat'
+import { FOTOCHAT_API_KEY, fotochatHttpClient } from '@/shared/api/fotochat-server'
 
 export type EclairBlock = {
     id?: number

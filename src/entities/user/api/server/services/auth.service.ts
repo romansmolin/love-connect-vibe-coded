@@ -1,3 +1,4 @@
+import { translateFotochatError } from '@/shared/api/fotochat-server'
 import { HttpError } from '@/shared/http-client'
 
 import type {
@@ -98,7 +99,7 @@ export const authService = {
         })
 
         if (response.accepted !== 1 || !response.session_id || !response.user_id) {
-            throw new HttpError(response.error ?? 'Registration failed', 400)
+            throw new HttpError(await translateFotochatError(response.error ?? 'Registration failed'), 400)
         }
 
         return {

@@ -90,7 +90,7 @@ const SignUpForm = ({ thirdPartyAuth }: { thirdPartyAuth?: JSX.Element }) => {
             }}
         >
             <div className="flex flex-col gap-6">
-                <div className="flex flex-col gap-6">
+                <div className="grid grid-cols-1 gap-x-6 gap-y-5 md:grid-cols-2">
                     <div className="grid gap-2">
                         <Label htmlFor="name">Name</Label>
                         <Input
@@ -212,7 +212,7 @@ const SignUpForm = ({ thirdPartyAuth }: { thirdPartyAuth?: JSX.Element }) => {
                         />
                     </div>
 
-                    <div className="flex items-start gap-3">
+                    <div className="flex items-start gap-3 md:col-span-2">
                         <Checkbox
                             checked={ageConfirmed}
                             disabled={isLoading}
@@ -224,7 +224,7 @@ const SignUpForm = ({ thirdPartyAuth }: { thirdPartyAuth?: JSX.Element }) => {
                         </Label>
                     </div>
 
-                    <div className="flex items-start gap-3">
+                    <div className="flex items-start gap-3 md:col-span-2">
                         <Checkbox
                             checked={consentAccepted}
                             disabled={isLoading}
@@ -257,7 +257,7 @@ const SignUpForm = ({ thirdPartyAuth }: { thirdPartyAuth?: JSX.Element }) => {
                         </Label>
                     </div>
 
-                    <Button className="w-full" disabled={isLoading} type="submit">
+                    <Button className="w-full md:col-span-2" disabled={isLoading} type="submit">
                         {isLoading ? <Loader2 className="animate-spin" /> : <LogIn />}
                         Sign Up
                     </Button>

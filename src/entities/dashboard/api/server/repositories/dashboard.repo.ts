@@ -1,5 +1,5 @@
 import type { PhotoBlock, PhotoBlockV2 } from '@/entities/user/api/server/repositories/user.repo'
-import { FOTOCHAT_API_KEY, fotochatHttpClient } from '@/shared/api/fotochat'
+import { FOTOCHAT_API_KEY, fotochatHttpClient } from '@/shared/api/fotochat-server'
 
 export type WallAddPhotoBlock = {
     user_id?: number

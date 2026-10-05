@@ -42,36 +42,51 @@ const mapToHttpError = (error: unknown): HttpError => {
 
 const request = async <TResponse>(
     executor: () => Promise<TResponse>,
-    mapError = mapToHttpError
+    mapError: (error: unknown) => HttpError | Promise<HttpError> = mapToHttpError,
+    transformErrorMessage?: (message: string) => string | Promise<string>
 ): Promise<TResponse> => {
     try {
         return await executor()
     } catch (error) {
-        throw mapError(error)
+        const mappedError = await mapError(error)
+
+        if (transformErrorMessage) {
+            try {
+                mappedError.message = await transformErrorMessage(mappedError.message)
+            } catch {
+                // Keep the original upstream message when translation is unavailable.
+            }
+        }
+
+        throw mappedError
     }
 }
 
 type AxiosHttpClientOptions = {
     baseURL?: string
     instance?: AxiosInstance
-    mapError?: (error: unknown) => HttpError
+    mapError?: (error: unknown) => HttpError | Promise<HttpError>
+    transformErrorMessage?: (message: string) => string | Promise<string>
 }
 
 class AxiosHttpClient implements HttpClient {
     private readonly axiosInstance: AxiosInstance
-    private readonly mapError: (error: unknown) => HttpError
+    private readonly mapError: (error: unknown) => HttpError | Promise<HttpError>
+    private readonly transformErrorMessage?: (message: string) => string | Promise<string>
 
     constructor({
         baseURL = DEFAULT_API_BASE_URL,
         instance,
         mapError = mapToHttpError,
+        transformErrorMessage,
     }: AxiosHttpClientOptions = {}) {
         this.axiosInstance = instance ?? createAxiosInstance(baseURL)
         this.mapError = mapError
+        this.transformErrorMessage = transformErrorMessage
     }
 
     private execute<TResponse>(executor: () => Promise<TResponse>) {
-        return request(executor, this.mapError)
+        return request(executor, this.mapError, this.transformErrorMessage)
     }
 
     get<TResponse>(url: string, config?: HttpRequestConfig) {

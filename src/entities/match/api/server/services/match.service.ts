@@ -1,6 +1,7 @@
 import { personaMatchService } from '@/entities/demo-activity/api/server/services/persona-match.service'
 import { userService } from '@/entities/user/api/server/services/user.service'
 import { FOTOCHAT_API_KEY } from '@/shared/api/fotochat'
+import { translateFotochatError } from '@/shared/api/fotochat-server'
 import { HttpError } from '@/shared/http-client'
 
 import type {
@@ -429,7 +430,7 @@ export const matchService = {
         const response = await matchRepo.reportUser({ sessionId, targetId, reason, details, code })
 
         if (response.result === 0 || response.result === '0') {
-            throw new HttpError(response.error || 'Unable to submit report.', 400)
+            throw new HttpError(await translateFotochatError(response.error || 'Unable to submit report.'), 400)
         }
 
         return { success: true }

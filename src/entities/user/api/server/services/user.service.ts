@@ -1,3 +1,4 @@
+import { translateFotochatError } from '@/shared/api/fotochat-server'
 import { HttpError } from '@/shared/http-client'
 
 import type { PublicMemberProfile, UserGender, UserPhoto, UserProfile } from '../../../model/types'
@@ -129,11 +130,17 @@ export const userService = {
         const acceptedDescription = descriptionResponse?.accepted ?? 1
 
         if (acceptedInfo === 0) {
-            throw new HttpError(infoResponse.error || 'Profile update was not accepted', 400)
+            throw new HttpError(
+                await translateFotochatError(infoResponse.error || 'Profile update was not accepted'),
+                400
+            )
         }
 
         if (descriptionResponse && acceptedDescription === 0) {
-            throw new HttpError(descriptionResponse.error || 'Description update was not accepted', 400)
+            throw new HttpError(
+                await translateFotochatError(descriptionResponse.error || 'Description update was not accepted'),
+                400
+            )
         }
 
         return {
@@ -163,7 +170,7 @@ export const userService = {
         const response = await userRepo.deleteAccount({ sessionId, password })
 
         if (response.error === 1) {
-            throw new HttpError(response.result || 'Unable to delete account', 400)
+            throw new HttpError(await translateFotochatError(response.result || 'Unable to delete account'), 400)
         }
 
         return {
