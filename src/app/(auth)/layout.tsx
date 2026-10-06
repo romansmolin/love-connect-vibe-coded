@@ -32,7 +32,9 @@ export default function RootLayout({
                 <GoogleAnalytics measurementId="G-37FFNP35CS" />
                 <RtkProvider>
                     <ThemeProvider disableTransitionOnChange enableSystem attribute="class" defaultTheme="system">
-                        <Header isAuth />
+                        <div className="shrink-0 pt-5">
+                            <Header isAuth />
+                        </div>
                         <main className="flex min-h-0 flex-1 flex-col items-center overflow-y-auto bg-background px-4 py-4">
                             <div className="my-auto w-full max-w-xl">{children}</div>
                         </main>

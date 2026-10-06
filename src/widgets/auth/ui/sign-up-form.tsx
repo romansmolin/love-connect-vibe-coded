@@ -12,7 +12,7 @@ const SignUpFormSection = ({ thirdPartyAuth }: { thirdPartyAuth?: JSX.Element })
                         Ready to Find Your Perfect Match?
                     </h2>
                     <p className="mt-3 text-sm text-muted-foreground sm:text-base">
-                        Join 35.0K+ singles who trust Lavrilo to find meaningful relationships
+                        Join 35.0K+ singles who trust Love-Bond to find meaningful relationships
                     </p>
                 </div>
 
