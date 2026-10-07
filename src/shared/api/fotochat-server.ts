@@ -41,7 +41,12 @@ const requestTranslation = async (message: string): Promise<string> => {
 
 export const translateFotochatError = async (message: string): Promise<string> => {
     const source = message.trim()
-    if (!source || !process.env.OPENAI_API_KEY) return message
+    if (!source) return message
+
+    if (!process.env.OPENAI_API_KEY) {
+        console.error('[fotochat-translate] OPENAI_API_KEY is not set, returning original message')
+        return message
+    }
 
     const cached = translatedMessages.get(source)
     if (cached) return cached
@@ -61,7 +66,10 @@ export const translateFotochatError = async (message: string): Promise<string> =
 
             return translated
         })
-        .catch(() => message)
+        .catch((error) => {
+            console.error('[fotochat-translate] translation failed, returning original message', error)
+            return message
+        })
         .finally(() => translationsInFlight.delete(source))
 
     translationsInFlight.set(source, translation)

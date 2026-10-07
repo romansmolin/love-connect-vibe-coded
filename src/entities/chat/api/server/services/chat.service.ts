@@ -1,6 +1,7 @@
 import { mapContact, mapDeliveredGiftToMessage, mapMessage } from '@/entities/chat/lib/chat-mapper'
 import { personaMatchService } from '@/entities/demo-activity/api/server/services/persona-match.service'
 import { giftService } from '@/entities/gift/api/server/gift.service'
+import { translateFotochatError } from '@/shared/api/fotochat-server'
 import { HttpError } from '@/shared/http-client'
 
 import type {
@@ -173,7 +174,7 @@ export const chatService = {
             const message =
                 response.notification === 'alert1'
                     ? 'You need an active subscription to send messages.'
-                    : response.notification
+                    : await translateFotochatError(response.notification)
             throw new HttpError(message, 402)
         }
 

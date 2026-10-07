@@ -334,124 +334,7 @@ const PrivacyPolicy = () => {
                         </section>
 
                         <section>
-                            <h2 className="text-2xl font-semibold mb-4">6. Third-Party APIs and Services</h2>
-
-                            <p className="mb-4">
-                                LoveBond integrates with several third-party platforms as an essential part of our
-                                service. Your use of LoveBond to access those services means that your information
-                                will be handled by those third parties under their own privacy policies. For
-                                example, when we post to Instagram on your behalf, the request and data pass
-                                through Meta&apos;s systems. We do not control how those third parties treat your
-                                data once it reaches them. We encourage you to review the privacy policies of all
-                                social networks you connect to our Service.
-                            </p>
-
-                            <div className="bg-muted p-4 rounded-lg mb-4">
-                                <p className="font-medium mb-2">
-                                    Key third-party privacy policies and terms include:
-                                </p>
-                                <ul className="list-disc pl-6 space-y-1 text-sm">
-                                    <li>
-                                        <strong>Meta Platforms (Facebook, Instagram, Threads):</strong>{' '}
-                                        <a
-                                            className="text-blue-600 hover:underline"
-                                            href="https://facebook.com/privacy/explanation"
-                                            rel="noopener noreferrer"
-                                            target="_blank"
-                                        >
-                                            Meta&apos;s Data Policy
-                                        </a>{' '}
-                                        and{' '}
-                                        <a
-                                            className="text-blue-600 hover:underline"
-                                            href="https://privacycenter.instagram.com/policy"
-                                            rel="noopener noreferrer"
-                                            target="_blank"
-                                        >
-                                            Instagram&apos;s Data Policy
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <strong>YouTube (Google API Services):</strong>{' '}
-                                        <a
-                                            className="text-blue-600 hover:underline"
-                                            href="https://policies.google.com"
-                                            rel="noopener noreferrer"
-                                            target="_blank"
-                                        >
-                                            Google Privacy Policy
-                                        </a>{' '}
-                                        and{' '}
-                                        <a
-                                            className="text-blue-600 hover:underline"
-                                            href="https://youtube.com/t/terms"
-                                            rel="noopener noreferrer"
-                                            target="_blank"
-                                        >
-                                            YouTube Terms of Service
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <strong>LinkedIn:</strong>{' '}
-                                        <a
-                                            className="text-blue-600 hover:underline"
-                                            href="https://linkedin.com/legal/privacy-policy"
-                                            rel="noopener noreferrer"
-                                            target="_blank"
-                                        >
-                                            LinkedIn Privacy Policy
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <strong>TikTok:</strong>{' '}
-                                        <a
-                                            className="text-blue-600 hover:underline"
-                                            href="https://tiktok.com/legal/privacy-policy"
-                                            rel="noopener noreferrer"
-                                            target="_blank"
-                                        >
-                                            TikTok Privacy Policy
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <strong>Pinterest:</strong>{' '}
-                                        <a
-                                            className="text-blue-600 hover:underline"
-                                            href="https://policy.pinterest.com"
-                                            rel="noopener noreferrer"
-                                            target="_blank"
-                                        >
-                                            Pinterest Privacy Policy
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <strong>Bluesky:</strong>{' '}
-                                        <a
-                                            className="text-blue-600 hover:underline"
-                                            href="https://bsky.social"
-                                            rel="noopener noreferrer"
-                                            target="_blank"
-                                        >
-                                            Bluesky Terms and Privacy
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <p>
-                                We provide these links and references for convenience and to meet platform audit
-                                requirements. Please be aware that when you leave our Service or interact with a
-                                feature that contacts a third-party, any information you provide will be handled
-                                according to that third party&apos;s own rules and policies, which may differ from
-                                ours. We are not responsible for how third-party services collect or use your data,
-                                but we only integrate with them in ways that are intended to respect your
-                                permissions and privacy. If you have questions about how a specific social network
-                                handles your data, please refer to that company&apos;s privacy center.
-                            </p>
-                        </section>
-
-                        <section>
-                            <h2 className="text-2xl font-semibold mb-4">7. Your Rights and Choices</h2>
+                            <h2 className="text-2xl font-semibold mb-4">6. Your Rights and Choices</h2>
 
                             <p className="mb-4">
                                 Depending on your location and applicable law (such as the EU&apos;s GDPR,
@@ -517,7 +400,7 @@ const PrivacyPolicy = () => {
                         </section>
 
                         <section>
-                            <h2 className="text-2xl font-semibold mb-4">8. International Data Transfers</h2>
+                            <h2 className="text-2xl font-semibold mb-4">7. International Data Transfers</h2>
 
                             <p className="mb-4">
                                 LoveBond operates globally. If you are located outside the country where our
@@ -541,7 +424,7 @@ const PrivacyPolicy = () => {
                         </section>
 
                         <section>
-                            <h2 className="text-2xl font-semibold mb-4">9. Changes to this Privacy Policy</h2>
+                            <h2 className="text-2xl font-semibold mb-4">8. Changes to this Privacy Policy</h2>
 
                             <p>
                                 We may update this Privacy Policy from time to time to reflect changes in our
@@ -556,7 +439,7 @@ const PrivacyPolicy = () => {
                         </section>
 
                         <section>
-                            <h2 className="text-2xl font-semibold mb-4">10. Contact Us</h2>
+                            <h2 className="text-2xl font-semibold mb-4">9. Contact Us</h2>
 
                             <p className="mb-4">
                                 If you have any questions, concerns, or requests regarding this Privacy Policy or
