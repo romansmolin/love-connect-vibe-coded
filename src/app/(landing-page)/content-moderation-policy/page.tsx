@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export const metadata: Metadata = {
     title: 'Content Moderation Policy | LoveBond',
-    description: 'Learn what is allowed on LoveBond and how to report profiles or content.',
+    description: 'Learn how LoveBond reviews public content before publication and how to report concerns.',
 }
 
 const ContentModerationPolicy = () => {
@@ -60,7 +60,30 @@ const ContentModerationPolicy = () => {
                     </section>
 
                     <section className="mb-8">
-                        <h2 className="text-2xl font-semibold">2. Report or block a member</h2>
+                        <h2 className="text-2xl font-semibold">2. Review before publication</h2>
+                        <p>
+                            Before we publish member-submitted content intended to be visible to other members, our
+                            moderators review it for compliance with this policy, our Terms and Conditions, and
+                            applicable law. This includes profile information, descriptions, and profile photos.
+                            Submitted content is not shown to other members until it has been approved.
+                        </p>
+                        <p>
+                            We may use automated tools to help identify or prioritize content for review. Moderators
+                            may approve content, decline it, or ask the member to make changes. Content that is
+                            declined or still under review is not published. Where appropriate, we will explain the
+                            decision and allow the member to edit and resubmit the content. Approval does not
+                            prevent us from reviewing or removing content later if it is reported or otherwise
+                            appears to violate this policy.
+                        </p>
+                        <p>
+                            Private messages are not subject to routine pre-publication review. We may review them
+                            after a report or when safety signals indicate a potential violation, in accordance
+                            with our <Link href="/privacy">Privacy Policy</Link> and applicable law.
+                        </p>
+                    </section>
+
+                    <section className="mb-8">
+                        <h2 className="text-2xl font-semibold">3. Report or block a member</h2>
                         <p>
                             To report a profile, open the member&apos;s profile, select <strong>Report</strong>,
                             choose the closest reason, and include relevant details. The report form accepts
@@ -82,7 +105,7 @@ const ContentModerationPolicy = () => {
                     </section>
 
                     <section className="mb-8">
-                        <h2 className="text-2xl font-semibold">3. How we review reports</h2>
+                        <h2 className="text-2xl font-semibold">4. How we review reports</h2>
                         <p>
                             We review reports against this policy, our Terms and Conditions, and applicable law. We
                             consider the reported content, surrounding context, the seriousness of the concern, and
@@ -97,7 +120,7 @@ const ContentModerationPolicy = () => {
                     </section>
 
                     <section className="mb-8">
-                        <h2 className="text-2xl font-semibold">4. Decisions and requests for review</h2>
+                        <h2 className="text-2xl font-semibold">5. Decisions and requests for review</h2>
                         <p>
                             If we restrict your content or account, we will provide the reason for the decision
                             where required by law and where we are permitted to do so. If you believe we made a
@@ -113,7 +136,7 @@ const ContentModerationPolicy = () => {
                     </section>
 
                     <section>
-                        <h2 className="text-2xl font-semibold">5. Privacy and misuse of reports</h2>
+                        <h2 className="text-2xl font-semibold">6. Privacy and misuse of reports</h2>
                         <p>
                             We handle information submitted in reports in accordance with our{' '}
                             <Link href="/privacy">Privacy Policy</Link> and applicable law. Do not submit false or
