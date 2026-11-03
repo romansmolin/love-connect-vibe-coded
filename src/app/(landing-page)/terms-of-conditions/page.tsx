@@ -45,7 +45,7 @@ const TermsAndConditions = () => {
 
                         <section>
                             <h2 className="text-2xl font-semibold mb-4">
-                                2. Plans, Payments, and Subscription Terms
+                                2. Plans and Payments
                             </h2>
 
                             <p className="mb-4">
@@ -61,22 +61,11 @@ const TermsAndConditions = () => {
                                 non-refundable, except as required by law or expressly allowed by these Terms.
                             </p>
 
-                            <h3 className="text-xl font-medium mb-3">Subscription Renewals</h3>
-                            <p className="mb-4">
-                                If you subscribe to a paid plan, your subscription will automatically renew at the
-                                end of each billing cycle (monthly or annually, as applicable) unless you cancel
-                                beforehand. By providing a payment method, you authorize LoveBond to charge the
-                                applicable subscription fees to your payment method on a recurring basis. You may
-                                cancel your subscription at any time via your account settings or by contacting
-                                support; cancellation will stop future charges but will not retroactively refund
-                                current charges.
-                            </p>
-
                             <h3 className="text-xl font-medium mb-3">Plan Changes</h3>
                             <p>
                                 We reserve the right to modify our plans or pricing. If we change the price of your
-                                plan, we will notify you in advance, and the new price will apply at the start of
-                                the next billing period. Promotional or special pricing may be offered to others;
+                                plan, we will notify you in advance, and the new price will apply to purchases made
+                                after the change. Promotional or special pricing may be offered to others;
                                 unless offered to you, such promotions do not apply to your account.
                             </p>
                         </section>
