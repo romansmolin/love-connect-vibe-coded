@@ -15,7 +15,7 @@ const ReturnPolicy = () => {
                         <section>
                             <p className="mb-6">
                                 This Return Policy explains how refunds and credits are handled for LoveBond
-                                purchases. By purchasing credits or subscriptions, you agree to the terms below.
+                                purchases. By purchasing credits, you agree to the terms below.
                             </p>
                         </section>
 
@@ -37,15 +37,7 @@ const ReturnPolicy = () => {
                         </section>
 
                         <section>
-                            <h2 className="text-2xl font-semibold mb-4">3. Subscription Refunds</h2>
-                            <p className="mb-4">
-                                Subscription fees are billed in advance. Refunds are not guaranteed and are
-                                assessed on a case-by-case basis for billing errors or service outages.
-                            </p>
-                        </section>
-
-                        <section>
-                            <h2 className="text-2xl font-semibold mb-4">4. How to Request a Refund</h2>
+                            <h2 className="text-2xl font-semibold mb-4">3. How to Request a Refund</h2>
                             <p className="mb-4">
                                 Send your request to support with your account email, transaction date, and a brief
                                 description of the issue. We aim to respond within 5 business days.
@@ -53,7 +45,7 @@ const ReturnPolicy = () => {
                         </section>
 
                         <section>
-                            <h2 className="text-2xl font-semibold mb-4">5. Contact</h2>
+                            <h2 className="text-2xl font-semibold mb-4">4. Contact</h2>
                             <p className="mb-4">
                                 If you have questions about this Return Policy, please reach out via the contact
                                 form on our website.

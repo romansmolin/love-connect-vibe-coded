@@ -41,9 +41,9 @@ const PrivacyPolicy = () => {
                             <p className="mb-4">
                                 When you register for LoveBond, we ask for basic information such as your name,
                                 email address, and password. This information is used to create and administer your
-                                account. If you subscribe to a paid plan, we (or our secure payment processor) will
+                                account. If you make a purchase, we (or our secure payment processor) will
                                 collect payment details (e.g. credit card information and billing address) as
-                                needed to process your subscription.
+                                needed to process your payment.
                             </p>
 
                             <h3 className="text-xl font-medium mb-3">Social Media Account Data</h3>
