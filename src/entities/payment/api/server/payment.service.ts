@@ -210,6 +210,9 @@ export const paymentService = {
                 settings: {
                     return_url: returnUrl,
                     notification_url: `${BACKEND_URL}/api/payments/secure-processor/webhook`,
+                    customer_fields: {
+                        visible: ['first_name', 'last_name', 'address', 'city', 'zip', 'country'],
+                    },
                 },
                 order: {
                     amount: params.amountCents,
