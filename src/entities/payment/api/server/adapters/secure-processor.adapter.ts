@@ -28,7 +28,7 @@ export class SecureProcessorAdapter implements PaymentGatewayAdapter {
                     ...(input.notificationUrl ? { notification_url: input.notificationUrl } : {}),
                     language: 'en',
                     customer_fields: {
-                        visible: ['first_name', 'last_name', 'address', 'city', 'zip', 'country'],
+                        visible: ['address', 'city', 'zip', 'country'],
                     },
                 },
                 order: {
