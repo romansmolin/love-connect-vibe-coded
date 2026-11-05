@@ -37,7 +37,8 @@ const TermsAndConditions = () => {
 
                             <h3 className="text-xl font-medium mb-3">Eligibility</h3>
                             <p>
-                                You must be at least 18 years old to use LoveBond. The Service is available
+                                LoveBond is an 18+ service. You must be at least 18 years old (or the age of
+                                majority in your jurisdiction, if higher) to use LoveBond. The Service is available
                                 worldwide, but you are responsible for ensuring that your use complies with local
                                 laws and regulations.
                             </p>

@@ -107,10 +107,10 @@ const PrivacyPolicy = () => {
                             <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
                                 <p className="text-sm">
                                     <strong>Note:</strong> We do not knowingly collect personal information from
-                                    children under 13 years of age, and LoveBond is not intended for users under
-                                    13. If we become aware that a child under 13 (or under the applicable age
-                                    threshold in their jurisdiction) has provided us with personal data, we will
-                                    delete it in accordance with applicable law.
+                                    anyone under 18 years of age. LoveBond is an 18+ service and is not intended
+                                    for users under 18. If we become aware that a person under 18 (or under the
+                                    applicable age of majority in their jurisdiction) has provided us with
+                                    personal data, we will delete it in accordance with applicable law.
                                 </p>
                             </div>
                         </section>
