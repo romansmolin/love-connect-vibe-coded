@@ -52,10 +52,9 @@ const ReturnPolicy = () => {
                             </p>
                             <div className="bg-muted p-4 rounded-lg">
                                 <p className="font-medium">LoveBond Support</p>
-                                <p>Rix RB s.r.o.</p>
-                                <p>IČO: 23715189</p>
-                                <p>Sinkulova 160/16, Praha 4–Podolí</p>
-                                <p>147 00, Czech Republic</p>
+                                <p>[Company name]</p>
+                                <p>[Registration number]</p>
+                                <p>[Company address]</p>
                             </div>
                         </section>
                     </div>
