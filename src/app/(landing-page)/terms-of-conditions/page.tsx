@@ -311,9 +311,10 @@ const TermsAndConditions = () => {
                             <div className="bg-muted p-4 rounded-lg mt-4">
                                 <p className="font-medium">LoveBond Support</p>
                                 <p>Email: support@love-bond.com</p>
-                                <p>[Company name]</p>
-                                <p>[Registration number]</p>
-                                <p>[Company address]</p>
+                                <p>Rix RB s.r.o.</p>
+                                <p>IČO: 23715189</p>
+                                <p>Sinkulova 160/16, Praha 4–Podolí</p>
+                                <p>147 00, Czech Republic</p>
                                 <p>
                                     Website:{' '}
                                     <Link className="text-blue-600 hover:underline" href="/">

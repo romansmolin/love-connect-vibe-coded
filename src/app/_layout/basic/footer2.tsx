@@ -100,9 +100,10 @@ const Footer2 = ({
                         <div>
                             <h3 className="mb-4 text-base font-bold text-foreground">Company Info</h3>
                             <ul className="space-y-3 text-sm text-muted-foreground">
-                                <li className="font-medium">[Company name]</li>
-                                <li className="font-medium">[Registration number]</li>
-                                <li className="font-medium">[Company address]</li>
+                                <li className="font-medium">Rix RB s.r.o.</li>
+                                <li className="font-medium">IČO: 23715189</li>
+                                <li className="font-medium">Sinkulova 160/16, Praha 4–Podolí</li>
+                                <li className="font-medium">147 00, Czech Republic</li>
                             </ul>
                         </div>
                     </div>
